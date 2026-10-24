@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://b10rqu5qccpgn"
+path="res://.godot/imported/Footstep Stairs 5.mp3-fa4ecfe6e05980650f2bfc1e30d41d6d.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/Footstep Stairs 5.mp3"
+dest_files=["res://.godot/imported/Footstep Stairs 5.mp3-fa4ecfe6e05980650f2bfc1e30d41d6d.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

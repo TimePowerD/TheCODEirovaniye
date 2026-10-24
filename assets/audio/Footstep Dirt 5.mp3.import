@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://drgm5t5wg08l0"
+path="res://.godot/imported/Footstep Dirt 5.mp3-7f8ea200360fd3a9b9a99c19f918b0c5.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/Footstep Dirt 5.mp3"
+dest_files=["res://.godot/imported/Footstep Dirt 5.mp3-7f8ea200360fd3a9b9a99c19f918b0c5.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
