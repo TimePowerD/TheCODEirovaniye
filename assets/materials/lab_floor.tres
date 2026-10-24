@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://xyf6xeuboj4p"]
+
+[ext_resource type="Texture2D" uid="uid://qie6qm3nacje" path="res://assets/textures/labFloorDiff.png" id="1_floor_texture"]
+
+[resource]
+cull_mode = 2
+albedo_texture = ExtResource("1_floor_texture")
+roughness = 0.88
+uv1_scale = Vector3(5.336, 5.336, 5.336)

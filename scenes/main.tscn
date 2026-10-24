@@ -1,17 +1,25 @@
 [gd_scene format=3 uid="uid://gmax2d2xcehc"]
 
 [ext_resource type="Script" uid="uid://cq6w02e652lyg" path="res://scripts/player_controller.gd" id="1_player"]
-[ext_resource type="Script" path="res://scripts/crosshair.gd" id="2_crosshair"]
+[ext_resource type="Script" uid="uid://n2jk16iscspq" path="res://scripts/crosshair.gd" id="2_crosshair"]
+[ext_resource type="Script" uid="uid://cdwb5vpiblp74" path="res://scripts/main_menu.gd" id="3_main_menu"]
+[ext_resource type="Script" path="res://scripts/room_materials.gd" id="4_room_materials"]
+[ext_resource type="PackedScene" uid="uid://jh4fi6qo4lx" path="res://assets/models/labFloor2x1entr.glb" id="5_floor"]
+[ext_resource type="PackedScene" uid="uid://cilt8unyp65ng" path="res://assets/models/labCeiling1x1.glb" id="6_ceiling"]
+[ext_resource type="PackedScene" uid="uid://bbfbr5domwuds" path="res://assets/models/labWall1x1.glb" id="7_wall"]
+[ext_resource type="PackedScene" uid="uid://c3proi1cxch5g" path="res://assets/models/labWallEntr.glb" id="8_entrance_wall"]
 
-[sub_resource type="BoxMesh" id="PlaneMesh_floor"]
-size = Vector3(20, 0.2, 20)
+[sub_resource type="BoxShape3D" id="RoomFloorShape"]
+size = Vector3(18, 0.2, 32)
 
-[sub_resource type="StandardMaterial3D" id="FloorMaterial"]
-albedo_color = Color(0.36, 0.4, 0.43, 1)
-roughness = 0.9
+[sub_resource type="BoxShape3D" id="RoomWallShape"]
+size = Vector3(0.25, 8, 16)
 
-[sub_resource type="BoxShape3D" id="PlaneShape_floor"]
-size = Vector3(20, 0.2, 20)
+[sub_resource type="BoxShape3D" id="DoorSideShape"]
+size = Vector3(2, 8, 7)
+
+[sub_resource type="BoxShape3D" id="DoorHeaderShape"]
+size = Vector3(2, 5.25, 2.02)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape_player"]
 radius = 0.35
@@ -58,21 +66,99 @@ height = 2.4
 radius = 0.7
 
 [node name="Main" type="Node3D" unique_id=417695300]
+script = ExtResource("4_room_materials")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1933207331]
-transform = Transform3D(0.8525245, 0.3562839, -0.38244444, 0, 0.73168886, 0.6816388, 0.52268726, -0.58111376, 0.6237827, 0, 0, 0)
-shadow_enabled = true
+[node name="MainMenu" type="CanvasLayer" parent="." unique_id=-1908949875]
+layer = 10
+script = ExtResource("3_main_menu")
 
-[node name="Floor" type="StaticBody3D" parent="." unique_id=1316747582]
+[node name="Room" type="Node3D" parent="." unique_id=129221302]
 
-[node name="FloorMesh" type="MeshInstance3D" parent="Floor" unique_id=2073444746]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
-mesh = SubResource("PlaneMesh_floor")
-surface_material_override/0 = SubResource("FloorMaterial")
+[node name="Floor" type="StaticBody3D" parent="Room" unique_id=1489759289]
 
-[node name="FloorCollision" type="CollisionShape3D" parent="Floor" unique_id=502761951]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
-shape = SubResource("PlaneShape_floor")
+[node name="FloorModel" parent="Room/Floor" unique_id=267112682 instance=ExtResource("5_floor")]
+
+[node name="FloorCollision" type="CollisionShape3D" parent="Room/Floor" unique_id=1555841595]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -0.1, 8)
+shape = SubResource("RoomFloorShape")
+
+[node name="Ceiling" type="Node3D" parent="Room" unique_id=449363488]
+
+[node name="CeilingModel" parent="Room/Ceiling" unique_id=1782915172 instance=ExtResource("6_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.010398865, -4.7683716e-07, -0.007041931)
+
+[node name="CorridorCeilingModel" parent="Room/Ceiling" unique_id=289183087 instance=ExtResource("6_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 16)
+
+[node name="MainWallEast" type="StaticBody3D" parent="Room" unique_id=1935558053]
+
+[node name="WallModel" parent="Room/MainWallEast" unique_id=1030764266 instance=ExtResource("7_wall")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room/MainWallEast" unique_id=1363790435]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4, 0)
+shape = SubResource("RoomWallShape")
+
+[node name="MainWallWest" type="StaticBody3D" parent="Room" unique_id=555829131]
+transform = Transform3D(-1, 0, 2.5351817e-06, 0, 1, 0, -2.5351817e-06, 0, -1, 0, 0, 0)
+
+[node name="WallModel" parent="Room/MainWallWest" unique_id=585594877 instance=ExtResource("7_wall")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room/MainWallWest" unique_id=790767478]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4, 0)
+shape = SubResource("RoomWallShape")
+
+[node name="MainWallNorth" type="StaticBody3D" parent="Room" unique_id=1310469489]
+transform = Transform3D(-3.6199901e-06, 0, 1, 0, 1, 0, -1, 0, -3.6199901e-06, 0, 0, 0)
+
+[node name="WallModel" parent="Room/MainWallNorth" unique_id=54641053 instance=ExtResource("7_wall")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room/MainWallNorth" unique_id=826776002]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4, 0)
+shape = SubResource("RoomWallShape")
+
+[node name="DoorWall" type="StaticBody3D" parent="Room" unique_id=453822867]
+transform = Transform3D(-3.6199901e-06, 0, 1, 0, 1, 0, -1, 0, -3.6199901e-06, 0, 0, -1)
+
+[node name="DoorWallModel" parent="Room/DoorWall" unique_id=1094382411 instance=ExtResource("8_entrance_wall")]
+
+[node name="DoorLeftCollision" type="CollisionShape3D" parent="Room/DoorWall" unique_id=334620770]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 4, -4.5)
+shape = SubResource("DoorSideShape")
+
+[node name="DoorRightCollision" type="CollisionShape3D" parent="Room/DoorWall" unique_id=1318119120]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 4, 4.5)
+shape = SubResource("DoorSideShape")
+
+[node name="DoorHeaderCollision" type="CollisionShape3D" parent="Room/DoorWall" unique_id=1323538022]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 5.375, 0)
+shape = SubResource("DoorHeaderShape")
+
+[node name="CorridorWallEast" type="StaticBody3D" parent="Room" unique_id=263527411]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 16)
+
+[node name="WallModel" parent="Room/CorridorWallEast" unique_id=2139421167 instance=ExtResource("7_wall")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room/CorridorWallEast" unique_id=2123102325]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4, 0)
+shape = SubResource("RoomWallShape")
+
+[node name="CorridorWallWest" type="StaticBody3D" parent="Room" unique_id=573939913]
+transform = Transform3D(-1, 0, 2.5351817e-06, 0, 1, 0, -2.5351817e-06, 0, -1, 0, 0, 16)
+
+[node name="WallModel" parent="Room/CorridorWallWest" unique_id=175792464 instance=ExtResource("7_wall")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room/CorridorWallWest" unique_id=618715049]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4, 0)
+shape = SubResource("RoomWallShape")
+
+[node name="CorridorEndWall" type="StaticBody3D" parent="Room" unique_id=1748276799]
+transform = Transform3D(-3.6199901e-06, 0, -1, 0, 1, 0, 1, 0, -3.6199901e-06, 0, 0, 16)
+
+[node name="WallModel" parent="Room/CorridorEndWall" unique_id=678909201 instance=ExtResource("7_wall")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Room/CorridorEndWall" unique_id=2108445010]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4, 0)
+shape = SubResource("RoomWallShape")
 
 [node name="Player" type="CharacterBody3D" parent="." unique_id=1140905256]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 4)
@@ -146,3 +232,6 @@ surface_material_override/0 = SubResource("TestMaterial_blue")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="SwapTestObject" unique_id=1091873219]
 shape = SubResource("BoxShape_small")
 
+[node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=1942661029]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.360796, 0)
+omni_range = 14.586

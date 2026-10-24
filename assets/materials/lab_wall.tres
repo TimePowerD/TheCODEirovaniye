@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" format=3 uid="uid://ikommi5tkwlw"]
+
+[ext_resource type="Texture2D" uid="uid://dalupvyx2im17" path="res://assets/textures/labWallDiff.png" id="1_wall_texture"]
+
+[resource]
+cull_mode = 2
+albedo_texture = ExtResource("1_wall_texture")
+roughness = 0.82
+uv1_scale = Vector3(4.475, 4.475, 4.475)
