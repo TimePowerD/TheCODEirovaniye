@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://daw0ux8w32p1g"
+path="res://.godot/imported/Footstep Stone 2.mp3-cd5fb1244240a0a309643b18a23d756b.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/Footstep Stone 2.mp3"
+dest_files=["res://.godot/imported/Footstep Stone 2.mp3-cd5fb1244240a0a309643b18a23d756b.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

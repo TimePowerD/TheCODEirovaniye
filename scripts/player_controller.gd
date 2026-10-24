@@ -23,7 +23,23 @@ extends CharacterBody3D
 
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var aim_ray: RayCast3D = $CameraPivot/Camera3D/CenterRay
+@onready var footstep_sound: AudioStreamPlayer3D = $FootstepSound
+@onready var jump_sound: AudioStreamPlayer3D = $JumpSound
+@onready var pickup_sound: AudioStreamPlayer3D = $PickupSound
+@onready var item_use_sound: AudioStreamPlayer3D = $ItemUseSound
+@onready var throw_sound: AudioStreamPlayer3D = $ThrowSound
+@onready var place_sound: AudioStreamPlayer3D = $PlaceSound
+@onready var swap_sound: AudioStreamPlayer3D = $SwapSound
 @onready var animation_player: AnimationPlayer = $ZombieModel/AnimationPlayer
+
+var footstep_streams: Array[AudioStream] = [
+	preload("res://assets/audio/Footstep Concrete 1.mp3"),
+	preload("res://assets/audio/Footstep Concrete 2.mp3"),
+	preload("res://assets/audio/Footstep Concrete 3.mp3"),
+	preload("res://assets/audio/Footstep Concrete 4.mp3"),
+	preload("res://assets/audio/Footstep Concrete 5.mp3"),
+]
+var footstep_timer: float = 0.0
 
 var gravity: float = float(ProjectSettings.get_setting("physics/3d/default_gravity"))
 var hovered_target: Node3D
@@ -147,6 +163,7 @@ func _physics_process(delta: float) -> void:
 		velocity.y -= gravity * delta
 	elif Input.is_key_pressed(KEY_SPACE):
 		velocity.y = jump_velocity
+		jump_sound.play()
 
 	var input_2d := Vector2.ZERO
 	input_2d.y -= float(Input.is_key_pressed(KEY_W))
@@ -165,6 +182,7 @@ func _physics_process(delta: float) -> void:
 	velocity.x = horizontal_velocity.x
 	velocity.z = horizontal_velocity.z
 	move_and_slide()
+	_update_footstep_sound(delta, is_on_floor() and not input_2d.is_zero_approx())
 	if placement_mode:
 		_update_placement_preview()
 	_update_held_object()
@@ -173,6 +191,17 @@ func _physics_process(delta: float) -> void:
 	_update_player_animation(input_2d)
 	_update_swap_highlight()
 	_update_interaction_hint()
+
+func _update_footstep_sound(delta: float, is_moving_on_floor: bool) -> void:
+	if not is_moving_on_floor:
+		footstep_timer = 0.0
+		return
+
+	footstep_timer -= delta
+	if footstep_timer <= 0.0:
+		footstep_sound.stream = footstep_streams.pick_random()
+		footstep_sound.play()
+		footstep_timer = 0.36 if Input.is_key_pressed(KEY_SHIFT) else 0.5
 
 func _try_grab_object() -> void:
 	if held_object != null or held_item != null or not aim_ray.is_colliding():
@@ -210,7 +239,10 @@ func _try_pickup_item() -> void:
 
 func _use_held_item() -> void:
 	if is_instance_valid(held_item) and held_item.has_method("use_item"):
+		if held_item.get("can_use") == false:
+			return
 		held_item.call("use_item", self)
+		item_use_sound.play()
 		_play_item_use_animation()
 
 func _play_item_use_animation() -> void:
@@ -244,6 +276,7 @@ func _pick_up_item(item: RigidBody3D) -> void:
 	item.scale = held_item_original_scale * held_item_scale_factor
 	item.linear_velocity = Vector3.ZERO
 	item.angular_velocity = Vector3.ZERO
+	pickup_sound.play()
 
 func _drop_item() -> void:
 	if not is_instance_valid(held_item):
@@ -259,6 +292,7 @@ func _throw_item() -> void:
 	var forward := -camera.global_basis.z
 	var item := _release_held_item(hand_anchor.global_position + forward * 0.35, held_item.global_basis, velocity)
 	if item != null and not item.freeze:
+		throw_sound.play()
 		item.apply_central_impulse((forward + Vector3.UP * throw_lift).normalized() * throw_impulse)
 
 func _release_held_item(drop_position: Vector3, drop_basis: Basis, initial_velocity: Vector3) -> RigidBody3D:
@@ -383,7 +417,9 @@ func _place_held_item() -> void:
 		return
 	var align_basis := Basis(Quaternion(Vector3.UP, placement_normal)) * held_item.global_basis.orthonormalized()
 	var surface_offset := _get_item_surface_offset(held_item, align_basis, placement_normal)
-	_release_held_item(placement_position + placement_normal * surface_offset, align_basis, Vector3.ZERO)
+	var item := _release_held_item(placement_position + placement_normal * surface_offset, align_basis, Vector3.ZERO)
+	if item != null:
+		place_sound.play()
 
 func _get_item_surface_offset(item: RigidBody3D, item_basis: Basis, surface_normal: Vector3) -> float:
 	var local_normal := item_basis.inverse() * surface_normal
@@ -632,6 +668,7 @@ func _complete_swap(first: Node3D, second: Node3D, first_start: Vector3, second_
 		second.global_position = first_start
 		_spawn_swap_puff(first_start)
 		_spawn_swap_puff(second_start)
+		swap_sound.play()
 
 		first.scale = first_scale * 0.12
 		second.scale = second_scale * 0.12

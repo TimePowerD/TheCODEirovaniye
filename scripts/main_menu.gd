@@ -1,5 +1,7 @@
 extends CanvasLayer
 
+@onready var click_sound: AudioStreamPlayer = $ClickSound
+
 const PANEL_COLOR := Color(0.055, 0.075, 0.075, 0.96)
 const ACCENT_COLOR := Color(0.72, 0.86, 0.52)
 const MUTED_COLOR := Color(0.65, 0.71, 0.68)
@@ -208,6 +210,7 @@ func _make_button(text: String, callback: Callable, primary: bool = false) -> Bu
 	button.add_theme_stylebox_override("hover", _button_style(primary, true))
 	button.add_theme_stylebox_override("pressed", _button_style(primary, true))
 	button.add_theme_stylebox_override("focus", _button_style(primary, false))
+	button.pressed.connect(func(): click_sound.play())
 	button.pressed.connect(callback)
 	return button
 

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://d0onncm58gwvq"
+path="res://.godot/imported/Foodstep Metal 4.mp3-401ca5d40332f1487323781590ac1ffd.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/Foodstep Metal 4.mp3"
+dest_files=["res://.godot/imported/Foodstep Metal 4.mp3-401ca5d40332f1487323781590ac1ffd.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

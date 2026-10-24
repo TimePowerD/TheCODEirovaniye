@@ -13,7 +13,15 @@
 [ext_resource type="Script" path="res://scripts/physics_object.gd" id="9_physics_object"]
 [ext_resource type="PackedScene" path="res://scenes/items/pickup_test_item.tscn" id="10_pickup_item"]
 [ext_resource type="PackedScene" path="res://scenes/flashback_room.tscn" id="11_flashback"]
-[ext_resource type="PackedScene" uid="uid://d3yup5qrj0m10" path="res://assets/materials/animations/zombieChar.glb" id="11_zombie"]
+[ext_resource type="AudioStream" path="res://assets/audio/metal_button_press1.mp3" id="11_ui_click"]
+[ext_resource type="AudioStream" path="res://assets/audio/Footstep Concrete 1.mp3" id="12_footstep"]
+[ext_resource type="AudioStream" path="res://assets/audio/jumpland.mp3" id="13_jump"]
+[ext_resource type="AudioStream" path="res://assets/audio/metal_interaction1.mp3" id="14_pickup"]
+[ext_resource type="AudioStream" path="res://assets/audio/magical_1.mp3" id="15_item_use"]
+[ext_resource type="AudioStream" path="res://assets/audio/swosh-01.mp3" id="16_throw"]
+[ext_resource type="AudioStream" path="res://assets/audio/metal_interaction2.mp3" id="17_place"]
+[ext_resource type="AudioStream" path="res://assets/audio/pop.mp3" id="18_swap"]
+[ext_resource type="PackedScene" uid="uid://d3yup5qrj0m10" path="res://assets/materials/animations/zombieChar.glb" id="19_zombie"]
 
 [sub_resource type="BoxShape3D" id="FlashbackExitShape"]
 size = Vector3(1.2, 3, 2.5)
@@ -83,6 +91,10 @@ script = ExtResource("4_room_materials")
 [node name="MainMenu" type="CanvasLayer" parent="." unique_id=-1908949875]
 layer = 10
 script = ExtResource("3_main_menu")
+
+[node name="ClickSound" type="AudioStreamPlayer" parent="MainMenu"]
+process_mode = 3
+stream = ExtResource("11_ui_click")
 
 [node name="Room" type="Node3D" parent="." unique_id=129221302]
 
@@ -179,7 +191,36 @@ script = ExtResource("1_player")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=1231908845]
 shape = SubResource("CapsuleShape_player")
 
-[node name="ZombieModel" parent="Player" unique_id=759617965 instance=ExtResource("11_zombie")]
+[node name="FootstepSound" type="AudioStreamPlayer3D" parent="Player"]
+position = Vector3(0, -0.7, 0)
+stream = ExtResource("12_footstep")
+unit_size = 8.0
+
+[node name="JumpSound" type="AudioStreamPlayer3D" parent="Player"]
+stream = ExtResource("13_jump")
+unit_size = 8.0
+
+[node name="PickupSound" type="AudioStreamPlayer3D" parent="Player"]
+stream = ExtResource("14_pickup")
+unit_size = 8.0
+
+[node name="ItemUseSound" type="AudioStreamPlayer3D" parent="Player"]
+stream = ExtResource("15_item_use")
+unit_size = 8.0
+
+[node name="ThrowSound" type="AudioStreamPlayer3D" parent="Player"]
+stream = ExtResource("16_throw")
+unit_size = 8.0
+
+[node name="PlaceSound" type="AudioStreamPlayer3D" parent="Player"]
+stream = ExtResource("17_place")
+unit_size = 8.0
+
+[node name="SwapSound" type="AudioStreamPlayer3D" parent="Player"]
+stream = ExtResource("18_swap")
+unit_size = 8.0
+
+[node name="ZombieModel" parent="Player" unique_id=759617965 instance=ExtResource("19_zombie")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0.12226471, -0.92, 0.22742033)
 
 [node name="CameraPivot" type="Node3D" parent="Player" unique_id=2105374569]

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://1mb5hob0yurk"
+path="res://.godot/imported/Footstep Concrete 1.mp3-1aff5b6a037de4c041336ecc3c9e548b.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/Footstep Concrete 1.mp3"
+dest_files=["res://.godot/imported/Footstep Concrete 1.mp3-1aff5b6a037de4c041336ecc3c9e548b.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
