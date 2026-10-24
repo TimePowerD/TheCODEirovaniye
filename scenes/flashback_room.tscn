@@ -1,0 +1,44 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/city_room.tscn" id="1_room"]
+
+[sub_resource type="StandardMaterial3D" id="MemoryMaterial"]
+albedo_color = Color(0.76, 0.61, 0.39, 1)
+roughness = 0.8
+
+[sub_resource type="BoxMesh" id="TableMesh"]
+material = SubResource("MemoryMaterial")
+size = Vector3(2.4, 0.15, 1.2)
+
+[sub_resource type="BoxShape3D" id="TableShape"]
+size = Vector3(2.4, 0.15, 1.2)
+
+[node name="FlashbackRoom" instance=ExtResource("1_room")]
+
+[node name="DoorNumber" parent="." index="14"]
+text = "ДОМ"
+modulate = Color(1, 0.9, 0.7, 1)
+
+[node name="WarmLight" parent="." index="16"]
+light_color = Color(1, 0.87, 0.66, 1)
+light_energy = 4.0
+omni_range = 16.0
+
+[node name="EntranceLight" parent="." index="17"]
+light_color = Color(1, 0.93, 0.78, 1)
+light_energy = 2.8
+omni_range = 13.0
+
+[node name="MemoryTable" type="StaticBody3D" parent="."]
+position = Vector3(3.6, 0.8, -3.8)
+
+[node name="Mesh" type="MeshInstance3D" parent="MemoryTable"]
+mesh = SubResource("TableMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="MemoryTable"]
+shape = SubResource("TableShape")
+
+[node name="TableBase" type="MeshInstance3D" parent="."]
+position = Vector3(3.6, 0.4, -3.8)
+scale = Vector3(0.2, 5, 0.5)
+mesh = SubResource("TableMesh")

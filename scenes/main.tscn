@@ -8,8 +8,11 @@
 [ext_resource type="PackedScene" uid="uid://cilt8unyp65ng" path="res://assets/models/labCeiling1x1.glb" id="6_ceiling"]
 [ext_resource type="PackedScene" uid="uid://bbfbr5domwuds" path="res://assets/models/labWall1x1.glb" id="7_wall"]
 [ext_resource type="PackedScene" uid="uid://c3proi1cxch5g" path="res://assets/models/labWallEntr.glb" id="8_entrance_wall"]
+[ext_resource type="PackedScene" path="res://scenes/city_room.tscn" id="9_city"]
+[ext_resource type="Script" path="res://scripts/location_transition.gd" id="10_transition"]
 [ext_resource type="Script" path="res://scripts/physics_object.gd" id="9_physics_object"]
 [ext_resource type="PackedScene" path="res://scenes/items/pickup_test_item.tscn" id="10_pickup_item"]
+[ext_resource type="PackedScene" path="res://scenes/flashback_room.tscn" id="11_flashback"]
 [ext_resource type="AudioStream" path="res://assets/audio/metal_button_press1.mp3" id="11_ui_click"]
 [ext_resource type="AudioStream" path="res://assets/audio/Footstep Concrete 1.mp3" id="12_footstep"]
 [ext_resource type="AudioStream" path="res://assets/audio/jumpland.mp3" id="13_jump"]
@@ -19,6 +22,20 @@
 [ext_resource type="AudioStream" path="res://assets/audio/metal_interaction2.mp3" id="17_place"]
 [ext_resource type="AudioStream" path="res://assets/audio/pop.mp3" id="18_swap"]
 [ext_resource type="PackedScene" uid="uid://d3yup5qrj0m10" path="res://assets/materials/animations/zombieChar.glb" id="19_zombie"]
+
+[sub_resource type="BoxShape3D" id="FlashbackExitShape"]
+size = Vector3(1.2, 3, 2.5)
+
+[sub_resource type="StandardMaterial3D" id="FlashbackDoorMaterial"]
+albedo_color = Color(0.53, 0.36, 0.17, 1)
+roughness = 0.75
+
+[sub_resource type="BoxMesh" id="FlashbackDoorMesh"]
+material = SubResource("FlashbackDoorMaterial")
+size = Vector3(1.8, 2.7, 0.12)
+
+[sub_resource type="BoxShape3D" id="LocationExitShape"]
+size = Vector3(14, 3, 1)
 
 [sub_resource type="BoxShape3D" id="RoomFloorShape"]
 size = Vector3(18, 0.2, 32)
@@ -285,3 +302,73 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0.5)
 [node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=1942661029]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.360796, 0)
 omni_range = 14.586
+
+[node name="CityRoom" parent="." instance=ExtResource("9_city")]
+position = Vector3(40, 0, 0)
+
+[node name="LocationTransition" type="Node" parent="." node_paths=PackedStringArray("city_room", "player", "laboratory_light")]
+script = ExtResource("10_transition")
+city_room = NodePath("../CityRoom")
+player = NodePath("../Player")
+laboratory_light = NodePath("../OmniLight3D")
+
+[node name="LaboratoryExit" type="Area3D" parent="LocationTransition"]
+position = Vector3(0, 1.5, 19)
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LocationTransition/LaboratoryExit"]
+shape = SubResource("LocationExitShape")
+
+[node name="LaboratoryArrival" type="Marker3D" parent="LocationTransition"]
+position = Vector3(0, 0.92, 16)
+
+[node name="ExitSign" type="Label3D" parent="Room"]
+position = Vector3(0, 3.1, 7.7)
+rotation = Vector3(0, 3.1415927, 0)
+text = "ВЫХОД"
+font_size = 52
+pixel_size = 0.008
+
+[node name="FlashbackRoom" parent="." instance=ExtResource("11_flashback")]
+position = Vector3(-40, 0, 0)
+
+[node name="FlashbackTransition" type="Node" parent="." node_paths=PackedStringArray("city_room", "player", "laboratory_light")]
+script = ExtResource("10_transition")
+city_room = NodePath("../FlashbackRoom")
+player = NodePath("../Player")
+laboratory_light = NodePath("../OmniLight3D")
+transition_style = 1
+fade_out_duration = 1.6
+black_hold_duration = 0.8
+fade_in_duration = 2.8
+
+[node name="LaboratoryExit" type="Area3D" parent="FlashbackTransition"]
+position = Vector3(-6.6, 1.5, 4)
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FlashbackTransition/LaboratoryExit"]
+shape = SubResource("FlashbackExitShape")
+
+[node name="LaboratoryArrival" type="Marker3D" parent="FlashbackTransition"]
+position = Vector3(-4.8, 0.92, 4)
+rotation = Vector3(0, -1.5707963, 0)
+
+[node name="MemoryDoor" type="MeshInstance3D" parent="Room"]
+position = Vector3(-7.7, 1.35, 4)
+rotation = Vector3(0, 1.5707963, 0)
+mesh = SubResource("FlashbackDoorMesh")
+
+[node name="MemorySign" type="Label3D" parent="Room"]
+position = Vector3(-7.6, 3.1, 4)
+rotation = Vector3(0, 1.5707963, 0)
+text = "ЗНАКОМАЯ ДВЕРЬ"
+font_size = 40
+pixel_size = 0.006
+
+[node name="MemoryDoorLight" type="OmniLight3D" parent="Room"]
+position = Vector3(-6.8, 2.5, 4)
+light_color = Color(1, 0.87, 0.63, 1)
+light_energy = 1.4
+omni_range = 4.0
