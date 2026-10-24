@@ -1,3 +1,148 @@
 [gd_scene format=3 uid="uid://gmax2d2xcehc"]
 
-[node name="Main" type="Node3D" unique_id=767379700]
+[ext_resource type="Script" uid="uid://cq6w02e652lyg" path="res://scripts/player_controller.gd" id="1_player"]
+[ext_resource type="Script" path="res://scripts/crosshair.gd" id="2_crosshair"]
+
+[sub_resource type="BoxMesh" id="PlaneMesh_floor"]
+size = Vector3(20, 0.2, 20)
+
+[sub_resource type="StandardMaterial3D" id="FloorMaterial"]
+albedo_color = Color(0.36, 0.4, 0.43, 1)
+roughness = 0.9
+
+[sub_resource type="BoxShape3D" id="PlaneShape_floor"]
+size = Vector3(20, 0.2, 20)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape_player"]
+radius = 0.35
+height = 1.8
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_player"]
+radius = 0.35
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="PlayerMaterial"]
+albedo_color = Color(0.8, 0.85, 0.88, 1)
+roughness = 0.65
+
+[sub_resource type="BoxMesh" id="BoxMesh_small"]
+
+[sub_resource type="StandardMaterial3D" id="TestMaterial_blue"]
+albedo_color = Color(0.18, 0.48, 0.78, 1)
+roughness = 0.7
+
+[sub_resource type="BoxShape3D" id="BoxShape_small"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_medium"]
+radius = 0.8
+height = 1.6
+
+[sub_resource type="StandardMaterial3D" id="TestMaterial_orange"]
+albedo_color = Color(0.86, 0.42, 0.16, 1)
+roughness = 0.7
+
+[sub_resource type="SphereShape3D" id="SphereShape_medium"]
+radius = 0.8
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_large"]
+top_radius = 0.7
+bottom_radius = 0.7
+height = 2.4
+
+[sub_resource type="StandardMaterial3D" id="TestMaterial_green"]
+albedo_color = Color(0.3, 0.68, 0.42, 1)
+roughness = 0.7
+
+[sub_resource type="CylinderShape3D" id="CylinderShape_large"]
+height = 2.4
+radius = 0.7
+
+[node name="Main" type="Node3D" unique_id=417695300]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1933207331]
+transform = Transform3D(0.8525245, 0.3562839, -0.38244444, 0, 0.73168886, 0.6816388, 0.52268726, -0.58111376, 0.6237827, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Floor" type="StaticBody3D" parent="." unique_id=1316747582]
+
+[node name="FloorMesh" type="MeshInstance3D" parent="Floor" unique_id=2073444746]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+mesh = SubResource("PlaneMesh_floor")
+surface_material_override/0 = SubResource("FloorMaterial")
+
+[node name="FloorCollision" type="CollisionShape3D" parent="Floor" unique_id=502761951]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+shape = SubResource("PlaneShape_floor")
+
+[node name="Player" type="CharacterBody3D" parent="." unique_id=1140905256]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 4)
+script = ExtResource("1_player")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=1231908845]
+shape = SubResource("CapsuleShape_player")
+
+[node name="BodyMesh" type="MeshInstance3D" parent="Player" unique_id=1923639167]
+mesh = SubResource("CapsuleMesh_player")
+surface_material_override/0 = SubResource("PlayerMaterial")
+
+[node name="CameraPivot" type="Node3D" parent="Player" unique_id=2105374569]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Player/CameraPivot" unique_id=2142744184]
+current = true
+
+[node name="CenterRay" type="RayCast3D" parent="Player/CameraPivot/Camera3D" unique_id=1126347710]
+target_position = Vector3(0, 0, -15)
+
+[node name="SmallBox" type="StaticBody3D" parent="." unique_id=660320988 groups=["swapAble", "swappable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.5, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="SmallBox" unique_id=1206711177]
+mesh = SubResource("BoxMesh_small")
+surface_material_override/0 = SubResource("TestMaterial_blue")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SmallBox" unique_id=718676204]
+shape = SubResource("BoxShape_small")
+
+[node name="MediumSphere" type="StaticBody3D" parent="." unique_id=547506107 groups=["swapAble", "swappable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, -2)
+
+[node name="Mesh" type="MeshInstance3D" parent="MediumSphere" unique_id=1272778855]
+mesh = SubResource("SphereMesh_medium")
+surface_material_override/0 = SubResource("TestMaterial_orange")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MediumSphere" unique_id=121771030]
+shape = SubResource("SphereShape_medium")
+
+[node name="LargeCylinder" type="StaticBody3D" parent="." unique_id=1913122171 groups=["swapAble", "swappable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1.2, -1)
+
+[node name="Mesh" type="MeshInstance3D" parent="LargeCylinder" unique_id=1760634152]
+mesh = SubResource("CylinderMesh_large")
+surface_material_override/0 = SubResource("TestMaterial_green")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LargeCylinder" unique_id=1552868974]
+shape = SubResource("CylinderShape_large")
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=935775243]
+
+[node name="Crosshair" type="Control" parent="HUD" unique_id=150177091]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_crosshair")
+
+[node name="SwapTestObject" type="StaticBody3D" parent="." unique_id=1694027731 groups=["swapAble", "swappable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, -4)
+
+[node name="Mesh" type="MeshInstance3D" parent="SwapTestObject" unique_id=1141367552]
+mesh = SubResource("BoxMesh_small")
+surface_material_override/0 = SubResource("TestMaterial_blue")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SwapTestObject" unique_id=1091873219]
+shape = SubResource("BoxShape_small")
+
