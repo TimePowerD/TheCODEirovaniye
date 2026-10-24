@@ -19,9 +19,11 @@ extends CharacterBody3D
 @export var throw_lift: float = 0.12
 @export var place_hold_duration: float = 0.25
 @export var held_item_scale_factor: float = 0.55
+@export var animation_blend_time: float = 0.18
 
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var aim_ray: RayCast3D = $CameraPivot/Camera3D/CenterRay
+@onready var animation_player: AnimationPlayer = $ZombieModel/AnimationPlayer
 
 var gravity: float = float(ProjectSettings.get_setting("physics/3d/default_gravity"))
 var hovered_target: Node3D
@@ -57,6 +59,11 @@ var rotation_speed: float = 0.0
 var rotation_cursor_anchor: Vector2 = Vector2.ZERO
 
 const ROTATION_AXIS_PICK_RADIUS := 26.0
+var current_player_animation: StringName = &""
+
+const IDLE_ANIMATION: StringName = &"idleAnim"
+const WALK_ANIMATION: StringName = &"walkAnim"
+const JUMP_ANIMATION: StringName = &"jumpAnim_001"
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -66,6 +73,9 @@ func _ready() -> void:
 	platform_on_leave = CharacterBody3D.PLATFORM_ON_LEAVE_DO_NOTHING
 	aim_ray.collision_mask = 3
 	aim_ray.add_exception(self)
+	animation_player.get_animation(IDLE_ANIMATION).loop_mode = Animation.LOOP_LINEAR
+	animation_player.get_animation(WALK_ANIMATION).loop_mode = Animation.LOOP_LINEAR
+	_play_player_animation(IDLE_ANIMATION)
 
 	var outline_shader: Shader = preload("res://scripts/swap_outline.gdshader")
 	hover_outline_material = ShaderMaterial.new()
@@ -160,6 +170,7 @@ func _physics_process(delta: float) -> void:
 	_update_held_object()
 	_update_held_rotation(delta)
 	_update_rotation_gizmo()
+	_update_player_animation(input_2d)
 	_update_swap_highlight()
 	_update_interaction_hint()
 
@@ -561,6 +572,20 @@ func _distance_to_screen_segment(point: Vector2, start: Vector2, finish: Vector2
 		return point.distance_to(start)
 	var along := clampf((point - start).dot(segment) / segment.length_squared(), 0.0, 1.0)
 	return point.distance_to(start + segment * along)
+
+func _update_player_animation(input_2d: Vector2) -> void:
+	if not is_on_floor():
+		_play_player_animation(JUMP_ANIMATION)
+	elif input_2d.length_squared() > 0.0:
+		_play_player_animation(WALK_ANIMATION)
+	else:
+		_play_player_animation(IDLE_ANIMATION)
+
+func _play_player_animation(animation_name: StringName) -> void:
+	if current_player_animation == animation_name:
+		return
+	current_player_animation = animation_name
+	animation_player.play(animation_name, animation_blend_time)
 
 func _handle_swap_click() -> void:
 	if not has_swap_technology or swap_in_progress or held_object != null or held_item != null or hovered_target == null:

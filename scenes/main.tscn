@@ -3,13 +3,14 @@
 [ext_resource type="Script" uid="uid://cq6w02e652lyg" path="res://scripts/player_controller.gd" id="1_player"]
 [ext_resource type="Script" uid="uid://n2jk16iscspq" path="res://scripts/crosshair.gd" id="2_crosshair"]
 [ext_resource type="Script" uid="uid://cdwb5vpiblp74" path="res://scripts/main_menu.gd" id="3_main_menu"]
-[ext_resource type="Script" path="res://scripts/room_materials.gd" id="4_room_materials"]
+[ext_resource type="Script" uid="uid://dx1ua13vbhruk" path="res://scripts/room_materials.gd" id="4_room_materials"]
 [ext_resource type="PackedScene" uid="uid://jh4fi6qo4lx" path="res://assets/models/labFloor2x1entr.glb" id="5_floor"]
 [ext_resource type="PackedScene" uid="uid://cilt8unyp65ng" path="res://assets/models/labCeiling1x1.glb" id="6_ceiling"]
 [ext_resource type="PackedScene" uid="uid://bbfbr5domwuds" path="res://assets/models/labWall1x1.glb" id="7_wall"]
 [ext_resource type="PackedScene" uid="uid://c3proi1cxch5g" path="res://assets/models/labWallEntr.glb" id="8_entrance_wall"]
 [ext_resource type="Script" path="res://scripts/physics_object.gd" id="9_physics_object"]
 [ext_resource type="PackedScene" path="res://scenes/items/pickup_test_item.tscn" id="10_pickup_item"]
+[ext_resource type="PackedScene" uid="uid://d3yup5qrj0m10" path="res://assets/materials/animations/zombieChar.glb" id="11_zombie"]
 
 [sub_resource type="BoxShape3D" id="RoomFloorShape"]
 size = Vector3(18, 0.2, 32)
@@ -26,14 +27,6 @@ size = Vector3(2, 5.25, 2.02)
 [sub_resource type="CapsuleShape3D" id="CapsuleShape_player"]
 radius = 0.35
 height = 1.8
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_player"]
-radius = 0.35
-height = 1.8
-
-[sub_resource type="StandardMaterial3D" id="PlayerMaterial"]
-albedo_color = Color(0.8, 0.85, 0.88, 1)
-roughness = 0.65
 
 [sub_resource type="BoxMesh" id="BoxMesh_small"]
 
@@ -169,9 +162,8 @@ script = ExtResource("1_player")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=1231908845]
 shape = SubResource("CapsuleShape_player")
 
-[node name="BodyMesh" type="MeshInstance3D" parent="Player" unique_id=1923639167]
-mesh = SubResource("CapsuleMesh_player")
-surface_material_override/0 = SubResource("PlayerMaterial")
+[node name="ZombieModel" parent="Player" unique_id=759617965 instance=ExtResource("11_zombie")]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0.12226471, -0.92, 0.22742033)
 
 [node name="CameraPivot" type="Node3D" parent="Player" unique_id=2105374569]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58, 0)
