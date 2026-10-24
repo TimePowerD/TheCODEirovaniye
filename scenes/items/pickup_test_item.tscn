@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/carryable_item.gd" id="1_item"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_pickup"]
+size = Vector3(0.7, 0.7, 0.7)
+
+[sub_resource type="StandardMaterial3D" id="Material_pickup"]
+albedo_color = Color(0.86, 0.72, 0.24, 1)
+roughness = 0.55
+
+[sub_resource type="BoxShape3D" id="BoxShape_pickup"]
+size = Vector3(0.7, 0.7, 0.7)
+
+[node name="PickupTestItem" type="RigidBody3D"]
+mass = 1.2
+script = ExtResource("1_item")
+physics_enabled = true
+item_name = "Тестовый предмет"
+can_use = true
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_pickup")
+surface_material_override/0 = SubResource("Material_pickup")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape_pickup")
