@@ -7,6 +7,8 @@ const MUTED_COLOR := Color(0.65, 0.71, 0.68)
 var menu_root: Control
 var content: VBoxContainer
 var status_label: Label
+var game_started: bool = false
+var settings_return_to_pause: bool = false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -48,6 +50,23 @@ func _build_interface() -> void:
 	panel.add_child(content)
 	_show_main_menu()
 
+func _input(event: InputEvent) -> void:
+	if not game_started or not (event is InputEventKey):
+		return
+	var key_event: InputEventKey = event
+	if key_event.pressed and not key_event.echo and key_event.keycode == KEY_ESCAPE:
+		if get_tree().paused:
+			_resume_game()
+		else:
+			_show_pause_menu()
+		get_viewport().set_input_as_handled()
+
+func start_test_session() -> void:
+	game_started = true
+	menu_root.hide()
+	get_tree().paused = false
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
 func _show_main_menu() -> void:
 	_clear_content()
 	_add_eyebrow("ПРОЕКТ «ЗАКОДИРОВАННЫЕ»")
@@ -76,7 +95,49 @@ func _show_settings() -> void:
 	status_label = _add_label("Выбор языка пока демонстрационный.", MUTED_COLOR, 12)
 	_add_label("Звук и графика появятся здесь позже.", MUTED_COLOR, 12)
 	_add_spacer(10)
-	_add_button("Назад", _show_main_menu)
+	_add_button("Назад", _show_pause_menu if settings_return_to_pause else _show_main_menu)
+
+func _show_pause_menu() -> void:
+	get_tree().paused = true
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	menu_root.show()
+	menu_root.modulate.a = 1.0
+	settings_return_to_pause = true
+	_clear_content()
+	_add_eyebrow("ПАУЗА")
+	_add_title("Игра приостановлена")
+	_add_button("Продолжить", _resume_game, true)
+	_add_button("Настройки", _show_pause_settings)
+	_add_button("Вернуться на точку сохранения", _return_to_checkpoint)
+	_add_button("Выйти в главное меню", _return_to_main_menu)
+
+func _show_pause_settings() -> void:
+	settings_return_to_pause = true
+	_show_settings()
+
+func _resume_game() -> void:
+	game_started = true
+	menu_root.hide()
+	get_tree().paused = false
+	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+func _return_to_checkpoint() -> void:
+	var player := get_tree().current_scene.find_child("Player", true, false)
+	if player != null and player.has_method("return_to_checkpoint"):
+		player.return_to_checkpoint()
+	_resume_game()
+
+func _return_to_main_menu() -> void:
+	var player := get_tree().current_scene.find_child("Player", true, false)
+	if player != null and player.has_method("return_to_checkpoint"):
+		player.return_to_checkpoint()
+	game_started = false
+	get_tree().paused = true
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	menu_root.show()
+	menu_root.modulate.a = 1.0
+	settings_return_to_pause = false
+	_show_main_menu()
 
 func _show_developers() -> void:
 	_clear_content()
@@ -88,14 +149,12 @@ func _show_developers() -> void:
 	_add_button("Назад", _show_main_menu)
 
 func _on_play_pressed() -> void:
-	for child in menu_root.get_children():
-		if child is Control:
-			child.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var tween := create_tween()
 	tween.tween_property(menu_root, "modulate:a", 0.0, 1.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	tween.finished.connect(_start_game)
 
 func _start_game() -> void:
+	game_started = true
 	menu_root.hide()
 	get_tree().paused = false
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
