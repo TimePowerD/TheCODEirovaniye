@@ -1,0 +1,185 @@
+[gd_scene load_steps=15 format=3]
+
+[sub_resource type="StandardMaterial3D" id="Plaster"]
+albedo_color = Color(0.31, 0.29, 0.25, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="FloorMaterial"]
+albedo_color = Color(0.18, 0.20, 0.21, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="Wood"]
+albedo_color = Color(0.24, 0.12, 0.065, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="WindowMaterial"]
+albedo_color = Color(0.2, 0.35, 0.47, 1)
+emission_enabled = true
+emission = Color(0.18, 0.29, 0.38, 1)
+emission_energy_multiplier = 0.6
+
+[sub_resource type="BoxMesh" id="FloorMesh"]
+material = SubResource("FloorMaterial")
+size = Vector3(12, 0.3, 14)
+
+[sub_resource type="BoxShape3D" id="FloorShape"]
+size = Vector3(12, 0.3, 14)
+
+[sub_resource type="BoxMesh" id="WallMesh"]
+material = SubResource("Plaster")
+size = Vector3(12, 4, 0.3)
+
+[sub_resource type="BoxShape3D" id="WallShape"]
+size = Vector3(12, 4, 0.3)
+
+[sub_resource type="BoxMesh" id="DoorMesh"]
+material = SubResource("Wood")
+size = Vector3(1.6, 2.7, 0.12)
+
+[sub_resource type="BoxMesh" id="WindowMesh"]
+material = SubResource("WindowMaterial")
+size = Vector3(2.8, 1.7, 0.08)
+
+[sub_resource type="BoxMesh" id="BenchMesh"]
+material = SubResource("Wood")
+size = Vector3(2.8, 0.5, 0.65)
+
+[sub_resource type="BoxShape3D" id="BenchShape"]
+size = Vector3(2.8, 0.5, 0.65)
+
+[sub_resource type="BoxShape3D" id="ReturnShape"]
+size = Vector3(2.4, 3, 1)
+
+[sub_resource type="BoxMesh" id="TrimMesh"]
+material = SubResource("Wood")
+size = Vector3(0.08, 1.7, 0.1)
+
+[node name="CityRoom" type="Node3D"]
+
+[node name="Floor" type="StaticBody3D" parent="."]
+position = Vector3(0, -0.15, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="Floor"]
+mesh = SubResource("FloorMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("FloorShape")
+
+[node name="BackWall" type="StaticBody3D" parent="."]
+position = Vector3(0, 2, -7)
+
+[node name="Mesh" type="MeshInstance3D" parent="BackWall"]
+mesh = SubResource("WallMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="BackWall"]
+shape = SubResource("WallShape")
+
+[node name="EntranceWall" type="StaticBody3D" parent="."]
+position = Vector3(0, 2, 7)
+
+[node name="Mesh" type="MeshInstance3D" parent="EntranceWall"]
+mesh = SubResource("WallMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="EntranceWall"]
+shape = SubResource("WallShape")
+
+[node name="LeftWall" type="StaticBody3D" parent="."]
+position = Vector3(-6, 2, 0)
+rotation = Vector3(0, 1.5707963, 0)
+scale = Vector3(1.166667, 1, 1)
+
+[node name="Mesh" type="MeshInstance3D" parent="LeftWall"]
+mesh = SubResource("WallMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="LeftWall"]
+shape = SubResource("WallShape")
+
+[node name="RightWall" type="StaticBody3D" parent="."]
+position = Vector3(6, 2, 0)
+rotation = Vector3(0, 1.5707963, 0)
+scale = Vector3(1.166667, 1, 1)
+
+[node name="Mesh" type="MeshInstance3D" parent="RightWall"]
+mesh = SubResource("WallMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="RightWall"]
+shape = SubResource("WallShape")
+
+[node name="Ceiling" type="MeshInstance3D" parent="."]
+position = Vector3(0, 4.15, 0)
+mesh = SubResource("FloorMesh")
+
+[node name="HomeDoor" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.35, -6.78)
+mesh = SubResource("DoorMesh")
+
+[node name="ReturnDoor" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.35, 6.78)
+mesh = SubResource("DoorMesh")
+
+[node name="WindowLeft" type="MeshInstance3D" parent="."]
+position = Vector3(-3.4, 2.2, -6.78)
+mesh = SubResource("WindowMesh")
+
+[node name="WindowRight" type="MeshInstance3D" parent="."]
+position = Vector3(3.4, 2.2, -6.78)
+mesh = SubResource("WindowMesh")
+
+[node name="WindowTrimLeft" type="MeshInstance3D" parent="."]
+position = Vector3(-3.4, 2.2, -6.7)
+mesh = SubResource("TrimMesh")
+
+[node name="WindowTrimRight" type="MeshInstance3D" parent="."]
+position = Vector3(3.4, 2.2, -6.7)
+mesh = SubResource("TrimMesh")
+
+[node name="Bench" type="StaticBody3D" parent="."]
+position = Vector3(-4, 0.25, -3.8)
+
+[node name="Mesh" type="MeshInstance3D" parent="Bench"]
+mesh = SubResource("BenchMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="Bench"]
+shape = SubResource("BenchShape")
+
+[node name="BenchBack" type="MeshInstance3D" parent="."]
+position = Vector3(-4, 0.8, -4.05)
+scale = Vector3(1, 1.1, 0.2)
+mesh = SubResource("BenchMesh")
+
+[node name="DoorNumber" type="Label3D" parent="."]
+position = Vector3(0, 3, -6.65)
+text = "17"
+font_size = 70
+pixel_size = 0.008
+modulate = Color(0.9, 0.76, 0.5, 1)
+
+[node name="ReturnSign" type="Label3D" parent="."]
+position = Vector3(0, 3.1, 6.65)
+rotation = Vector3(0, 3.1415927, 0)
+text = "ВЫХОД"
+font_size = 48
+pixel_size = 0.007
+
+[node name="WarmLight" type="OmniLight3D" parent="."]
+position = Vector3(0, 3.5, -2)
+light_color = Color(1, 0.72, 0.4, 1)
+light_energy = 2.4
+omni_range = 12.0
+
+[node name="EntranceLight" type="OmniLight3D" parent="."]
+position = Vector3(0, 3, 5)
+light_color = Color(0.48, 0.65, 0.82, 1)
+light_energy = 1.5
+omni_range = 8.0
+
+[node name="Arrival" type="Marker3D" parent="."]
+position = Vector3(0, 0.92, 3)
+
+[node name="ReturnArea" type="Area3D" parent="."]
+position = Vector3(0, 1.5, 6)
+collision_layer = 0
+collision_mask = 1
+
+[node name="Collision" type="CollisionShape3D" parent="ReturnArea"]
+shape = SubResource("ReturnShape")
