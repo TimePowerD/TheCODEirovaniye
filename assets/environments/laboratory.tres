@@ -1,0 +1,8 @@
+[gd_resource type="Environment" format=3]
+
+[resource]
+# Match the laboratory's existing viewport fallback: project clear color and
+# no environment lighting. A concrete resource prevents the street override
+# from leaving an ambiguous null camera override on return.
+background_mode = 0
+ambient_light_source = 0

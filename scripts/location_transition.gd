@@ -24,9 +24,11 @@ var transition_sound: AudioStreamPlayer
 var laboratory_energy: float
 var laboratory_dimmed := false
 var source_environment: Environment
+var laboratory_environment: Environment
 
 func _ready() -> void:
 	transition_style = $LaboratoryExit.transition_style
+	laboratory_environment = player.get_node("CameraPivot/Camera3D").environment
 	laboratory_energy = laboratory_light.light_energy
 	var layer := CanvasLayer.new()
 	layer.layer = 5 # Above the HUD, below the pause menu (layer 10).
@@ -133,10 +135,10 @@ func _on_exit(body: Node3D, to_city: bool) -> void:
 	if destination_environment != null:
 		var camera: Camera3D = player.camera_pivot.get_node("Camera3D")
 		if to_city:
-			source_environment = camera.environment
+			source_environment = laboratory_environment if laboratory_environment != null else camera.environment
 			camera.environment = destination_environment
 		else:
-			camera.environment = source_environment
+			camera.environment = laboratory_environment if laboratory_environment != null else source_environment
 	player.reset_physics_interpolation()
 	in_city = to_city
 	location_changed.emit(to_city)

@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" path="res://scenes/items/pickup_test_item.tscn" id="10_pickup_item"]
 [ext_resource type="PackedScene" path="res://scenes/flashback_room.tscn" id="11_flashback"]
 [ext_resource type="Environment" path="res://assets/environments/memory_street.tres" id="40_street_environment"]
+[ext_resource type="Environment" path="res://assets/environments/laboratory.tres" id="43_laboratory_environment"]
 [ext_resource type="Script" path="res://scripts/street_weather.gd" id="41_weather"]
 [ext_resource type="PackedScene" path="res://scenes/weather_panel.tscn" id="42_weather_panel"]
 [ext_resource type="Script" path="res://scripts/transition_marker.gd" id="12_marker"]
@@ -240,6 +241,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72, -0.1)
 
 [node name="Camera3D" type="Camera3D" parent="Player/CameraPivot" unique_id=2142744184]
 current = true
+environment = ExtResource("43_laboratory_environment")
 
 [node name="CenterRay" type="RayCast3D" parent="Player/CameraPivot/Camera3D" unique_id=1126347710]
 target_position = Vector3(0, 0, -15)
