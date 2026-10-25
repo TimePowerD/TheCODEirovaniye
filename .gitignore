@@ -1,25 +1,68 @@
-# Godot 4.2+ specific ignores
-~*.dll
-
-# Godot 4+ specific ignores
+# Godot generated files
 .godot/
-.nomedia
-
-# Godot-specific ignores
 .import/
+.nomedia
 export.cfg
 export_credentials.cfg
-*.tmp
-
-# Imported translations (automatically generated from CSV files)
 *.translation
-
-# Mono-specific ignores
 .mono/
 data_*/
 mono_crash.*.json
 
-# Export outputs
+# Exported builds and temporary files
+build/
+dist/
+export/
 *.exe
-# Uncomment if your project does not version PCK files as runtime dependencies.
-# *.pck
+*.pck
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Optional raw source media kept outside imported game assets
+/assets/source-audio/
+/assets/source-video/
+
+# Keep GLB exports; exclude duplicate source formats and previews from added asset packs
+/assets/models/citymodels realism/FBX format/
+/assets/models/citymodels realism/OBJ format/
+/assets/models/citymodels realism/Previews/
+/assets/models/citymodels realism/Preview.png
+/assets/models/citymodels realism/Sample.png
+/assets/models/citymodels realism/lab*.glb*
+/assets/models/citymodels/FBX format/
+/assets/models/citymodels/OBJ format/
+/assets/models/citymodels/Previews/
+/assets/models/citymodels/Textures/
+/assets/models/citymodels/Preview.png
+/assets/models/citymodels/Sample.png
+/assets/models/models castle/Models/FBX format/
+/assets/models/models castle/Models/OBJ format/
+/assets/models/models castle/Previews/
+/assets/models/models castle/Preview.png
+/assets/models/models castle/Sample.png
+/assets/models/obstanowkadoma/Models/DAE format/
+/assets/models/obstanowkadoma/Models/FBX format/
+/assets/models/obstanowkadoma/Models/OBJ format/
+/assets/models/obstanowkadoma/Models/STL format/
+/assets/models/obstanowkadoma/Isometric/
+/assets/models/obstanowkadoma/Side/
+/assets/models/obstanowkadoma/Preview.png
+/assets/models/obstanowkadoma/Sample.png
+/assets/models/treemodels/Models/FBX format/
+/assets/models/treemodels/Models/OBJ format/
+/assets/models/treemodels/Previews/
+/assets/models/treemodels/Preview.png
+/assets/models/treemodels/Sample.png
+/assets/models/fon/Preview.png
+/assets/models/medalki/Preview.png
