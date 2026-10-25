@@ -1,4 +1,6 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=16 format=3]
+
+[ext_resource type="Script" path="res://scripts/transition_marker.gd" id="1_marker"]
 
 [sub_resource type="StandardMaterial3D" id="Plaster"]
 albedo_color = Color(0.31, 0.29, 0.25, 1)
@@ -177,6 +179,7 @@ omni_range = 8.0
 position = Vector3(0, 0.92, 3)
 
 [node name="ReturnArea" type="Area3D" parent="."]
+script = ExtResource("1_marker")
 position = Vector3(0, 1.5, 6)
 collision_layer = 0
 collision_mask = 1

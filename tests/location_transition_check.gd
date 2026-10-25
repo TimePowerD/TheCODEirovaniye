@@ -12,6 +12,12 @@ func _check() -> void:
 	scene.get_node("MainMenu")._start_game()
 	var player = scene.get_node("Player")
 	var transition = scene.get_node("LocationTransition")
+	for marker in [transition.get_node("LaboratoryExit"), scene.get_node("FlashbackTransition/LaboratoryExit"), scene.get_node("CityRoom/ReturnArea"), scene.get_node("FlashbackRoom/ReturnArea")]:
+		assert(marker.get_script() != null, "Transition marker script is missing")
+		assert(marker.get_node_or_null("EditorCube") == null, "Marker cube is visible in game")
+		assert(marker.get_node_or_null("EditorCaption") == null, "Editor caption leaked into game")
+	assert(scene.get_node("FlashbackTransition/LaboratoryExit").transition_style == 1)
+	assert(scene.get_node("FlashbackRoom/ReturnArea").transition_style == 1)
 	assert(scene.get_node("MediumSphere") is RigidBody3D, "Main physics changes were lost")
 	assert(scene.get_node("LargeCylinder") is RigidBody3D)
 	var item = scene.get_node("PickupTestItem")

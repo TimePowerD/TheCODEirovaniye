@@ -18,6 +18,7 @@ var ambience: AudioStreamPlayer
 var laboratory_energy: float
 
 func _ready() -> void:
+	transition_style = $LaboratoryExit.transition_style
 	laboratory_energy = laboratory_light.light_energy
 	var layer := CanvasLayer.new()
 	layer.layer = 30

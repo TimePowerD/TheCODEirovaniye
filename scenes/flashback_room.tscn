@@ -15,6 +15,9 @@ size = Vector3(2.4, 0.15, 1.2)
 
 [node name="FlashbackRoom" instance=ExtResource("1_room")]
 
+[node name="ReturnArea" parent="." index="19"]
+transition_style = 1
+
 [node name="DoorNumber" parent="." index="14"]
 text = "ДОМ"
 modulate = Color(1, 0.9, 0.7, 1)
