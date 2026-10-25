@@ -71,12 +71,25 @@ func _check() -> void:
 	var item = game.get_node("PickupTestItem")
 	await _advance(&"pickup", player._pick_up_item.bind(item))
 	await _advance(&"use", player._use_held_item)
-	player.placement_valid = true
-	player.placement_position = Vector3(4, 0, 2)
-	player.placement_normal = Vector3.UP
+	# The previously grabbed box must not occupy the placement test volume.
+	box.global_position = Vector3(-3, 0.5, 0)
+	await physics_frame
+	player.camera_pivot.rotation.x = -atan(1.5 / 1.8)
 	await _advance(&"place", player._place_held_item)
+	player.camera_pivot.rotation = Vector3.ZERO
 	await _advance(&"pickup", player._pick_up_item.bind(item))
 	await _advance(&"throw", player._throw_item)
+	# Keep both object centers visible and unobstructed for the swap lesson.
+	player.global_position = Vector3(4, 0.92, 4)
+	player.velocity = Vector3.ZERO
+	player.rotation = Vector3.ZERO
+	player.camera_pivot.rotation = Vector3.ZERO
+	box.global_position = Vector3(3, 1.2, 1)
+	var second = game.get_node("SwapTestObject")
+	second.freeze = true
+	second.global_position = Vector3(5, 1.2, 1)
+	item.global_position = Vector3(-5, 0.5, 4)
+	await physics_frame
 	player.hovered_target = box
 	await _advance(&"select_swap", player._handle_swap_click)
 	# Physics highlight may change the hovered target between clicks.

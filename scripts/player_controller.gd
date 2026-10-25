@@ -4,6 +4,12 @@ signal gameplay_action(action: StringName)
 var tutorial_walk_distance := 0.0
 var tutorial_sprint_distance := 0.0
 var tutorial_look_distance := 0.0
+var swap_error_remaining := 0.0
+const SWAP_VISIBILITY_ERROR := "Оба объекта должны быть видны и не закрыты препятствиями"
+const SWAP_SPACE_ERROR := "Недостаточно свободного места для обмена"
+const SwapSpaceCheck := preload("res://scripts/swap_space_check.gd")
+var swap_error_text := SWAP_VISIBILITY_ERROR
+var swap_body_states: Array[Dictionary] = []
 
 @export var walk_speed: float = 5.0
 @export var sprint_multiplier: float = 1.4
@@ -23,6 +29,7 @@ var tutorial_look_distance := 0.0
 @export var throw_impulse: float = 6.0
 @export var throw_lift: float = 0.12
 @export var place_hold_duration: float = 0.25
+@export_range(0.5, 10.0, 0.1) var placement_distance: float = 3.0
 @export var held_item_scale_factor: float = 0.55
 @export var animation_blend_time: float = 0.18
 
@@ -66,6 +73,9 @@ var placement_mode: bool = false
 var placement_valid: bool = false
 var placement_position: Vector3 = Vector3.ZERO
 var placement_normal: Vector3 = Vector3.UP
+var placement_basis := Basis.IDENTITY
+var placement_hint := "Наведите на свободную поверхность"
+const PLACEMENT_GAP := 0.005
 var interaction_hint: Label
 var e_hold_pending: bool = false
 var e_hold_elapsed: float = 0.0
@@ -143,7 +153,6 @@ func _unhandled_input(event: InputEvent) -> void:
 			elif e_hold_pending:
 				e_hold_pending = false
 				if placement_mode:
-					_update_placement_preview()
 					_place_held_item()
 				elif held_item != null:
 					_use_held_item()
@@ -164,6 +173,7 @@ func apply_look(relative: Vector2) -> void:
 		gameplay_action.emit(&"look")
 
 func _physics_process(delta: float) -> void:
+	swap_error_remaining = maxf(0.0, swap_error_remaining - delta)
 	if e_hold_pending and is_instance_valid(held_item) and Input.is_key_pressed(KEY_E):
 		e_hold_elapsed += delta
 		if e_hold_elapsed >= place_hold_duration and not placement_mode:
@@ -235,6 +245,8 @@ func _try_grab_object() -> void:
 	if not collider is RigidBody3D:
 		return
 	var target := collider as RigidBody3D
+	if target.has_meta("object_swap_locked"):
+		return
 	if not target.is_in_group("swapAble") or target.get("physics_enabled") != true:
 		return
 	if global_position.distance_to(target.global_position) > grab_distance:
@@ -260,6 +272,8 @@ func _try_pickup_item() -> void:
 	if not collider is RigidBody3D:
 		return
 	var item := collider as RigidBody3D
+	if item.has_meta("object_swap_locked"):
+		return
 	if not item.is_in_group("carryable"):
 		return
 	if global_position.distance_to(item.global_position) > pickup_distance:
@@ -297,7 +311,9 @@ func _pick_up_item(item: RigidBody3D) -> void:
 	held_item_parent = item.get_parent()
 	held_item_collision_layer = item.collision_layer
 	held_item_collision_mask = item.collision_mask
-	held_item_original_scale = item.scale
+	# Store world scale so reparenting to/from a scaled container cannot change
+	# the volume that placement validation checks.
+	held_item_original_scale = item.global_basis.get_scale()
 	item.freeze = true
 	item.collision_layer = 0
 	item.collision_mask = 0
@@ -335,9 +351,7 @@ func _release_held_item(drop_position: Vector3, drop_basis: Basis, initial_veloc
 	if item_use_tween != null and item_use_tween.is_running():
 		item_use_tween.kill()
 	item.reparent(parent, true)
-	item.global_basis = drop_basis.orthonormalized()
-	item.global_position = drop_position
-	item.scale = held_item_original_scale
+	item.global_transform = Transform3D(drop_basis.orthonormalized().scaled_local(held_item_original_scale), drop_position)
 	item.collision_layer = held_item_collision_layer
 	item.collision_mask = held_item_collision_mask
 	item.freeze = item.get("physics_enabled") != true
@@ -360,7 +374,7 @@ func _build_placement_preview() -> void:
 	var material := StandardMaterial3D.new()
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	material.albedo_color = Color(1.0, 1.0, 1.0, 0.42)
+	material.albedo_color = Color(0.2, 1.0, 0.45, 0.65)
 	placement_preview.material_override = material
 	placement_preview.hide()
 	hand_anchor.add_child(placement_preview)
@@ -394,9 +408,13 @@ func _build_interaction_hint() -> void:
 func _update_interaction_hint() -> void:
 	if not is_instance_valid(interaction_hint):
 		return
+	if swap_error_remaining > 0.0:
+		interaction_hint.text = swap_error_text
+		interaction_hint.show()
+		return
 	var hint_text := ""
 	if placement_mode:
-		hint_text = "Наведите на поверхность\nОтпустите E — разместить\nQ — бросить\nR + мышь — вращать"
+		hint_text = ("Отпустите E — разместить" if placement_valid else placement_hint) + "\nQ — бросить\nR + мышь — вращать"
 	elif rotation_mode and _get_rotation_target() != null:
 		if held_item != null:
 			hint_text = "Наведите на кольцо\nДвигайте поперёк — вращать\n1/2/3 — выбрать ось\nE — использовать/разместить\nQ — бросить\nОтпустите R — выйти"
@@ -429,49 +447,74 @@ func _set_placement_mode(active: bool) -> void:
 		_update_placement_preview()
 
 func _update_placement_preview() -> void:
+	placement_valid = false
+	placement_preview.hide()
 	if not is_instance_valid(held_item):
-		placement_valid = false
-		placement_preview.hide()
 		return
 	aim_ray.force_raycast_update()
 	if not aim_ray.is_colliding():
-		placement_valid = false
-		placement_preview.hide()
+		placement_hint = "Наведите на свободную поверхность"
+		return
+	var camera: Camera3D = camera_pivot.get_node("Camera3D")
+	var surface_point := aim_ray.get_collision_point()
+	if camera.global_position.distance_to(surface_point) > placement_distance:
+		placement_hint = "Слишком далеко: размещение не дальше %.1f м" % placement_distance
+		return
+	placement_normal = aim_ray.get_collision_normal().normalized()
+	if placement_normal.length_squared() < 0.9:
+		placement_hint = "Недопустимая поверхность"
+		return
+	placement_basis = Basis(Quaternion(Vector3.UP, placement_normal)) * held_item.global_basis.orthonormalized()
+	var surface_offset := _get_item_surface_offset(held_item, placement_basis, placement_normal)
+	placement_position = surface_point + placement_normal * (surface_offset + PLACEMENT_GAP)
+	if camera.global_position.distance_to(placement_position) > placement_distance:
+		placement_hint = "Предмет окажется слишком далеко"
+		return
+	var future := Transform3D(placement_basis.scaled_local(held_item_original_scale), placement_position)
+	if not SwapSpaceCheck.can_place(held_item, future):
+		placement_hint = "Недостаточно свободного места для предмета"
 		return
 	placement_valid = true
-	placement_position = aim_ray.get_collision_point()
-	placement_normal = aim_ray.get_collision_normal().normalized()
-	placement_preview.global_position = placement_position + placement_normal * 0.025
+	placement_preview.global_position = surface_point + placement_normal * 0.025
 	placement_preview.show()
 
-func _place_held_item() -> void:
-	if not placement_valid or not is_instance_valid(held_item):
-		return
-	var align_basis := Basis(Quaternion(Vector3.UP, placement_normal)) * held_item.global_basis.orthonormalized()
-	var surface_offset := _get_item_surface_offset(held_item, align_basis, placement_normal)
-	var item := _release_held_item(placement_position + placement_normal * surface_offset, align_basis, Vector3.ZERO)
+func _place_held_item() -> bool:
+	# Never trust a cached green marker after the player or an obstacle moves.
+	_update_placement_preview()
+	if not placement_valid:
+		_update_interaction_hint()
+		return false
+	var item := _release_held_item(placement_position, placement_basis, Vector3.ZERO)
 	if item != null:
 		place_sound.play()
 		gameplay_action.emit(&"place")
+		return true
+	return false
 
 func _get_item_surface_offset(item: RigidBody3D, item_basis: Basis, surface_normal: Vector3) -> float:
-	var local_normal := item_basis.inverse() * surface_normal
-	var item_scale := held_item_original_scale.abs()
-	for child in item.find_children("*", "CollisionShape3D", true, false):
-		var collision := child as CollisionShape3D
-		if collision.shape is BoxShape3D:
-			var box := collision.shape as BoxShape3D
-			return absf(local_normal.x) * box.size.x * item_scale.x * 0.5 + absf(local_normal.y) * box.size.y * item_scale.y * 0.5 + absf(local_normal.z) * box.size.z * item_scale.z * 0.5
-		if collision.shape is SphereShape3D:
-			return (collision.shape as SphereShape3D).radius * maxf(item_scale.x, maxf(item_scale.y, item_scale.z))
-		if collision.shape is CylinderShape3D:
-			var cylinder := collision.shape as CylinderShape3D
-			return absf(local_normal.y) * cylinder.height * item_scale.y * 0.5 + Vector2(local_normal.x * item_scale.x, local_normal.z * item_scale.z).length() * cylinder.radius
-		if collision.shape is CapsuleShape3D:
-			var capsule := collision.shape as CapsuleShape3D
-			var radius_scale := maxf(item_scale.x, item_scale.z)
-			return capsule.radius * radius_scale + maxf(capsule.height * item_scale.y * 0.5 - capsule.radius * radius_scale, 0.0) * absf(local_normal.y)
-	return 0.5
+	var offset := 0.0
+	var future_basis := item_basis.scaled_local(held_item_original_scale)
+	for owner_id in item.get_shape_owners():
+		if item.is_shape_owner_disabled(owner_id):
+			continue
+		var shape_transform := Transform3D(future_basis, Vector3.ZERO) * item.shape_owner_get_transform(owner_id)
+		var normal := shape_transform.basis.transposed() * surface_normal
+		for index in range(item.shape_owner_get_shape_count(owner_id)):
+			var shape := item.shape_owner_get_shape(owner_id, index)
+			var extent := 0.0
+			if shape is BoxShape3D:
+				extent = shape.size.dot(normal.abs()) * 0.5
+			elif shape is SphereShape3D:
+				extent = shape.radius * normal.length()
+			elif shape is CylinderShape3D:
+				extent = shape.height * absf(normal.y) * 0.5 + shape.radius * Vector2(normal.x, normal.z).length()
+			elif shape is CapsuleShape3D:
+				extent = shape.radius * normal.length() + maxf(shape.height * 0.5 - shape.radius, 0.0) * absf(normal.y)
+			elif shape is ConvexPolygonShape3D:
+				for point in shape.points:
+					extent = maxf(extent, -point.dot(normal))
+			offset = maxf(offset, extent - surface_normal.dot(shape_transform.origin))
+	return offset
 
 func return_to_checkpoint() -> void:
 	_release_object()
@@ -661,7 +704,7 @@ func _play_player_animation(animation_name: StringName) -> void:
 	animation_player.play(animation_name, animation_blend_time)
 
 func _handle_swap_click() -> void:
-	if not has_swap_technology or swap_in_progress or held_object != null or held_item != null or hovered_target == null:
+	if not has_swap_technology or swap_in_progress or held_object != null or held_item != null or not is_instance_valid(hovered_target):
 		return
 	if not hovered_target.is_in_group("swappable"):
 		return
@@ -672,18 +715,51 @@ func _handle_swap_click() -> void:
 		gameplay_action.emit(&"select_swap")
 		suppressed_hover_outline = null
 	elif selected_target != hovered_target:
-		_start_swap(selected_target, hovered_target)
-		selected_target = null
+		if _start_swap(selected_target, hovered_target):
+			selected_target = null
 	_refresh_outlines()
 
-func _start_swap(first: Node3D, second: Node3D) -> void:
+func _is_swap_target_visible(target: Node3D) -> bool:
+	if not is_instance_valid(target) or target.is_queued_for_deletion() or not target.is_inside_tree() or not target.is_in_group("swappable"):
+		return false
+	var camera: Camera3D = camera_pivot.get_node("Camera3D")
+	if not camera.is_position_in_frustum(target.global_position):
+		return false
+	var query := PhysicsRayQueryParameters3D.create(camera.global_position, target.global_position, aim_ray.collision_mask, [get_rid()])
+	var hit := get_world_3d().direct_space_state.intersect_ray(query)
+	return not hit.is_empty() and (hit.collider == target or target.is_ancestor_of(hit.collider))
+
+func _start_swap(first: Node3D, second: Node3D) -> bool:
+	if swap_in_progress:
+		return false
+	if first == second or not _is_swap_target_visible(first) or not _is_swap_target_visible(second):
+		swap_error_text = SWAP_VISIBILITY_ERROR
+		swap_error_remaining = 1.5
+		_update_interaction_hint()
+		return false
+	if not SwapSpaceCheck.can_swap(first, second, second.global_position, first.global_position):
+		swap_error_text = SWAP_SPACE_ERROR
+		swap_error_remaining = 1.5
+		_update_interaction_hint()
+		return false
+	swap_error_remaining = 0.0
 	swap_in_progress = true
+	for target in [first, second]:
+		var state := {"target": target, "transform": target.global_transform}
+		target.set_meta("object_swap_locked", true)
+		if target is RigidBody3D:
+			state["freeze"] = target.freeze
+			state["linear_velocity"] = target.linear_velocity
+			state["angular_velocity"] = target.angular_velocity
+			target.freeze = true
+		swap_body_states.append(state)
 	var first_start := first.global_position
 	var second_start := second.global_position
 	var tween := create_tween()
 	var update_motion := Callable(self, "_update_swap_motion").bind(first, second, first_start, second_start)
 	tween.tween_method(update_motion, 0.0, 1.0, maxf(swap_duration, 0.01))
 	tween.finished.connect(_complete_swap.bind(first, second, first_start, second_start))
+	return true
 
 func _update_swap_motion(progress: float, first: Node3D, second: Node3D, first_start: Vector3, second_start: Vector3) -> void:
 	if not is_instance_valid(first) or not is_instance_valid(second):
@@ -699,9 +775,8 @@ func _update_swap_motion(progress: float, first: Node3D, second: Node3D, first_s
 	second.global_position = second_start - shake_offset
 
 func _complete_swap(first: Node3D, second: Node3D, first_start: Vector3, second_start: Vector3) -> void:
-	if is_instance_valid(first) and is_instance_valid(second):
-		var first_scale := first.scale
-		var second_scale := second.scale
+	var success := SwapSpaceCheck.can_swap(first, second, second_start, first_start)
+	if success:
 		first.global_position = second_start
 		second.global_position = first_start
 		_spawn_swap_puff(first_start)
@@ -709,13 +784,37 @@ func _complete_swap(first: Node3D, second: Node3D, first_start: Vector3, second_
 		swap_sound.play()
 		gameplay_action.emit(&"swap")
 
-		first.scale = first_scale * 0.12
-		second.scale = second_scale * 0.12
-		var pop_tween := create_tween().set_parallel(true)
-		pop_tween.tween_property(first, "scale", first_scale, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-		pop_tween.tween_property(second, "scale", second_scale, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		_animate_swap_visuals(first)
+		_animate_swap_visuals(second)
+	else:
+		swap_error_text = SWAP_SPACE_ERROR
+		swap_error_remaining = 1.5
+		if is_instance_valid(first):
+			selected_target = first
+	for state in swap_body_states:
+		var target = state.target
+		if not is_instance_valid(target):
+			continue
+		if not success:
+			target.global_transform = state.transform
+		target.remove_meta("object_swap_locked")
+		if target is RigidBody3D:
+			target.freeze = state.freeze
+			target.linear_velocity = Vector3.ZERO if success else state.linear_velocity
+			target.angular_velocity = Vector3.ZERO if success else state.angular_velocity
+	swap_body_states.clear()
 	swap_in_progress = false
 	_refresh_outlines()
+	_update_interaction_hint()
+
+func _animate_swap_visuals(target: Node3D) -> void:
+	# Animate only render meshes: the checked physics volume stays full-size.
+	for mesh in _get_target_meshes(target):
+		if not mesh.find_children("*", "CollisionShape3D", true, false).is_empty() or not mesh.find_children("*", "CollisionPolygon3D", true, false).is_empty() or not mesh.find_children("*", "CollisionObject3D", true, false).is_empty():
+			continue
+		var original_scale := mesh.scale
+		mesh.scale = original_scale * 0.12
+		create_tween().tween_property(mesh, "scale", original_scale, 0.22).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 func _spawn_swap_puff(effect_position: Vector3) -> void:
 	var puff := CPUParticles3D.new()
