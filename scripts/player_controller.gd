@@ -1064,19 +1064,17 @@ func _update_swap_highlight() -> void:
 func _update_interaction_cursor() -> void:
 	if not is_instance_valid(crosshair):
 		return
-	var can_interact := false
-	if not has_meta("developer_tools_open") and not swap_in_progress and not placement_mode and aim_ray.is_colliding():
+	var can_pick_up := false
+	if not has_meta("developer_tools_open") and not swap_in_progress and not placement_mode \
+		and held_object == null and held_item == null and aim_ray.is_colliding():
 		var target := aim_ray.get_collider() as Node3D
-		if target != null and held_object == null:
-			if target.is_in_group("interactable"):
-				can_interact = held_item == null and target.has_method("interact")
-			elif target.is_in_group("carryable"):
-				can_interact = held_item == null and global_position.distance_to(target.global_position) <= pickup_distance
+		if target is RigidBody3D and not target.has_meta("object_swap_locked"):
+			var distance := global_position.distance_to(target.global_position)
+			if target.is_in_group("carryable"):
+				can_pick_up = distance <= pickup_distance
 			elif target.is_in_group("swapAble"):
-				var can_grab: bool = target.get("physics_enabled") == true and global_position.distance_to(target.global_position) <= grab_distance
-				var can_swap: bool = has_swap_technology and target.is_in_group("swappable")
-				can_interact = held_item == null and (can_grab or can_swap)
-	crosshair.call("set_interaction_target", can_interact)
+				can_pick_up = target.get("physics_enabled") == true and distance <= grab_distance
+	crosshair.call("set_interaction_target", can_pick_up)
 
 func _refresh_outlines() -> void:
 	var desired_meshes: Dictionary = {}
