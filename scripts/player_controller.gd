@@ -102,6 +102,7 @@ const JUMP_ANIMATION: StringName = &"jumpAnim_001"
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	add_to_group("player")
 	checkpoint_transform = global_transform
 	collision_mask = 3
 	platform_floor_layers = 1
@@ -150,10 +151,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.keycode == KEY_E and not event.echo:
 			if event.pressed:
 				if held_item != null:
+					if item_use_tween != null and item_use_tween.is_running():
+						return
 					e_hold_pending = true
 					e_hold_elapsed = 0.0
 				else:
-					_try_pickup_item()
+					if not _try_interact():
+						_try_pickup_item()
 			elif e_hold_pending:
 				e_hold_pending = false
 				if placement_mode:
@@ -285,7 +289,18 @@ func _try_pickup_item() -> void:
 		return
 	_pick_up_item(item)
 
+func _try_interact() -> bool:
+	if not aim_ray.is_colliding():
+		return false
+	var target := aim_ray.get_collider() as Node
+	if target == null or not target.is_in_group("interactable") or not target.has_method("interact"):
+		return false
+	target.call("interact", self)
+	return true
+
 func _use_held_item() -> void:
+	if item_use_tween != null and item_use_tween.is_running():
+		return
 	if is_instance_valid(held_item) and held_item.has_method("use_item"):
 		if held_item.get("can_use") == false:
 			return
@@ -442,7 +457,14 @@ func _update_interaction_hint() -> void:
 		var collider := aim_ray.get_collider()
 		if collider is Node3D:
 			var target := collider as Node3D
-			if target.is_in_group("carryable"):
+			if target.is_in_group("interactable"):
+				if target.get("is_weight_plate") == true:
+					hint_text = "Плита: нажмите весом\nМинимум: %.0f кг" % float(target.get("minimum_weight"))
+				elif target.get("is_active") == true:
+					hint_text = "E — деактивировать"
+				else:
+					hint_text = "E — активировать"
+			elif target.is_in_group("carryable"):
 				hint_text = "E — взять в руки\nПКМ — перемещать\nR — вращать"
 			elif target.is_in_group("swapAble"):
 				if target.is_in_group("swappable"):

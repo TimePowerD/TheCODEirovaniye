@@ -2,8 +2,20 @@
 
 [ext_resource type="PackedScene" path="res://scenes/main.tscn" id="1_main"]
 [ext_resource type="Script" path="res://scripts/mechanics_test.gd" id="2_test"]
+[ext_resource type="PackedScene" path="res://scenes/weighted_plate.tscn" id="3_plate"]
+[ext_resource type="PackedScene" path="res://scenes/e_toggle_button.tscn" id="4_button"]
+[ext_resource type="PackedScene" path="res://scenes/lever.tscn" id="5_lever"]
 
 [node name="MechanicsTest" type="Node3D"]
 script = ExtResource("2_test")
 
 [node name="Game" parent="." instance=ExtResource("1_main")]
+
+[node name="WeightedPlateDemo" parent="Game" instance=ExtResource("3_plate")]
+position = Vector3(-3, 0, -7)
+
+[node name="EToggleButtonDemo" parent="Game" instance=ExtResource("4_button")]
+position = Vector3(0, 0, -7)
+
+[node name="LeverDemo" parent="Game" instance=ExtResource("5_lever")]
+position = Vector3(3, 0, -7)
