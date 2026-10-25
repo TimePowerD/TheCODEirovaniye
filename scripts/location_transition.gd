@@ -1,5 +1,7 @@
 extends Node
 
+const TRANSITION_STREAM: AudioStream = preload("res://assets/audio/final sounds/location_teleport.mp3")
+
 ## A slow blackout links the laboratory to an apparently remembered city room.
 @export var city_room: Node3D
 @export var player: CharacterBody3D
@@ -15,6 +17,7 @@ var in_city := false
 var veil: ColorRect
 var fade_material: ShaderMaterial
 var ambience: AudioStreamPlayer
+var transition_sound: AudioStreamPlayer
 var laboratory_energy: float
 var laboratory_dimmed := false
 
@@ -39,6 +42,12 @@ func _ready() -> void:
 	city_room.get_node("ReturnArea").body_entered.connect(_on_exit.bind(false))
 	# Both routes use one continuous ambience, rather than stacking two hums.
 	ambience = player.get_node_or_null("TransitionAmbience") as AudioStreamPlayer
+	transition_sound = AudioStreamPlayer.new()
+	transition_sound.name = "TransitionSound"
+	transition_sound.stream = TRANSITION_STREAM
+	transition_sound.volume_db = -6.0
+	transition_sound.process_mode = Node.PROCESS_MODE_ALWAYS
+	add_child(transition_sound)
 	if ambience != null:
 		return
 	# A quiet, continuous electrical tone bridges the blackout without a cut.
@@ -90,6 +99,7 @@ func _on_exit(body: Node3D, to_city: bool) -> void:
 	if transition_style == 0 and to_city:
 		laboratory_energy = laboratory_light.light_energy
 		laboratory_dimmed = true
+	transition_sound.play()
 	veil.show()
 	# Physical grabs stay in the source room; a pocket item travels in the hand.
 	player._release_object()

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://b1s6d75ww0trq"
+path="res://.godot/imported/Isolated Space.mp3-9794e7a1f15a981ba1c86b2ce063b7d1.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/final sounds/Isolated Space.mp3"
+dest_files=["res://.godot/imported/Isolated Space.mp3-9794e7a1f15a981ba1c86b2ce063b7d1.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
