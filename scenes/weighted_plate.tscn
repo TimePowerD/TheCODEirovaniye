@@ -1,0 +1,52 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/weighted_plate.gd" id="1"]
+
+[sub_resource type="BoxShape3D" id="base_shape"]
+size = Vector3(1.2, 0.18, 1.2)
+
+[sub_resource type="BoxMesh" id="base_mesh"]
+size = Vector3(1.2, 0.18, 1.2)
+
+[sub_resource type="StandardMaterial3D" id="base_material"]
+albedo_color = Color(0.12, 0.15, 0.18, 1)
+metallic = 0.55
+roughness = 0.4
+
+[sub_resource type="BoxShape3D" id="plate_shape"]
+size = Vector3(0.96, 0.12, 0.96)
+
+[sub_resource type="BoxMesh" id="plate_mesh"]
+size = Vector3(0.96, 0.12, 0.96)
+
+[node name="WeightedPlate" type="StaticBody3D"]
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("1")
+minimum_weight = 1.0
+
+[node name="BaseVisual" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.09, 0)
+mesh = SubResource("base_mesh")
+surface_material_override/0 = SubResource("base_material")
+
+[node name="BaseCollision" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.09, 0)
+shape = SubResource("base_shape")
+
+[node name="PlateVisual" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.24, 0)
+mesh = SubResource("plate_mesh")
+surface_material_override/0 = SubResource("base_material")
+
+[node name="PlateCollision" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.24, 0)
+shape = SubResource("plate_shape")
+
+[node name="WeightArea" type="Area3D" parent="."]
+collision_layer = 0
+collision_mask = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WeightArea"]
+position = Vector3(0, 0.45, 0)
+shape = SubResource("base_shape")

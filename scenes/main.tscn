@@ -233,7 +233,7 @@ unit_size = 8.0
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0.12226471, -0.92, 0.22742033)
 
 [node name="CameraPivot" type="Node3D" parent="Player" unique_id=2105374569]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72, -0.1)
 
 [node name="Camera3D" type="Camera3D" parent="Player/CameraPivot" unique_id=2142744184]
 current = true
