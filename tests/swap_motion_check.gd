@@ -38,9 +38,14 @@ func _check() -> void:
 	game.get_node("MainMenu")._start_game()
 	var player = game.get_node("Player")
 	player.set_physics_process(false)
+	player.global_position = Vector3(4, 0.92, 4)
+	player.rotation = Vector3.ZERO
+	player.camera_pivot.rotation = Vector3.ZERO
 	game.get_node("PickupTestItem").global_position = Vector3(-5, 0.5, 4)
 	var sphere = game.get_node("MediumSphere")
 	var cylinder = game.get_node("LargeCylinder")
+	sphere.global_position = Vector3(3, 1.2, 1)
+	cylinder.global_position = Vector3(5, 1.2, 1)
 	sphere.freeze = true
 	cylinder.freeze = true
 	await _sync()

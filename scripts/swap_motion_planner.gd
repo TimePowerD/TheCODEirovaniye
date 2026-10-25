@@ -38,8 +38,7 @@ func _prepare(first: PhysicsBody3D, second: PhysicsBody3D, first_source: Transfo
 		if target not in bodies:
 			bodies.append(target)
 	for body in bodies:
-		# Contact with the player must not prevent swapping nearby objects.
-		if body.is_in_group("player") or body.is_queued_for_deletion() or body.get_world_3d() != first.get_world_3d() or body.collision_layer == 0:
+		if body.is_queued_for_deletion() or body.get_world_3d() != first.get_world_3d() or body.collision_layer == 0:
 			continue
 		var entries: Array[Dictionary] = []
 		for owner_id in body.get_shape_owners():
