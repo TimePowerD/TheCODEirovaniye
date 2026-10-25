@@ -434,6 +434,9 @@ func _on_new_game_pressed() -> void:
 	var player := get_tree().current_scene.find_child("Player", true, false) as CharacterBody3D
 	if player != null:
 		get_node("/root/SaveManager").start_new_game(player)
+		var tutorial := get_tree().current_scene.find_child("Tutorial", true, false)
+		if tutorial != null and tutorial.has_method("restart"):
+			tutorial.restart()
 	start_with_cutscene = true
 	_begin_game_start()
 
@@ -443,6 +446,9 @@ func _on_continue_pressed() -> void:
 	var player := get_tree().current_scene.find_child("Player", true, false) as CharacterBody3D
 	if player == null or not get_node("/root/SaveManager").restore_player(player):
 		return
+	var tutorial := get_tree().current_scene.find_child("Tutorial", true, false)
+	if tutorial != null and tutorial.has_method("complete"):
+		tutorial.complete()
 	start_with_cutscene = false
 	_begin_game_start()
 

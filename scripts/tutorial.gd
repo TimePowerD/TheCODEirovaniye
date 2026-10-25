@@ -48,7 +48,8 @@ func _ready() -> void:
 	player.gameplay_action.connect(_on_gameplay_action)
 	button_sensor.pressed.connect(_on_button_pressed)
 	button_sensor.released.connect(_on_button_released)
-	restart()
+	_update_tutorial_panel()
+	_update_subtitles()
 
 func restart() -> void:
 	player.tutorial_walk_distance = 0.0
@@ -56,6 +57,12 @@ func restart() -> void:
 	line_index = 0
 	_set_door_open(0, false)
 	_set_door_open(1, false)
+	_update_tutorial_panel()
+	_update_subtitles()
+
+func complete() -> void:
+	step = TASKS.size()
+	line_index = DIALOGUES.size() - 1
 	_update_tutorial_panel()
 	_update_subtitles()
 
@@ -120,6 +127,12 @@ func _set_door_open(index: int, should_open: bool) -> void:
 		door_bodies[index], "global_position", target_body_position, DOOR_ANIMATION_DURATION
 	)
 	collision_tweener.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.finished.connect(_save_world_door_state)
+
+func _save_world_door_state() -> void:
+	var save_manager := get_node_or_null("/root/SaveManager")
+	if save_manager != null:
+		save_manager.save_current_world_state()
 
 func _process(_delta: float) -> void:
 	var can_show_ui := bool(menu.get("game_started")) \
