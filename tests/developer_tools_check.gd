@@ -89,7 +89,7 @@ func _check() -> void:
 	tutorial.restart()
 	player.gameplay_action.emit(&"pickup")
 	assert(not tutorial.completed, "Out-of-order action completed tutorial")
-	assert(tutorial.ACTIONS.size() == 20)
+	assert(tutorial.ACTIONS.size() == 4)
 	for action in tutorial.ACTIONS:
 		player.gameplay_action.emit(action)
 		assert(tutorial.completed)

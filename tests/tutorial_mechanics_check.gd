@@ -1,19 +1,7 @@
 extends SceneTree
 
-var game: Node
-var player: CharacterBody3D
-var tutorial: CanvasLayer
-var menu: CanvasLayer
-
 func _initialize() -> void:
 	call_deferred("_check")
-
-func _advance(action: StringName, trigger: Callable, delay := 0.05) -> void:
-	assert(tutorial.ACTIONS[tutorial.step] == action, "Wrong tutorial order")
-	trigger.call()
-	await create_timer(delay).timeout
-	assert(tutorial.completed, "Action did not complete tutorial: %s" % action)
-	await create_timer(1.3).timeout
 
 func _key(code: Key, pressed: bool) -> void:
 	var event := InputEventKey.new()
@@ -25,77 +13,83 @@ func _check() -> void:
 	assert(change_scene_to_file("res://scenes/main.tscn") == OK)
 	await scene_changed
 	await process_frame
-	game = current_scene
-	player = game.get_node("Player")
-	tutorial = game.get_node("Tutorial")
-	menu = game.get_node("MainMenu")
-	menu._start_game()
+	var game := current_scene
+	var player = game.get_node("Player")
+	var tutorial = game.get_node("Tutorial")
+	var tools = game.get_node("DeveloperTools")
+	game.get_node("MainMenu")._start_game()
 	await create_timer(0.2).timeout
-	var motion := InputEventMouseMotion.new()
-	motion.relative = Vector2(100, 0)
-	await _advance(&"look", player.apply_look.bind(motion.relative))
-	player.rotation = Vector3.ZERO
+	assert(tutorial.ACTIONS.size() == 4)
+	player.gameplay_action.emit(&"pickup")
+	player.gameplay_action.emit(&"rotate")
+	assert(not tutorial.completed and tutorial.pending_actions.is_empty())
 	player.global_position = Vector3(4, 0.92, 4)
-	player.velocity = Vector3.ZERO
 	_key(KEY_W, true)
-	await create_timer(0.5).timeout
+	await create_timer(0.45).timeout
 	_key(KEY_W, false)
-	assert(tutorial.completed)
-	await create_timer(1.3).timeout
-	player.global_position = Vector3(4, 0.92, 4)
-	player.velocity = Vector3.ZERO
-	_key(KEY_W, true)
-	_key(KEY_SHIFT, true)
-	await create_timer(0.4).timeout
-	_key(KEY_W, false)
-	_key(KEY_SHIFT, false)
-	assert(tutorial.completed)
-	await create_timer(1.3).timeout
-	await _advance(&"jump", _key.bind(KEY_SPACE, true), 0.1)
+	assert(tutorial.completed and tutorial.step == 0)
+	_key(KEY_SPACE, true)
+	await create_timer(0.1).timeout
 	_key(KEY_SPACE, false)
-	var box = game.get_node("SmallBox")
-	box.freeze = true
-	player.global_position = Vector3(4, 0.92, 4)
-	player.velocity = Vector3.ZERO
-	box.global_position = Vector3(4, 1.3, 2)
-	await physics_frame
-	player.aim_ray.force_raycast_update()
-	await _advance(&"grab", player._try_grab_object)
-	player.held_object = box
-	player._set_rotation_mode(true)
-	player._set_rotation_axis(0)
-	player.rotation_speed = 1.0
-	await _advance(&"rotate", player._update_held_rotation.bind(0.1))
-	player.held_object = box
-	await _advance(&"release_grab", player._release_object)
+	assert(tutorial.pending_actions == [&"jump"], "Fast jump was lost during walk checkmark")
 	var item = game.get_node("PickupTestItem")
-	await _advance(&"pickup", player._pick_up_item.bind(item))
-	await _advance(&"use", player._use_held_item)
-	player.placement_valid = true
-	player.placement_position = Vector3(4, 0, 2)
-	player.placement_normal = Vector3.UP
-	await _advance(&"place", player._place_held_item)
-	await _advance(&"pickup", player._pick_up_item.bind(item))
-	await _advance(&"throw", player._throw_item)
-	player.hovered_target = box
-	await _advance(&"select_swap", player._handle_swap_click)
-	# Physics highlight may change the hovered target between clicks.
-	player.hovered_target = game.get_node("SwapTestObject")
-	await _advance(&"swap", player._handle_swap_click, player.swap_duration + 0.1)
-	await _advance(&"pause_resume", func():
-		menu._show_pause_menu()
-		menu._resume_game())
-	await _advance(&"checkpoint", menu._return_to_checkpoint)
-	for route_name in ["LocationTransition", "FlashbackTransition"]:
-		var route = game.get_node(route_name)
-		route.fade_out_duration = 0.05
-		route.black_hold_duration = 0.01
-		route.fade_in_duration = 0.05
-		route.blur_clear_duration = 0.05
-		var entering: StringName = &"location_enter" if route_name == "LocationTransition" else &"flashback_enter"
-		var returning: StringName = &"location_return" if route_name == "LocationTransition" else &"flashback_return"
-		await _advance(entering, route.request_transition.bind(true), 0.3)
-		await _advance(returning, route.request_transition.bind(false), 0.3)
-	assert(tutorial.step == tutorial.ACTIONS.size())
-	print("PASS: all 20 tutorial tasks triggered by gameplay mechanics")
+	player._pick_up_item(item)
+	assert(tutorial.pending_actions == [&"jump", &"pickup"])
+	player._drop_item()
+	player.set_physics_process(false)
+	player.global_position = Vector3(4, 0.92, 4)
+	player.rotation = Vector3.ZERO
+	player.camera_pivot.rotation = Vector3.ZERO
+	var first = game.get_node("SmallBox")
+	var second = game.get_node("SwapTestObject")
+	first.freeze = true
+	second.freeze = true
+	first.global_position = Vector3(3, 1.2, 1)
+	second.global_position = Vector3(5, 1.2, 1)
+	item.global_position = Vector3(-5, 0.5, 4)
+	await physics_frame
+	await physics_frame
+	player.hovered_target = first
+	player._handle_swap_click()
+	assert(tutorial.pending_actions.size() == 2, "First selection completed swap lesson")
+	player.hovered_target = second
+	player.swap_duration = 0.05
+	player._handle_swap_click()
+	assert(player.swap_in_progress)
+	await create_timer(0.1).timeout
+	assert(tutorial.pending_actions == [&"jump", &"pickup", &"swap"], "Fast successful swap was lost")
+	await create_timer(4.8).timeout
+	assert(tutorial.step == 4 and not tutorial.panel.visible)
+	# Restart clears completed/pending tasks; grabbing also counts as taking.
+	tutorial.restart()
+	assert(tutorial.step == 0 and tutorial.pending_actions.is_empty())
+	tutorial._on_action(&"walk")
+	tutorial._on_action(&"jump")
+	tutorial._process(2.5)
+	assert(tutorial.step == 2 and not tutorial.completed)
+	var camera: Camera3D = player.camera_pivot.get_node("Camera3D")
+	camera.look_at(first.global_position, Vector3.UP)
+	player.aim_ray.force_raycast_update()
+	player._try_grab_object()
+	assert(player.held_object == first and tutorial.completed, "Grab did not satisfy taking task")
+	player._release_object()
+	assert(tutorial.pending_actions.is_empty(), "Release added an unwanted lesson")
+	tutorial.restart()
+	tools.toggle()
+	player.gameplay_action.emit(&"walk")
+	assert(not tutorial.completed)
+	tools.close()
+	tutorial._on_action(&"walk")
+	tutorial._on_action(&"jump")
+	assert(not tutorial.pending_actions.is_empty())
+	tutorial.skip()
+	assert(tutorial.step == 4 and tutorial.pending_actions.is_empty() and not tutorial.completed)
+	tutorial.restart()
+	assert(tutorial.step == 0 and not tutorial.completed and tutorial.pending_actions.is_empty())
+	print("PASS: four basic tutorial tasks, real rapid walk/jump/pickup/swap, grab alternative, ignored extras, restart/skip and developer gating")
+	for sound in game.find_children("*", "AudioStreamPlayer3D", true, false):
+		sound.stop()
+	for sound in game.find_children("*", "AudioStreamPlayer", true, false):
+		sound.stop()
+	await create_timer(0.1).timeout
 	quit()

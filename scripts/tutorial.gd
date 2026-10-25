@@ -2,32 +2,18 @@ extends CanvasLayer
 
 @export var player: CharacterBody3D
 @export var menu: CanvasLayer
-const ACTIONS := [&"look", &"walk", &"sprint", &"jump", &"grab", &"rotate", &"release_grab", &"pickup", &"use", &"place", &"pickup", &"throw", &"select_swap", &"swap", &"pause_resume", &"checkpoint", &"location_enter", &"location_return", &"flashback_enter", &"flashback_return"]
+const ACTIONS := [&"walk", &"jump", &"pickup", &"swap"]
+const COMPLETION_DELAY := 1.2
 const TASKS := [
-	"Мышь — осмотритесь вокруг",
 	"WASD — пройдите один метр",
-	"Shift + WASD — пробегите один метр",
 	"Пробел — прыгните",
-	"Наведитесь на куб или другой физический объект и удерживайте ПКМ — захват",
-	"Удерживая ПКМ, зажмите R. Выберите ось 1 / 2 / 3 или наведением и двигайте мышью — вращение",
-	"Отпустите R и ПКМ — отпустите захваченный объект",
-	"Наведитесь на жёлтый предмет рядом с вами и нажмите E — взять в руку",
-	"Коротко нажмите E с предметом в руке — использовать",
-	"Удерживайте E, наведитесь на пол до появления метки и отпустите E — разместить предмет",
-	"Наведитесь на размещённый предмет и нажмите E — снова взять",
-	"Q — бросьте предмет из руки",
-	"ЛКМ по доступному объекту — выберите первый объект для обмена",
-	"ЛКМ по другому объекту — выполните обмен; оба объекта должны быть видны",
-	"Esc — откройте паузу, затем Esc или «Продолжить» — вернитесь в игру",
-	"Esc → «Вернуться на точку сохранения» — проверьте возврат",
-	"Развернитесь к «ВЫХОДУ», пройдите до конца коридора — переход в локацию",
-	"Подойдите к двери «ВЫХОД» позади точки появления — вернитесь в лабораторию",
-	"У левой стены лаборатории подойдите к «ЗНАКОМОЙ ДВЕРИ» — флэшбэк",
-	"Через «ВЫХОД» комнаты воспоминания вернитесь в лабораторию",
+	"E — возьмите предмет в руку или удерживайте ПКМ — захватите физический объект",
+	"Освободите руки: Q / отпустите ПКМ. ЛКМ — выберите два видимых объекта для обмена",
 ]
 var step := 0
 var completed := false
 var progress := 0.0
+var pending_actions: Array[StringName] = []
 var label: Label
 var panel: PanelContainer
 
@@ -53,34 +39,55 @@ func _ready() -> void:
 
 func restart() -> void:
 	player.tutorial_walk_distance = 0.0
-	player.tutorial_sprint_distance = 0.0
-	player.tutorial_look_distance = 0.0
+	pending_actions.clear()
 	step = 0
 	completed = false
 	progress = 0.0
 	_update_text()
 
 func skip() -> void:
+	pending_actions.clear()
+	completed = false
+	progress = 0.0
 	step = ACTIONS.size()
 	panel.hide()
 
 func _on_action(action: StringName) -> void:
-	if step >= ACTIONS.size() or completed or action != ACTIONS[step]:
+	if step >= ACTIONS.size() or not menu.game_started or get_tree().paused:
 		return
 	if player.has_meta("developer_tools_open") or player.has_meta("cutscene_active") or player.has_meta("location_transition_active"):
+		return
+	if action == &"grab":
+		action = &"pickup"
+	if completed:
+		var expected_index := step + 1 + pending_actions.size()
+		if expected_index < ACTIONS.size() and action == ACTIONS[expected_index]:
+			pending_actions.append(action)
+		return
+	if action != ACTIONS[step]:
 		return
 	completed = true
 	progress = 0.0
 	_update_text()
 
 func _process(delta: float) -> void:
-	panel.visible = menu.game_started and step < ACTIONS.size() and not player.has_meta("developer_tools_open")
+	var visible_task: bool = menu.game_started and not player.has_meta("developer_tools_open") and not player.has_meta("cutscene_active")
+	panel.visible = visible_task and step < ACTIONS.size()
+	if not visible_task:
+		return
 	if completed:
 		progress += delta
-		if progress >= 1.2:
+		while completed and progress >= COMPLETION_DELAY:
+			progress -= COMPLETION_DELAY
 			step += 1
 			completed = false
+			if not pending_actions.is_empty():
+				pending_actions.pop_front()
+				completed = true
+			else:
+				progress = 0.0
 			_update_text()
+	panel.visible = visible_task and step < ACTIONS.size()
 
 func _update_text() -> void:
 	if step < TASKS.size():

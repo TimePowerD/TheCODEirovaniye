@@ -362,6 +362,9 @@ func _on_sfx_volume_changed(value: float) -> void:
 	_save_audio_settings()
 
 func _show_pause_menu() -> void:
+	var player := get_tree().current_scene.find_child("Player", true, false)
+	if player != null:
+		player.reset_interaction_modes()
 	_switch_music_mode(false)
 	get_tree().paused = true
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -374,7 +377,6 @@ func _show_pause_menu() -> void:
 	_add_button("Продолжить", _resume_game, true)
 	_add_button("Настройки", _show_pause_settings)
 	var checkpoint_button := _add_button("Вернуться на точку сохранения", _return_to_checkpoint)
-	var player := get_tree().current_scene.find_child("Player", true, false)
 	checkpoint_button.disabled = player != null and (player.has_meta("location_transition_active") or player.has_meta("cutscene_active"))
 	_add_button("Выйти в главное меню", _return_to_main_menu)
 
@@ -384,13 +386,15 @@ func _show_pause_settings() -> void:
 
 func _resume_game() -> void:
 	var resumed_from_pause := get_tree().paused and game_started
+	var player := get_tree().current_scene.find_child("Player", true, false)
+	if resumed_from_pause and player != null:
+		player.reset_interaction_modes()
 	game_started = true
 	_switch_music_mode(true)
 	menu_root.hide()
 	get_tree().paused = false
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	if resumed_from_pause:
-		var player := get_tree().current_scene.find_child("Player", true, false)
 		if player != null:
 			player.gameplay_action.emit(&"pause_resume")
 
