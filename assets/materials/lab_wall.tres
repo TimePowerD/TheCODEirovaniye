@@ -6,4 +6,3 @@
 cull_mode = 2
 albedo_texture = ExtResource("1_wall_texture")
 roughness = 0.82
-uv1_scale = Vector3(4.475, 4.475, 4.475)

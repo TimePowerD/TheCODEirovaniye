@@ -8,22 +8,15 @@ func _ready() -> void:
 	_apply_materials()
 
 func _apply_materials() -> void:
-	_assign_material("Room/Floor/FloorModel/labFloor2x1entr", FLOOR_MATERIAL)
-	_assign_material("Room/Ceiling/CeilingModel/labCeiling1x1", FLOOR_MATERIAL)
-	_assign_material("Room/Ceiling/CorridorCeilingModel/labCeiling1x1", FLOOR_MATERIAL)
+	_apply_materials_recursive(self)
 
-	for mesh_path in [
-		"Room/MainWallEast/WallModel/labWall1x1",
-		"Room/MainWallWest/WallModel/labWall1x1",
-		"Room/MainWallNorth/WallModel/labWall1x1",
-		"Room/DoorWall/DoorWallModel/labWallEntr",
-		"Room/CorridorWallEast/WallModel/labWall1x1",
-		"Room/CorridorWallWest/WallModel/labWall1x1",
-		"Room/CorridorEndWall/WallModel/labWall1x1",
-	]:
-		_assign_material(mesh_path, WALL_MATERIAL)
+func _apply_materials_recursive(node: Node) -> void:
+	if node is MeshInstance3D:
+		var mesh_name := node.name.to_lower()
+		if mesh_name.begins_with("labwall"):
+			node.material_override = WALL_MATERIAL
+		elif mesh_name.begins_with("labfloor") or mesh_name.begins_with("labceiling"):
+			node.material_override = FLOOR_MATERIAL
 
-func _assign_material(mesh_path: String, material: StandardMaterial3D) -> void:
-	var mesh_instance := get_node_or_null(mesh_path) as MeshInstance3D
-	if mesh_instance != null:
-		mesh_instance.material_override = material
+	for child in node.get_children():
+		_apply_materials_recursive(child)
