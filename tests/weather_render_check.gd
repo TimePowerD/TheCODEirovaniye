@@ -22,7 +22,7 @@ func _check() -> void:
 	var weather = scene.get_node("StreetWeather")
 	var player = scene.get_node("Player")
 	var camera: Camera3D = player.camera_pivot.get_node("Camera3D")
-	camera.look_at(Vector3(-40, 2.3, -23))
+	camera.look_at(route.city_room.to_global(Vector3(0, 2.3, -45)))
 	# Keep movement available; free the cursor for this automated preview.
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	for mode in range(4):

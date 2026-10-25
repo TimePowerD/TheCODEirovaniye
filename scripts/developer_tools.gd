@@ -1,6 +1,8 @@
 extends CanvasLayer
 
 ## Temporary tools. Release exports always remove this UI.
+const WEATHER_LABELS := ["1 — Солнечно", "2 — Тёплый вечер", "3 — Пасмурно", "4 — Гроза"]
+const TIME_LABELS := ["День", "Вечер", "Ночь"]
 @export var enabled: bool = true
 @export var player: CharacterBody3D
 @export var menu: CanvasLayer
@@ -15,6 +17,9 @@ var trigger_picker: OptionButton
 var object_picker: OptionButton
 var route_picker: OptionButton
 var cutscene_picker: OptionButton
+var weather_picker: OptionButton
+var time_picker: OptionButton
+var weather_controller: Node
 var markers: Array[Area3D] = []
 var routes: Array[Node] = []
 var route_destinations: Array[bool] = []
@@ -82,8 +87,32 @@ func _ready() -> void:
 	_button(content, "Удалить созданные объекты", clear_objects)
 	_label(content, "Переходы / эффекты")
 	_button(content, "Городская комната — затемнение", run_transition.bind("LocationTransition"))
-	_button(content, "Солнечная улица — флэшбэк", run_transition.bind("FlashbackTransition"))
+	_button(content, "Город воспоминаний — флэшбэк", run_transition.bind("FlashbackTransition"))
+	_button(content, "Густой лес — флэшбэк", run_transition.bind("ForestTransition"))
 	_button(content, "Вернуться в лабораторию", return_to_lab)
+	_label(content, "Погода на улице")
+	weather_picker = OptionButton.new()
+	weather_picker.fit_to_longest_item = false
+	for weather_label in WEATHER_LABELS:
+		weather_picker.add_item(weather_label)
+	content.add_child(weather_picker)
+	weather_picker.item_selected.connect(_on_weather_selected)
+	_label(content, "Время суток в городе")
+	time_picker = OptionButton.new()
+	time_picker.fit_to_longest_item = false
+	for title in TIME_LABELS:
+		time_picker.add_item(title)
+	time_picker.item_selected.connect(_on_time_selected)
+	content.add_child(time_picker)
+	weather_controller = get_tree().current_scene.find_child("StreetWeather", true, false)
+	if weather_controller != null and weather_controller.has_signal("weather_changed"):
+		weather_controller.weather_changed.connect(_sync_weather_picker)
+		weather_controller.time_of_day_changed.connect(_sync_time_picker)
+		_sync_weather_picker(int(weather_controller.get("mode")))
+		_sync_time_picker(int(weather_controller.get("time_of_day")))
+	else:
+		weather_picker.disabled = true
+		time_picker.disabled = true
 	route_picker = OptionButton.new()
 	route_picker.fit_to_longest_item = false
 	content.add_child(route_picker)
@@ -123,6 +152,38 @@ func _button(parent: Node, text: String, action: Callable) -> Button:
 	button.pressed.connect(action)
 	parent.add_child(button)
 	return button
+
+func _on_weather_selected(index: int) -> void:
+	if weather_controller == null or not is_instance_valid(weather_controller):
+		status.text = "Контроллер погоды недоступен."
+		return
+	if _busy() or get_tree().paused:
+		_sync_weather_picker(int(weather_controller.get("mode")))
+		status.text = "Нельзя менять погоду во время перехода, кат-сцены или обмена."
+		return
+	if not bool(weather_controller.call("set_weather", index)):
+		_sync_weather_picker(int(weather_controller.get("mode")))
+		status.text = "Не удалось применить режим погоды."
+		return
+	status.text = "Режим погоды: %s" % WEATHER_LABELS[index]
+
+func _sync_weather_picker(mode: int) -> void:
+	if is_instance_valid(weather_picker) and mode >= 0 and mode < weather_picker.item_count:
+		weather_picker.select(mode)
+
+func _on_time_selected(index: int) -> void:
+	if not is_instance_valid(weather_controller):
+		return
+	if _busy() or get_tree().paused:
+		_sync_time_picker(int(weather_controller.get("time_of_day")))
+		status.text = "Дождитесь завершения перехода, кат-сцены или обмена."
+		return
+	if bool(weather_controller.call("set_time_of_day", index)):
+		status.text = "Время суток: %s" % TIME_LABELS[index]
+
+func _sync_time_picker(period: int) -> void:
+	if is_instance_valid(time_picker) and period >= 0 and period < time_picker.item_count:
+		time_picker.select(period)
 
 func _process(_delta: float) -> void:
 	if selected_object != null and (not is_instance_valid(selected_object) or selected_object.is_queued_for_deletion()):
@@ -260,7 +321,7 @@ func refresh() -> void:
 	routes.clear()
 	route_destinations.clear()
 	for route in get_tree().current_scene.find_children("*", "Node", true, false):
-		if route.get_script() != preload("res://scripts/location_transition.gd"):
+		if not _is_location_route(route):
 			continue
 		if route.in_city:
 			routes.append(route)
@@ -292,9 +353,14 @@ func _location_label(location_id: String) -> String:
 		"city":
 			return "город"
 		"flashback":
-			return "комната воспоминания"
+			return "город воспоминаний"
+		"forest":
+			return "густой лес"
 		_:
 			return location_id
+
+func _is_location_route(route: Node) -> bool:
+	return route.get_script() == preload("res://scripts/location_transition.gd") or route.get_script() == preload("res://scripts/forest_transition.gd")
 
 func run_selected_transition() -> void:
 	if routes.is_empty() or route_picker.selected < 0 or route_picker.selected >= routes.size():
@@ -404,7 +470,7 @@ func clear_objects() -> void:
 func run_transition(route_name: String) -> void:
 	var route = get_tree().current_scene.find_child(route_name, true, false)
 	for other in get_tree().current_scene.find_children("*", "Node", true, false):
-		if other.get_script() == preload("res://scripts/location_transition.gd") and other != route and other.in_city:
+		if _is_location_route(other) and other != route and other.in_city:
 			status.text = "Сначала вернитесь в лабораторию."
 			return
 	close()
@@ -413,7 +479,7 @@ func run_transition(route_name: String) -> void:
 
 func return_to_lab() -> void:
 	for route in get_tree().current_scene.find_children("*", "Node", true, false):
-		if route.get_script() == preload("res://scripts/location_transition.gd") and route.in_city:
+		if _is_location_route(route) and route.in_city:
 			close()
 			route.request_transition(false)
 			return
@@ -430,7 +496,7 @@ func enter_trigger() -> void:
 	# Teleport only into zones belonging to the player's current location.
 	var current_room: Node = null
 	for candidate in get_tree().current_scene.find_children("*", "Node", true, false):
-		if candidate.get_script() == preload("res://scripts/location_transition.gd") and candidate.in_city:
+		if _is_location_route(candidate) and candidate.in_city:
 			current_room = candidate.city_room
 	if (marker.name == "ReturnArea" and marker.get_parent() != current_room) or (marker.name == "LaboratoryExit" and current_room != null):
 		status.text = "Выберите триггер текущей комнаты."

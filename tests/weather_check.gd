@@ -32,7 +32,7 @@ func _check() -> void:
 	var space: PhysicsDirectSpaceState3D = game.get_world_3d().direct_space_state
 	for point in weather.rain_points:
 		var world_point: Vector3 = weather.street.to_global(point)
-		var hit: Dictionary = space.intersect_ray(PhysicsRayQueryParameters3D.create(world_point, world_point - Vector3(0, 21, 0), 1))
+		var hit: Dictionary = space.intersect_ray(PhysicsRayQueryParameters3D.create(world_point, world_point - Vector3(0, 30, 0), 1))
 		assert(not hit.is_empty() and hit.collider == weather.street.get_node("Ground"), "Rain passes through scenery")
 	assert(not street_panel.activate(1), "Weather console works outside the street")
 	route.fade_out_duration = 0.05

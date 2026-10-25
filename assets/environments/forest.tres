@@ -1,0 +1,23 @@
+[gd_resource type="Environment" format=3]
+
+[sub_resource type="ProceduralSkyMaterial" id="ForestSkyMaterial"]
+sky_top_color = Color(0.25, 0.39, 0.43, 1)
+sky_horizon_color = Color(0.61, 0.7, 0.62, 1)
+ground_bottom_color = Color(0.19, 0.25, 0.18, 1)
+ground_horizon_color = Color(0.42, 0.53, 0.4, 1)
+
+[sub_resource type="Sky" id="ForestSky"]
+sky_material = SubResource("ForestSkyMaterial")
+
+[resource]
+background_mode = 2
+sky = SubResource("ForestSky")
+ambient_light_source = 3
+ambient_light_color = Color(0.68, 0.77, 0.66, 1)
+ambient_light_energy = 0.66
+reflected_light_source = 2
+fog_enabled = true
+fog_light_color = Color(0.45, 0.55, 0.47, 1)
+fog_density = 0.014
+fog_height = 3.0
+fog_height_density = 0.018
