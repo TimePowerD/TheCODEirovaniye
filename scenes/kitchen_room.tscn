@@ -1,0 +1,306 @@
+[gd_scene load_steps=39 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenCabinet.glb" id="1_base"]
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenCabinetCornerInner.glb" id="2_corner"]
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenCabinetUpper.glb" id="3_upper"]
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenCabinetUpperDouble.glb" id="4_upper_double"]
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenFridgeLarge.glb" id="5_fridge"]
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenSink.glb" id="6_sink"]
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenStoveElectric.glb" id="7_stove"]
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/hoodModern.glb" id="8_hood"]
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenBar.glb" id="9_bar"]
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenBarEnd.glb" id="10_bar_end"]
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/table.glb" id="11_table"]
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/chairModernFrameCushion.glb" id="12_chair"]
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/stoolBar.glb" id="13_stool"]
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/doorwayFront.glb" id="14_door"]
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenMicrowave.glb" id="15_microwave"]
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenCoffeeMachine.glb" id="16_coffee"]
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenBlender.glb" id="17_blender"]
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/toaster.glb" id="18_toaster"]
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/trashcan.glb" id="19_trash"]
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/plantSmall1.glb" id="20_plant"]
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/rugRectangle.glb" id="21_rug"]
+[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/lampSquareCeiling.glb" id="22_lamp"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_Wall"]
+albedo_color = Color(0.91, 0.87, 0.77, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="Mat_Floor"]
+albedo_color = Color(0.43, 0.28, 0.16, 1)
+roughness = 0.78
+
+[sub_resource type="StandardMaterial3D" id="Mat_Tile"]
+albedo_color = Color(0.58, 0.69, 0.61, 1)
+roughness = 0.72
+
+[sub_resource type="StandardMaterial3D" id="Mat_Ceiling"]
+albedo_color = Color(0.96, 0.94, 0.87, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="FloorMesh"]
+material = SubResource("Mat_Floor")
+size = Vector3(14, 0.2, 12)
+
+[sub_resource type="BoxShape3D" id="FloorShape"]
+size = Vector3(14, 0.2, 12)
+
+[sub_resource type="BoxMesh" id="WallMesh"]
+material = SubResource("Mat_Wall")
+size = Vector3(14, 3, 0.2)
+
+[sub_resource type="BoxShape3D" id="LongWallShape"]
+size = Vector3(14, 3, 0.2)
+
+[sub_resource type="BoxMesh" id="SideWallMesh"]
+material = SubResource("Mat_Wall")
+size = Vector3(0.2, 3, 12)
+
+[sub_resource type="BoxShape3D" id="SideWallShape"]
+size = Vector3(0.2, 3, 12)
+
+[sub_resource type="BoxMesh" id="DoorSideMesh"]
+material = SubResource("Mat_Wall")
+size = Vector3(6.25, 3, 0.2)
+
+[sub_resource type="BoxShape3D" id="DoorSideShape"]
+size = Vector3(6.25, 3, 0.2)
+
+[sub_resource type="BoxMesh" id="DoorHeaderMesh"]
+material = SubResource("Mat_Wall")
+size = Vector3(1.5, 0.35, 0.2)
+
+[sub_resource type="BoxShape3D" id="DoorHeaderShape"]
+size = Vector3(1.5, 0.35, 0.2)
+
+[sub_resource type="BoxMesh" id="BacksplashMesh"]
+material = SubResource("Mat_Tile")
+size = Vector3(8, 0.78, 0.08)
+
+[sub_resource type="BoxMesh" id="CeilingMesh"]
+material = SubResource("Mat_Ceiling")
+size = Vector3(14, 0.16, 12)
+
+[node name="KitchenRoom" type="Node3D"]
+
+[node name="Floor" type="StaticBody3D" parent="."]
+
+[node name="FloorVisual" type="MeshInstance3D" parent="Floor"]
+mesh = SubResource("FloorMesh")
+position = Vector3(0, -0.1, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("FloorShape")
+position = Vector3(0, -0.1, 0)
+
+[node name="BackWall" type="StaticBody3D" parent="."]
+position = Vector3(0, 1.5, -6)
+
+[node name="Visual" type="MeshInstance3D" parent="BackWall"]
+mesh = SubResource("WallMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BackWall"]
+shape = SubResource("LongWallShape")
+
+[node name="LeftWall" type="StaticBody3D" parent="."]
+position = Vector3(-7, 1.5, 0)
+
+[node name="Visual" type="MeshInstance3D" parent="LeftWall"]
+mesh = SubResource("SideWallMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LeftWall"]
+shape = SubResource("SideWallShape")
+
+[node name="RightWall" type="StaticBody3D" parent="."]
+position = Vector3(7, 1.5, 0)
+
+[node name="Visual" type="MeshInstance3D" parent="RightWall"]
+mesh = SubResource("SideWallMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RightWall"]
+shape = SubResource("SideWallShape")
+
+[node name="FrontLeftWall" type="StaticBody3D" parent="."]
+position = Vector3(-3.875, 1.5, 6)
+
+[node name="Visual" type="MeshInstance3D" parent="FrontLeftWall"]
+mesh = SubResource("DoorSideMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FrontLeftWall"]
+shape = SubResource("DoorSideShape")
+
+[node name="FrontRightWall" type="StaticBody3D" parent="."]
+position = Vector3(3.875, 1.5, 6)
+
+[node name="Visual" type="MeshInstance3D" parent="FrontRightWall"]
+mesh = SubResource("DoorSideMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FrontRightWall"]
+shape = SubResource("DoorSideShape")
+
+[node name="DoorHeader" type="StaticBody3D" parent="."]
+position = Vector3(0, 2.825, 6)
+
+[node name="Visual" type="MeshInstance3D" parent="DoorHeader"]
+mesh = SubResource("DoorHeaderMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DoorHeader"]
+shape = SubResource("DoorHeaderShape")
+
+[node name="Ceiling" type="MeshInstance3D" parent="."]
+mesh = SubResource("CeilingMesh")
+position = Vector3(0, 3.08, 0)
+
+[node name="KitchenRun" type="Node3D" parent="."]
+
+[node name="Backsplash" type="MeshInstance3D" parent="KitchenRun"]
+mesh = SubResource("BacksplashMesh")
+position = Vector3(-0.1, 1.38, -5.68)
+
+[node name="Fridge" parent="KitchenRun" instance=ExtResource("5_fridge")]
+position = Vector3(-5.3, 0, -5.3)
+scale = Vector3(2, 2.15, 2)
+
+[node name="Cabinet1" parent="KitchenRun" instance=ExtResource("1_base")]
+position = Vector3(-4.1, 0, -5.3)
+scale = Vector3(2, 2, 2)
+
+[node name="Cabinet2" parent="KitchenRun" instance=ExtResource("1_base")]
+position = Vector3(-3.15, 0, -5.3)
+scale = Vector3(2, 2, 2)
+
+[node name="SinkCabinet" parent="KitchenRun" instance=ExtResource("6_sink")]
+position = Vector3(-2.2, 0, -5.3)
+scale = Vector3(2, 2, 2)
+
+[node name="Stove" parent="KitchenRun" instance=ExtResource("7_stove")]
+position = Vector3(-1.25, 0, -5.3)
+scale = Vector3(2, 2, 2)
+
+[node name="Cabinet3" parent="KitchenRun" instance=ExtResource("1_base")]
+position = Vector3(-0.3, 0, -5.3)
+scale = Vector3(2, 2, 2)
+
+[node name="Cabinet4" parent="KitchenRun" instance=ExtResource("1_base")]
+position = Vector3(0.65, 0, -5.3)
+scale = Vector3(2, 2, 2)
+
+[node name="CornerCabinet" parent="KitchenRun" instance=ExtResource("2_corner")]
+position = Vector3(1.65, 0, -5.3)
+scale = Vector3(2, 2, 2)
+
+[node name="UpperCabinet1" parent="KitchenRun" instance=ExtResource("4_upper_double")]
+position = Vector3(-4.15, 1.42, -5.35)
+scale = Vector3(1.8, 1.8, 1.8)
+
+[node name="UpperCabinet2" parent="KitchenRun" instance=ExtResource("3_upper")]
+position = Vector3(-2.7, 1.42, -5.35)
+scale = Vector3(1.8, 1.8, 1.8)
+
+[node name="UpperCabinet3" parent="KitchenRun" instance=ExtResource("4_upper_double")]
+position = Vector3(-0.4, 1.42, -5.35)
+scale = Vector3(1.8, 1.8, 1.8)
+
+[node name="RangeHood" parent="KitchenRun" instance=ExtResource("8_hood")]
+position = Vector3(-1.25, 2.05, -5.25)
+scale = Vector3(1.7, 1.7, 1.7)
+
+[node name="Microwave" parent="KitchenRun" instance=ExtResource("15_microwave")]
+position = Vector3(-4.15, 0.95, -5.3)
+scale = Vector3(1.8, 1.8, 1.8)
+
+[node name="CoffeeMachine" parent="KitchenRun" instance=ExtResource("16_coffee")]
+position = Vector3(0.55, 0.95, -5.3)
+scale = Vector3(1.8, 1.8, 1.8)
+
+[node name="Toaster" parent="KitchenRun" instance=ExtResource("18_toaster")]
+position = Vector3(-0.2, 0.95, -5.3)
+scale = Vector3(1.6, 1.6, 1.6)
+
+[node name="Blender" parent="KitchenRun" instance=ExtResource("17_blender")]
+position = Vector3(-3.2, 0.95, -5.3)
+scale = Vector3(1.5, 1.5, 1.5)
+
+[node name="BarReturnCabinet1" parent="KitchenRun" instance=ExtResource("1_base")]
+position = Vector3(2.6, 0, -4.3)
+rotation = Vector3(0, -1.5708, 0)
+scale = Vector3(2, 2, 2)
+
+[node name="BarReturnCabinet2" parent="KitchenRun" instance=ExtResource("1_base")]
+position = Vector3(2.6, 0, -3.35)
+rotation = Vector3(0, -1.5708, 0)
+scale = Vector3(2, 2, 2)
+
+[node name="BarCounter" parent="KitchenRun" instance=ExtResource("9_bar")]
+position = Vector3(2.6, 0, -2.4)
+rotation = Vector3(0, -1.5708, 0)
+scale = Vector3(2.2, 2.2, 2.2)
+
+[node name="BarEnd" parent="KitchenRun" instance=ExtResource("10_bar_end")]
+position = Vector3(2.6, 0, -1.9)
+rotation = Vector3(0, -1.5708, 0)
+scale = Vector3(2.2, 2.2, 2.2)
+
+[node name="BarStool1" parent="KitchenRun" instance=ExtResource("13_stool")]
+position = Vector3(1.25, 0, -3.45)
+rotation = Vector3(0, 1.5708, 0)
+scale = Vector3(1.7, 1.7, 1.7)
+
+[node name="BarStool2" parent="KitchenRun" instance=ExtResource("13_stool")]
+position = Vector3(1.25, 0, -2.1)
+rotation = Vector3(0, 1.5708, 0)
+scale = Vector3(1.7, 1.7, 1.7)
+
+[node name="DiningArea" type="Node3D" parent="."]
+
+[node name="DiningRug" parent="DiningArea" instance=ExtResource("21_rug")]
+position = Vector3(-2.1, 0.01, 0.15)
+scale = Vector3(2.6, 1, 2.3)
+
+[node name="DiningTable" parent="DiningArea" instance=ExtResource("11_table")]
+position = Vector3(-2.1, 0, 0.15)
+scale = Vector3(2.1, 2.2, 2.1)
+
+[node name="ChairNorth" parent="DiningArea" instance=ExtResource("12_chair")]
+position = Vector3(-1.22, 0, -1.12)
+scale = Vector3(2, 2, 2)
+
+[node name="ChairSouth" parent="DiningArea" instance=ExtResource("12_chair")]
+position = Vector3(-1.22, 0, 0.48)
+rotation = Vector3(0, 3.14159, 0)
+scale = Vector3(2, 2, 2)
+
+[node name="ChairWest" parent="DiningArea" instance=ExtResource("12_chair")]
+position = Vector3(-2.48, 0, -0.32)
+rotation = Vector3(0, 1.5708, 0)
+scale = Vector3(2, 2, 2)
+
+[node name="ChairEast" parent="DiningArea" instance=ExtResource("12_chair")]
+position = Vector3(0.02, 0, -0.32)
+rotation = Vector3(0, -1.5708, 0)
+scale = Vector3(2, 2, 2)
+
+[node name="TrashCan" parent="." instance=ExtResource("19_trash")]
+position = Vector3(3.7, 0, -5.15)
+scale = Vector3(1.2, 1.2, 1.2)
+
+[node name="Plant" parent="." instance=ExtResource("20_plant")]
+position = Vector3(5.9, 0, -4.9)
+scale = Vector3(2.5, 2.5, 2.5)
+
+[node name="EntranceDoor" parent="." instance=ExtResource("14_door")]
+position = Vector3(0.68, 0, 5.78)
+rotation = Vector3(0, 3.14159, 0)
+scale = Vector3(2.8, 2.5, 2)
+
+[node name="CeilingLamp" parent="." instance=ExtResource("22_lamp")]
+position = Vector3(0, 2.94, -0.3)
+scale = Vector3(1.5, 1.5, 1.5)
+
+[node name="WarmLight" type="OmniLight3D" parent="."]
+position = Vector3(0, 2.65, -0.3)
+light_color = Color(1, 0.83, 0.62, 1)
+light_energy = 1.6
+omni_range = 12.0
+omni_attenuation = 1.4

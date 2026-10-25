@@ -48,6 +48,8 @@
 [ext_resource type="Script" path="res://scripts/forest_transition.gd" id="45_forest_transition"]
 [ext_resource type="Environment" path="res://assets/environments/forest.tres" id="46_forest_environment"]
 
+[ext_resource type="PackedScene" path="res://scenes/kitchen_room.tscn" id="47_kitchen"]
+
 [sub_resource type="BoxShape3D" id="RoomFloorShape"]
 size = Vector3(18, 0.2, 32)
 
@@ -1781,5 +1783,8 @@ script = ExtResource("37_pibwh")
 
 [node name="bedSingle" parent="." unique_id=1922355786 instance=ExtResource("43_chjal")]
 transform = Transform3D(-1.2807438e-07, 0, -2.93, 0, 2.93, 0, 2.93, 0, -1.2807438e-07, 168.17847, 0, 170.58092)
+
+[node name="KitchenRoom" parent="." instance=ExtResource("47_kitchen")]
+position = Vector3(210, 0, 150)
 
 [editable path="LabModuleLibrary"]
