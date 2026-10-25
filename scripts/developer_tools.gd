@@ -63,7 +63,7 @@ func _ready() -> void:
 	_button(content, "Удалить созданные объекты", clear_objects)
 	_label(content, "Переходы / эффекты")
 	_button(content, "Городская комната — затемнение", run_transition.bind("LocationTransition"))
-	_button(content, "Комната воспоминания — флэшбэк", run_transition.bind("FlashbackTransition"))
+	_button(content, "Солнечная улица — флэшбэк", run_transition.bind("FlashbackTransition"))
 	_button(content, "Вернуться в лабораторию", return_to_lab)
 	_label(content, "Проверка зон входа")
 	trigger_picker = OptionButton.new()

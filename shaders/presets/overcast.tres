@@ -1,0 +1,16 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/weather_preset.gd" id="1"]
+[resource]
+script = ExtResource("1")
+title = "Пасмурно"
+top_color = Color(0.35, 0.39, 0.44, 1)
+horizon_color = Color(0.64, 0.67, 0.7, 1)
+cloud_color = Color(0.57, 0.6, 0.63, 1)
+cloud_cover = 0.9
+sun_color = Color(0.75, 0.8, 0.88, 1)
+sun_energy = 0.22
+sun_rotation = Vector3(-40, -32, 0)
+ambient_color = Color(0.64, 0.69, 0.76, 1)
+ambient_energy = 0.8
+fog_color = Color(0.61, 0.65, 0.7, 1)
+fog_density = 0.009

@@ -1,47 +1,377 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/city_room.tscn" id="1_room"]
+[ext_resource type="PackedScene" path="res://scenes/environment/street_house.tscn" id="1_house"]
+[ext_resource type="PackedScene" path="res://scenes/environment/street_tree.tscn" id="2_tree"]
+[ext_resource type="Script" path="res://scripts/transition_marker.gd" id="3_marker"]
 
-[sub_resource type="StandardMaterial3D" id="MemoryMaterial"]
-albedo_color = Color(0.76, 0.61, 0.39, 1)
-roughness = 0.8
+[sub_resource type="StandardMaterial3D" id="Grass"]
+albedo_color = Color(0.42, 0.61, 0.29, 1)
+roughness = 1.0
 
-[sub_resource type="BoxMesh" id="TableMesh"]
-material = SubResource("MemoryMaterial")
-size = Vector3(2.4, 0.15, 1.2)
+[sub_resource type="StandardMaterial3D" id="Asphalt"]
+albedo_color = Color(0.28, 0.32, 0.35, 1)
+roughness = 1.0
 
-[sub_resource type="BoxShape3D" id="TableShape"]
-size = Vector3(2.4, 0.15, 1.2)
+[sub_resource type="StandardMaterial3D" id="Pavement"]
+albedo_color = Color(0.77, 0.73, 0.62, 1)
+roughness = 1.0
 
-[node name="FlashbackRoom" instance=ExtResource("1_room")]
+[sub_resource type="StandardMaterial3D" id="White"]
+albedo_color = Color(0.94, 0.93, 0.84, 1)
+roughness = 0.9
 
-[node name="ReturnArea" parent="." index="19"]
+[sub_resource type="StandardMaterial3D" id="BluePaint"]
+albedo_color = Color(0.57, 0.76, 0.8, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="RosePaint"]
+albedo_color = Color(0.86, 0.61, 0.5, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="GreenPaint"]
+albedo_color = Color(0.66, 0.77, 0.51, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="Wood"]
+albedo_color = Color(0.39, 0.28, 0.17, 1)
+roughness = 1.0
+
+[sub_resource type="StandardMaterial3D" id="CloudWhite"]
+shading_mode = 0
+albedo_color = Color(0.98, 0.98, 0.95, 1)
+
+[sub_resource type="BoxMesh" id="GroundMesh"]
+material = SubResource("Grass")
+size = Vector3(48, 0.4, 64)
+
+[sub_resource type="BoxShape3D" id="GroundShape"]
+size = Vector3(48, 0.4, 64)
+
+[sub_resource type="BoxMesh" id="RoadMesh"]
+material = SubResource("Asphalt")
+size = Vector3(8, 0.02, 60)
+
+[sub_resource type="BoxMesh" id="SidewalkMesh"]
+material = SubResource("Pavement")
+size = Vector3(3, 0.04, 60)
+
+[sub_resource type="BoxMesh" id="MarkingMesh"]
+material = SubResource("White")
+size = Vector3(0.14, 0.025, 2)
+
+[sub_resource type="BoxMesh" id="CrossingMesh"]
+material = SubResource("White")
+size = Vector3(0.7, 0.025, 2.2)
+
+[sub_resource type="BoxMesh" id="FenceMesh"]
+material = SubResource("Wood")
+size = Vector3(0.16, 1.2, 64)
+
+[sub_resource type="BoxShape3D" id="SideBoundaryShape"]
+size = Vector3(0.2, 8, 64)
+
+[sub_resource type="BoxShape3D" id="EndBoundaryShape"]
+size = Vector3(48, 8, 0.2)
+
+[sub_resource type="BoxMesh" id="EndFenceMesh"]
+material = SubResource("Wood")
+size = Vector3(48, 1.2, 0.16)
+
+[sub_resource type="BoxMesh" id="GatePostMesh"]
+material = SubResource("Wood")
+size = Vector3(0.25, 3, 0.25)
+
+[sub_resource type="BoxShape3D" id="GatePostShape"]
+size = Vector3(0.25, 3, 0.25)
+
+[sub_resource type="BoxMesh" id="GateBeamMesh"]
+material = SubResource("Wood")
+size = Vector3(3.5, 0.3, 0.3)
+
+[sub_resource type="BoxShape3D" id="ReturnShape"]
+size = Vector3(2.4, 3, 1)
+
+[sub_resource type="SphereMesh" id="CloudMesh"]
+material = SubResource("CloudWhite")
+radius = 1
+height = 2
+radial_segments = 12
+rings = 6
+
+[node name="FlashbackRoom" type="Node3D"]
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-38, -32, 0)
+light_color = Color(1, 0.94, 0.79, 1)
+light_energy = 1.5
+light_cull_mask = 2
+light_angular_distance = 0.8
+shadow_enabled = true
+directional_shadow_mode = 1
+directional_shadow_max_distance = 80.0
+
+[node name="Ground" type="StaticBody3D" parent="."]
+position = Vector3(0, -0.2, -16)
+
+[node name="Mesh" type="MeshInstance3D" parent="Ground"]
+layers = 2
+mesh = SubResource("GroundMesh")
+
+[node name="Collision" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("GroundShape")
+
+[node name="Road" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.005, -15)
+layers = 2
+mesh = SubResource("RoadMesh")
+
+[node name="SidewalkLeft" type="MeshInstance3D" parent="."]
+position = Vector3(-5.5, 0.01, -15)
+layers = 2
+mesh = SubResource("SidewalkMesh")
+
+[node name="SidewalkRight" type="MeshInstance3D" parent="."]
+position = Vector3(5.5, 0.01, -15)
+layers = 2
+mesh = SubResource("SidewalkMesh")
+
+[node name="Houses" type="Node3D" parent="."]
+
+[node name="HouseLeft1" parent="Houses" instance=ExtResource("1_house")]
+position = Vector3(-11, 0, -5)
+rotation_degrees = Vector3(0, 90, 0)
+
+[node name="HouseLeft2" parent="Houses" instance=ExtResource("1_house")]
+position = Vector3(-11, 0, -18)
+rotation_degrees = Vector3(0, 90, 0)
+
+[node name="Walls" parent="Houses/HouseLeft2" index="0"]
+material_override = SubResource("BluePaint")
+
+[node name="HouseLeft3" parent="Houses" instance=ExtResource("1_house")]
+position = Vector3(-11, 0, -31)
+rotation_degrees = Vector3(0, 90, 0)
+
+[node name="Walls" parent="Houses/HouseLeft3" index="0"]
+material_override = SubResource("GreenPaint")
+
+[node name="HouseRight1" parent="Houses" instance=ExtResource("1_house")]
+position = Vector3(11, 0, -5)
+rotation_degrees = Vector3(0, -90, 0)
+
+[node name="Walls" parent="Houses/HouseRight1" index="0"]
+material_override = SubResource("RosePaint")
+
+[node name="HouseRight2" parent="Houses" instance=ExtResource("1_house")]
+position = Vector3(11, 0, -18)
+rotation_degrees = Vector3(0, -90, 0)
+
+[node name="Walls" parent="Houses/HouseRight2" index="0"]
+material_override = SubResource("GreenPaint")
+
+[node name="HouseRight3" parent="Houses" instance=ExtResource("1_house")]
+position = Vector3(11, 0, -31)
+rotation_degrees = Vector3(0, -90, 0)
+
+[node name="Walls" parent="Houses/HouseRight3" index="0"]
+material_override = SubResource("BluePaint")
+
+[node name="EndHouse" parent="Houses" instance=ExtResource("1_house")]
+position = Vector3(0, 0, -44)
+
+[node name="Trees" type="Node3D" parent="."]
+
+[node name="TreeLeft1" parent="Trees" instance=ExtResource("2_tree")]
+position = Vector3(-7.2, 0, -11)
+
+[node name="TreeLeft2" parent="Trees" instance=ExtResource("2_tree")]
+position = Vector3(-7.2, 0, -24)
+scale = Vector3(1.15, 1.15, 1.15)
+
+[node name="TreeLeft3" parent="Trees" instance=ExtResource("2_tree")]
+position = Vector3(-7.2, 0, -37)
+
+[node name="TreeRight1" parent="Trees" instance=ExtResource("2_tree")]
+position = Vector3(7.2, 0, -11)
+scale = Vector3(0.85, 0.85, 0.85)
+
+[node name="TreeRight2" parent="Trees" instance=ExtResource("2_tree")]
+position = Vector3(7.2, 0, -24)
+
+[node name="TreeRight3" parent="Trees" instance=ExtResource("2_tree")]
+position = Vector3(7.2, 0, -37)
+scale = Vector3(1.1, 1.1, 1.1)
+
+[node name="GardenTreeLeft" parent="Trees" instance=ExtResource("2_tree")]
+position = Vector3(-17, 0, -7)
+scale = Vector3(1.25, 1.25, 1.25)
+
+[node name="GardenTreeRight" parent="Trees" instance=ExtResource("2_tree")]
+position = Vector3(17, 0, -19)
+scale = Vector3(1.3, 1.3, 1.3)
+
+[node name="EntranceTreeLeft" parent="Trees" instance=ExtResource("2_tree")]
+position = Vector3(-10, 0, 7)
+
+[node name="EntranceTreeRight" parent="Trees" instance=ExtResource("2_tree")]
+position = Vector3(10, 0, 7)
+
+[node name="Markings" type="Node3D" parent="."]
+
+[node name="Dash1" type="MeshInstance3D" parent="Markings"]
+position = Vector3(0, 0.018, -7)
+layers = 2
+mesh = SubResource("MarkingMesh")
+
+[node name="Dash2" type="MeshInstance3D" parent="Markings"]
+position = Vector3(0, 0.018, -13)
+layers = 2
+mesh = SubResource("MarkingMesh")
+
+[node name="Dash3" type="MeshInstance3D" parent="Markings"]
+position = Vector3(0, 0.018, -19)
+layers = 2
+mesh = SubResource("MarkingMesh")
+
+[node name="Dash4" type="MeshInstance3D" parent="Markings"]
+position = Vector3(0, 0.018, -25)
+layers = 2
+mesh = SubResource("MarkingMesh")
+
+[node name="Dash5" type="MeshInstance3D" parent="Markings"]
+position = Vector3(0, 0.018, -31)
+layers = 2
+mesh = SubResource("MarkingMesh")
+
+[node name="Stripe1" type="MeshInstance3D" parent="Markings"]
+position = Vector3(-3, 0.019, 0)
+layers = 2
+mesh = SubResource("CrossingMesh")
+
+[node name="Stripe2" type="MeshInstance3D" parent="Markings"]
+position = Vector3(-1.5, 0.019, 0)
+layers = 2
+mesh = SubResource("CrossingMesh")
+
+[node name="Stripe3" type="MeshInstance3D" parent="Markings"]
+position = Vector3(0, 0.019, 0)
+layers = 2
+mesh = SubResource("CrossingMesh")
+
+[node name="Stripe4" type="MeshInstance3D" parent="Markings"]
+position = Vector3(1.5, 0.019, 0)
+layers = 2
+mesh = SubResource("CrossingMesh")
+
+[node name="Stripe5" type="MeshInstance3D" parent="Markings"]
+position = Vector3(3, 0.019, 0)
+layers = 2
+mesh = SubResource("CrossingMesh")
+
+[node name="Boundary" type="StaticBody3D" parent="."]
+
+[node name="LeftCollision" type="CollisionShape3D" parent="Boundary"]
+position = Vector3(-24, 4, -16)
+shape = SubResource("SideBoundaryShape")
+
+[node name="RightCollision" type="CollisionShape3D" parent="Boundary"]
+position = Vector3(24, 4, -16)
+shape = SubResource("SideBoundaryShape")
+
+[node name="FrontCollision" type="CollisionShape3D" parent="Boundary"]
+position = Vector3(0, 4, -48)
+shape = SubResource("EndBoundaryShape")
+
+[node name="BackCollision" type="CollisionShape3D" parent="Boundary"]
+position = Vector3(0, 4, 16)
+shape = SubResource("EndBoundaryShape")
+
+[node name="LeftFence" type="MeshInstance3D" parent="Boundary"]
+position = Vector3(-24, 0.6, -16)
+layers = 2
+mesh = SubResource("FenceMesh")
+
+[node name="RightFence" type="MeshInstance3D" parent="Boundary"]
+position = Vector3(24, 0.6, -16)
+layers = 2
+mesh = SubResource("FenceMesh")
+
+[node name="EndFence" type="MeshInstance3D" parent="Boundary"]
+position = Vector3(0, 0.6, -48)
+layers = 2
+mesh = SubResource("EndFenceMesh")
+
+[node name="BackFence" type="MeshInstance3D" parent="Boundary"]
+position = Vector3(0, 0.6, 16)
+layers = 2
+mesh = SubResource("EndFenceMesh")
+
+[node name="ReturnGate" type="StaticBody3D" parent="."]
+position = Vector3(0, 0, 7.2)
+
+[node name="LeftPost" type="MeshInstance3D" parent="ReturnGate"]
+position = Vector3(-1.6, 1.5, 0)
+layers = 2
+mesh = SubResource("GatePostMesh")
+
+[node name="RightPost" type="MeshInstance3D" parent="ReturnGate"]
+position = Vector3(1.6, 1.5, 0)
+layers = 2
+mesh = SubResource("GatePostMesh")
+
+[node name="LeftCollision" type="CollisionShape3D" parent="ReturnGate"]
+position = Vector3(-1.6, 1.5, 0)
+shape = SubResource("GatePostShape")
+
+[node name="RightCollision" type="CollisionShape3D" parent="ReturnGate"]
+position = Vector3(1.6, 1.5, 0)
+shape = SubResource("GatePostShape")
+
+[node name="Beam" type="MeshInstance3D" parent="ReturnGate"]
+position = Vector3(0, 3, 0)
+layers = 2
+mesh = SubResource("GateBeamMesh")
+
+[node name="Sign" type="Label3D" parent="ReturnGate"]
+position = Vector3(0, 3.45, -0.2)
+rotation_degrees = Vector3(0, 180, 0)
+text = "ВЫХОД"
+font_size = 62
+pixel_size = 0.009
+modulate = Color(1, 0.95, 0.78, 1)
+
+[node name="Clouds" type="Node3D" parent="."]
+
+[node name="Cloud1" type="MeshInstance3D" parent="Clouds"]
+position = Vector3(-12, 16, -15)
+scale = Vector3(4, 0.8, 1.7)
+layers = 2
+cast_shadow = 0
+mesh = SubResource("CloudMesh")
+
+[node name="Cloud2" type="MeshInstance3D" parent="Clouds"]
+position = Vector3(15, 19, -31)
+scale = Vector3(5, 1.1, 2)
+layers = 2
+cast_shadow = 0
+mesh = SubResource("CloudMesh")
+
+[node name="Cloud3" type="MeshInstance3D" parent="Clouds"]
+position = Vector3(-5, 22, -45)
+scale = Vector3(4.5, 0.9, 1.9)
+layers = 2
+cast_shadow = 0
+mesh = SubResource("CloudMesh")
+
+[node name="Arrival" type="Marker3D" parent="."]
+position = Vector3(0, 0.92, 3)
+
+[node name="ReturnArea" type="Area3D" parent="."]
+position = Vector3(0, 1.5, 6)
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("3_marker")
 transition_style = 1
 
-[node name="DoorNumber" parent="." index="14"]
-text = "ДОМ"
-modulate = Color(1, 0.9, 0.7, 1)
-
-[node name="WarmLight" parent="." index="16"]
-light_color = Color(1, 0.87, 0.66, 1)
-light_energy = 4.0
-omni_range = 16.0
-
-[node name="EntranceLight" parent="." index="17"]
-light_color = Color(1, 0.93, 0.78, 1)
-light_energy = 2.8
-omni_range = 13.0
-
-[node name="MemoryTable" type="StaticBody3D" parent="."]
-position = Vector3(3.6, 0.8, -3.8)
-
-[node name="Mesh" type="MeshInstance3D" parent="MemoryTable"]
-mesh = SubResource("TableMesh")
-
-[node name="Collision" type="CollisionShape3D" parent="MemoryTable"]
-shape = SubResource("TableShape")
-
-[node name="TableBase" type="MeshInstance3D" parent="."]
-position = Vector3(3.6, 0.4, -3.8)
-scale = Vector3(0.2, 5, 0.5)
-mesh = SubResource("TableMesh")
+[node name="Collision" type="CollisionShape3D" parent="ReturnArea"]
+shape = SubResource("ReturnShape")

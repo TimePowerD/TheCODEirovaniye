@@ -1,0 +1,16 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/weather_preset.gd" id="1"]
+[resource]
+script = ExtResource("1")
+title = "Тёплый вечер"
+top_color = Color(0.42, 0.32, 0.5, 1)
+horizon_color = Color(1, 0.68, 0.4, 1)
+cloud_color = Color(1, 0.77, 0.53, 1)
+cloud_cover = 0.3
+sun_color = Color(1, 0.57, 0.24, 1)
+sun_energy = 1.25
+sun_rotation = Vector3(-12, -55, 0)
+ambient_color = Color(0.95, 0.65, 0.43, 1)
+ambient_energy = 0.62
+fog_color = Color(0.97, 0.72, 0.5, 1)
+fog_density = 0.003

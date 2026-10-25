@@ -1,0 +1,17 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/weather_preset.gd" id="1"]
+[resource]
+script = ExtResource("1")
+title = "Гроза"
+top_color = Color(0.07, 0.09, 0.14, 1)
+horizon_color = Color(0.25, 0.29, 0.35, 1)
+cloud_color = Color(0.16, 0.19, 0.25, 1)
+cloud_cover = 1.0
+sun_color = Color(0.6, 0.69, 0.85, 1)
+sun_energy = 0.12
+sun_rotation = Vector3(-40, -32, 0)
+ambient_color = Color(0.37, 0.43, 0.54, 1)
+ambient_energy = 0.58
+fog_color = Color(0.3, 0.35, 0.43, 1)
+fog_density = 0.018
+rain = 1.0

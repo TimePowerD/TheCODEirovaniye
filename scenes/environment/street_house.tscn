@@ -1,0 +1,82 @@
+[gd_scene load_steps=11 format=3]
+
+[sub_resource type="StandardMaterial3D" id="Paint"]
+albedo_color = Color(0.9, 0.76, 0.5, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="RoofPaint"]
+albedo_color = Color(0.52, 0.22, 0.16, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="DoorPaint"]
+albedo_color = Color(0.2, 0.32, 0.32, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="GlassPaint"]
+albedo_color = Color(0.6, 0.83, 0.93, 1)
+roughness = 0.3
+emission_enabled = true
+emission = Color(0.16, 0.23, 0.25, 1)
+
+[sub_resource type="BoxMesh" id="WallsMesh"]
+material = SubResource("Paint")
+size = Vector3(6, 4, 5)
+
+[sub_resource type="BoxShape3D" id="WallsShape"]
+size = Vector3(6, 4, 5)
+
+[sub_resource type="PrismMesh" id="RoofMesh"]
+material = SubResource("RoofPaint")
+size = Vector3(6.8, 2, 5.8)
+
+[sub_resource type="ConvexPolygonShape3D" id="RoofShape"]
+points = PackedVector3Array(-3.4, -1, -2.9, 3.4, -1, -2.9, 0, 1, -2.9, -3.4, -1, 2.9, 3.4, -1, 2.9, 0, 1, 2.9)
+
+[sub_resource type="BoxMesh" id="DoorMesh"]
+material = SubResource("DoorPaint")
+size = Vector3(1.25, 2.45, 0.12)
+
+[sub_resource type="BoxMesh" id="WindowMesh"]
+material = SubResource("GlassPaint")
+size = Vector3(1.25, 1.45, 0.14)
+
+[node name="StreetHouse" type="StaticBody3D"]
+
+[node name="Walls" type="MeshInstance3D" parent="."]
+position = Vector3(0, 2, 0)
+layers = 2
+mesh = SubResource("WallsMesh")
+
+[node name="WallsCollision" type="CollisionShape3D" parent="."]
+position = Vector3(0, 2, 0)
+shape = SubResource("WallsShape")
+
+[node name="Roof" type="MeshInstance3D" parent="."]
+position = Vector3(0, 5, 0)
+layers = 2
+mesh = SubResource("RoofMesh")
+
+[node name="RoofCollision" type="CollisionShape3D" parent="."]
+position = Vector3(0, 5, 0)
+shape = SubResource("RoofShape")
+
+[node name="Door" type="MeshInstance3D" parent="."]
+position = Vector3(0, 1.225, 2.56)
+layers = 2
+mesh = SubResource("DoorMesh")
+
+[node name="WindowLeft" type="MeshInstance3D" parent="."]
+position = Vector3(-1.85, 2.3, 2.57)
+layers = 2
+mesh = SubResource("WindowMesh")
+
+[node name="WindowRight" type="MeshInstance3D" parent="."]
+position = Vector3(1.85, 2.3, 2.57)
+layers = 2
+mesh = SubResource("WindowMesh")
+
+[node name="AtticWindow" type="MeshInstance3D" parent="."]
+position = Vector3(0, 4.55, 2.92)
+scale = Vector3(0.45, 0.45, 1)
+layers = 2
+mesh = SubResource("WindowMesh")

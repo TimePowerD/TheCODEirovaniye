@@ -1,11 +1,14 @@
 extends Node
 
+signal location_changed(in_destination: bool)
+
 const TRANSITION_STREAM: AudioStream = preload("res://assets/audio/final sounds/location_teleport.mp3")
 
 ## A slow blackout links the laboratory to an apparently remembered city room.
 @export var city_room: Node3D
 @export var player: CharacterBody3D
 @export var laboratory_light: OmniLight3D
+@export var destination_environment: Environment
 var transition_style: int = 0
 @export_range(0.1, 5.0, 0.05) var fade_out_duration: float = 1.2
 @export_range(0.0, 3.0, 0.05) var black_hold_duration: float = 0.65
@@ -20,6 +23,7 @@ var ambience: AudioStreamPlayer
 var transition_sound: AudioStreamPlayer
 var laboratory_energy: float
 var laboratory_dimmed := false
+var source_environment: Environment
 
 func _ready() -> void:
 	transition_style = $LaboratoryExit.transition_style
@@ -126,8 +130,16 @@ func _on_exit(body: Node3D, to_city: bool) -> void:
 	player.global_transform = arrival.global_transform
 	player.checkpoint_transform = arrival.global_transform
 	player.camera_pivot.rotation = Vector3.ZERO
+	if destination_environment != null:
+		var camera: Camera3D = player.camera_pivot.get_node("Camera3D")
+		if to_city:
+			source_environment = camera.environment
+			camera.environment = destination_environment
+		else:
+			camera.environment = source_environment
 	player.reset_physics_interpolation()
 	in_city = to_city
+	location_changed.emit(to_city)
 	if not to_city and laboratory_dimmed:
 		laboratory_light.light_energy = laboratory_energy
 		laboratory_dimmed = false

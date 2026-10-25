@@ -16,6 +16,9 @@
 [ext_resource type="Script" path="res://scripts/physics_object.gd" id="9_physics_object"]
 [ext_resource type="PackedScene" path="res://scenes/items/pickup_test_item.tscn" id="10_pickup_item"]
 [ext_resource type="PackedScene" path="res://scenes/flashback_room.tscn" id="11_flashback"]
+[ext_resource type="Environment" path="res://assets/environments/memory_street.tres" id="40_street_environment"]
+[ext_resource type="Script" path="res://scripts/street_weather.gd" id="41_weather"]
+[ext_resource type="PackedScene" path="res://scenes/weather_panel.tscn" id="42_weather_panel"]
 [ext_resource type="Script" path="res://scripts/transition_marker.gd" id="12_marker"]
 [ext_resource type="AudioStream" path="res://assets/audio/final sounds/menu_click.mp3" id="20_menu_click"]
 [ext_resource type="AudioStream" path="res://assets/audio/final sounds/footstep_concrete_1.mp3" id="21_footstep"]
@@ -372,6 +375,7 @@ position = Vector3(-40, 0, 0)
 [node name="FlashbackTransition" type="Node" parent="." node_paths=PackedStringArray("city_room", "player", "laboratory_light")]
 script = ExtResource("10_transition")
 city_room = NodePath("../FlashbackRoom")
+destination_environment = ExtResource("40_street_environment")
 player = NodePath("../Player")
 laboratory_light = NodePath("../OmniLight3D")
 fade_out_duration = 1.6
@@ -409,3 +413,14 @@ position = Vector3(-6.8, 2.5, 4)
 light_color = Color(1, 0.87, 0.63, 1)
 light_energy = 1.4
 omni_range = 4.0
+
+[node name="StreetWeather" type="Node" parent="." node_paths=PackedStringArray("street", "transition")]
+script = ExtResource("41_weather")
+street = NodePath("../FlashbackRoom")
+transition = NodePath("../FlashbackTransition")
+
+[node name="StreetWeatherPanel" parent="FlashbackRoom" node_paths=PackedStringArray("controller") instance=ExtResource("42_weather_panel")]
+position = Vector3(2.8, 0, 5.3)
+rotation_degrees = Vector3(0, 180, 0)
+controller = NodePath("../../StreetWeather")
+visual_layer = 2

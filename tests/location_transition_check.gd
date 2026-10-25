@@ -75,6 +75,11 @@ func _check() -> void:
 	assert(absf(player.checkpoint_transform.origin.x) < 1)
 	assert(transition.fade_material.get_shader_parameter("darkness") < 0.01)
 	var memory = scene.get_node("FlashbackTransition")
+	var camera: Camera3D = player.camera_pivot.get_node("Camera3D")
+	var laboratory_environment := camera.environment
+	assert(scene.get_node("FlashbackRoom/Houses").get_child_count() == 7)
+	assert(scene.get_node("FlashbackRoom/Trees").get_child_count() == 10)
+	assert(memory.destination_environment != null)
 	assert(memory.transition_style == 1)
 	assert(not memory.veil.visible and not transition.veil.visible)
 	player.global_position = Vector3(-6.6, 0.92, 4)
@@ -90,6 +95,7 @@ func _check() -> void:
 	assert(not transition.transitioning)
 	await create_timer(memory.fade_out_duration * 0.5 + 0.15).timeout
 	assert(memory.in_city and player.global_position.x < -35)
+	assert(camera.environment == memory.destination_environment, "Street sky was not activated")
 	assert(is_equal_approx(memory.fade_material.get_shader_parameter("darkness"), 1.0))
 	assert(is_equal_approx(memory.fade_material.get_shader_parameter("blur_amount"), 1.0))
 	await create_timer(memory.black_hold_duration + memory.fade_in_duration + 0.2).timeout
@@ -118,6 +124,7 @@ func _check() -> void:
 	assert(memory.fade_material.get_shader_parameter("blur_amount") > 0.9)
 	await create_timer(memory.blur_clear_duration).timeout
 	assert(not memory.in_city and not memory.transitioning)
+	assert(camera.environment == laboratory_environment, "Street sky leaked into laboratory")
 	assert(memory.fade_material.get_shader_parameter("blur_amount") < 0.01)
 	assert(absf(player.global_position.x + 4.8) < 0.3)
 	assert(not memory.veil.visible and not player.has_meta("location_transition_active"))

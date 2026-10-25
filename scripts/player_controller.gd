@@ -5,6 +5,7 @@ var tutorial_walk_distance := 0.0
 var tutorial_sprint_distance := 0.0
 var tutorial_look_distance := 0.0
 var swap_error_remaining := 0.0
+var weather_press_consumed := false
 const SWAP_VISIBILITY_ERROR := "Оба объекта должны быть видны и не закрыты препятствиями"
 const SWAP_SPACE_ERROR := "Недостаточно свободного места для обмена"
 const SwapSpaceCheck := preload("res://scripts/swap_space_check.gd")
@@ -148,6 +149,17 @@ func _unhandled_input(event: InputEvent) -> void:
 			if not event.echo:
 				_set_rotation_mode(event.pressed)
 		elif event.keycode == KEY_E and not event.echo:
+			if not event.pressed and weather_press_consumed:
+				weather_press_consumed = false
+				return
+			if event.pressed:
+				var button := _weather_button()
+				if button != null:
+					weather_press_consumed = true
+					e_hold_pending = false
+					button.get_parent().activate(int(button.get_meta("weather_mode")))
+					get_viewport().set_input_as_handled()
+					return
 			if event.pressed:
 				if held_item != null:
 					e_hold_pending = true
@@ -166,6 +178,18 @@ func _unhandled_input(event: InputEvent) -> void:
 				rotation_cursor_anchor = get_viewport().get_mouse_position()
 			elif event.keycode == KEY_Q and held_item != null:
 				_throw_item()
+
+func _weather_button() -> StaticBody3D:
+	if get_tree().paused or swap_in_progress or has_meta("location_transition_active") or has_meta("cutscene_active") or has_meta("developer_tools_open"):
+		return null
+	var camera: Camera3D = camera_pivot.get_node("Camera3D")
+	var from := camera.global_position
+	var query := PhysicsRayQueryParameters3D.create(from, from - camera.global_basis.z * 3.0)
+	query.exclude = [get_rid()]
+	var hit := get_world_3d().direct_space_state.intersect_ray(query)
+	if not hit.is_empty() and hit.collider is StaticBody3D and hit.collider.is_in_group("weather_button"):
+		return hit.collider
+	return null
 
 func apply_look(relative: Vector2) -> void:
 	rotate_y(-relative.x * mouse_sensitivity)
@@ -418,6 +442,12 @@ func _build_interaction_hint() -> void:
 func _update_interaction_hint() -> void:
 	if not is_instance_valid(interaction_hint):
 		return
+	var weather_button := _weather_button()
+	if weather_button != null:
+		var title: String = weather_button.get_parent().TITLES[int(weather_button.get_meta("weather_mode"))]
+		interaction_hint.text = "E — " + title
+		interaction_hint.show()
+		return
 	if swap_in_progress:
 		interaction_hint.text = "Выполняется обмен…\nЗахват, подбор и вращение временно недоступны"
 		interaction_hint.show()
@@ -615,6 +645,7 @@ func _build_rotation_gizmo() -> void:
 		rotation_gizmo.add_child(ring_instance)
 
 func reset_interaction_modes() -> void:
+	weather_press_consumed = false
 	# Releases may happen while gameplay input is paused and never reach us.
 	# Keep the carried item, but require a fresh press for rotation/placement.
 	_set_rotation_mode(false)
