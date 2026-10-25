@@ -9,6 +9,7 @@ const SWAP_VISIBILITY_ERROR := "Оба объекта должны быть ви
 const SWAP_SPACE_ERROR := "Недостаточно свободного места для обмена"
 const SwapSpaceCheck := preload("res://scripts/swap_space_check.gd")
 const SwapMotionPlanner := preload("res://scripts/swap_motion_planner.gd")
+const SwapVisibility := preload("res://scripts/swap_visibility.gd")
 var swap_error_text := SWAP_VISIBILITY_ERROR
 var swap_body_states: Array[Dictionary] = []
 var swap_source_transforms: Array[Transform3D] = []
@@ -751,14 +752,9 @@ func _handle_swap_click() -> void:
 	_refresh_outlines()
 
 func _is_swap_target_visible(target: Node3D) -> bool:
-	if not is_instance_valid(target) or target.is_queued_for_deletion() or not target.is_inside_tree() or not target.is_in_group("swappable"):
-		return false
 	var camera: Camera3D = camera_pivot.get_node("Camera3D")
-	if not camera.is_position_in_frustum(target.global_position):
-		return false
-	var query := PhysicsRayQueryParameters3D.create(camera.global_position, target.global_position, aim_ray.collision_mask, [get_rid()])
-	var hit := get_world_3d().direct_space_state.intersect_ray(query)
-	return not hit.is_empty() and (hit.collider == target or target.is_ancestor_of(hit.collider))
+	var excluded: Array[RID] = [get_rid()]
+	return SwapVisibility.is_visible(target, camera, aim_ray.collision_mask, excluded)
 
 func _start_swap(first: Node3D, second: Node3D) -> bool:
 	if swap_in_progress or held_object != null or held_item != null:

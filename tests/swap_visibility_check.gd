@@ -44,7 +44,7 @@ func _check() -> void:
 	var wall := StaticBody3D.new()
 	var collider := CollisionShape3D.new()
 	var shape := BoxShape3D.new()
-	shape.size = Vector3(0.6, 3, 0.3)
+	shape.size = Vector3(1.6, 3, 0.3) # Hide the whole model, not just its center.
 	collider.shape = shape
 	wall.add_child(collider)
 	game.add_child(wall)
