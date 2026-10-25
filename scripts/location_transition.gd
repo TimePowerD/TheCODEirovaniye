@@ -32,6 +32,16 @@ func _ready() -> void:
 	transition_style = $LaboratoryExit.transition_style
 	laboratory_environment = player.get_node("CameraPivot/Camera3D").environment
 	in_city = get_node("/root/SaveManager").current_location_id == destination_location_id
+	get_node("/root/SaveManager").checkpoint_restored.connect(_on_checkpoint_restored)
+	# Older street checkpoints used the small scene's previous world position.
+	if in_city and city_room.has_meta("rain_bounds"):
+		var bounds: Rect2 = city_room.get_meta("rain_bounds")
+		var local_position := city_room.to_local(player.global_position)
+		if not bounds.has_point(Vector2(local_position.x, local_position.z)):
+			player.global_transform = city_room.get_node("Arrival").global_transform
+			player.checkpoint_transform = player.global_transform
+			player.camera_pivot.rotation = Vector3.ZERO
+			player.checkpoint_camera_rotation = Vector3.ZERO
 	laboratory_energy = laboratory_light.light_energy
 	var layer := CanvasLayer.new()
 	layer.layer = 5 # Above the HUD, below the pause menu (layer 10).
@@ -77,6 +87,17 @@ func _ready() -> void:
 	ambience.volume_db = -26.0
 	player.add_child(ambience)
 	ambience.play()
+
+func _on_checkpoint_restored(location_id: String) -> void:
+	if transitioning:
+		return
+	in_city = location_id == destination_location_id
+	var camera := player.get_node("CameraPivot/Camera3D") as Camera3D
+	if in_city and destination_environment != null:
+		camera.environment = destination_environment
+	elif camera.environment == destination_environment and destination_environment != null:
+		camera.environment = laboratory_environment
+	location_changed.emit(in_city)
 
 func _physics_process(_delta: float) -> void:
 	if player.has_meta("developer_tools_open") or player.has_meta("cutscene_active"):

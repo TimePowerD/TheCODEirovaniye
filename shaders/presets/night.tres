@@ -1,0 +1,14 @@
+[gd_resource type="Resource" load_steps=2 format=3]
+[ext_resource type="Script" path="res://scripts/weather_preset.gd" id="1"]
+[resource]
+script = ExtResource("1")
+title = "Ночь"
+top_color = Color(0.012, 0.02, 0.055, 1)
+horizon_color = Color(0.07, 0.10, 0.18, 1)
+cloud_color = Color(0.055, 0.07, 0.11, 1)
+sun_color = Color(0.48, 0.60, 0.85, 1)
+sun_energy = 0.035
+sun_rotation = Vector3(-24, 135, 0)
+ambient_color = Color(0.25, 0.33, 0.51, 1)
+ambient_energy = 0.24
+fog_color = Color(0.045, 0.065, 0.11, 1)

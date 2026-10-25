@@ -1,5 +1,7 @@
 extends Node
 
+signal checkpoint_restored(location_id: String)
+
 const SAVE_PATH := "user://savegame.cfg"
 
 var current_location_id := "laboratory"
@@ -66,6 +68,7 @@ func restore_player(player: CharacterBody3D) -> bool:
 	player.checkpoint_camera_rotation = camera_rotation
 	current_location_id = str(config.get_value("checkpoint", "location", "laboratory"))
 	checkpoint_id = str(config.get_value("checkpoint", "id", "level_start"))
+	checkpoint_restored.emit(current_location_id)
 	return true
 
 func has_valid_checkpoint() -> bool:
