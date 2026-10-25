@@ -33,15 +33,18 @@
 [ext_resource type="PackedScene" uid="uid://bvja2mj08ypks" path="res://assets/models/labFloor2x1SwapLevel.glb" id="31_dgi5k"]
 [ext_resource type="Script" uid="uid://cvud1ammrw4gc" path="res://scripts/tutorial_button.gd" id="32_dgi5k"]
 [ext_resource type="Script" uid="uid://wxiqca4vor6c" path="res://scripts/tutorial.gd" id="32_tutorial"]
-[ext_resource type="Script" path="res://scripts/wake_cutscene.gd" id="33_wake_cutscene"]
 [ext_resource type="PackedScene" uid="uid://o624yhsqsgsg" path="res://assets/models/labDoor.glb" id="33_j8jky"]
+[ext_resource type="Script" uid="uid://bo1crb0td3ch4" path="res://scripts/wake_cutscene.gd" id="33_wake_cutscene"]
 [ext_resource type="Script" uid="uid://djsilhiyv7a0x" path="res://scripts/level_checkpoint.gd" id="35_j8jky"]
 [ext_resource type="PackedScene" uid="uid://cf4gnrq2fm0mr" path="res://assets/materials/animations/scientist.glb" id="36_fuf3a"]
 [ext_resource type="Script" uid="uid://h1h8wrp8phm8" path="res://scripts/scientist.gd" id="37_pibwh"]
-[ext_resource type="Environment" path="res://assets/environments/memory_street.tres" id="40_street_environment"]
+[ext_resource type="Environment" uid="uid://qaejoxlcqb1k" path="res://assets/environments/memory_street.tres" id="40_street_environment"]
 [ext_resource type="Script" uid="uid://cqfisoiwav4sl" path="res://scripts/street_weather.gd" id="41_weather"]
 [ext_resource type="PackedScene" path="res://scenes/weather_panel.tscn" id="42_weather_panel"]
 [ext_resource type="Environment" path="res://assets/environments/laboratory.tres" id="43_laboratory_environment"]
+[ext_resource type="PackedScene" path="res://scenes/forest_room.tscn" id="44_forest"]
+[ext_resource type="Script" path="res://scripts/forest_transition.gd" id="45_forest_transition"]
+[ext_resource type="Environment" path="res://assets/environments/forest.tres" id="46_forest_environment"]
 
 [sub_resource type="BoxShape3D" id="RoomFloorShape"]
 size = Vector3(18, 0.2, 32)
@@ -61,6 +64,14 @@ roughness = 0.75
 
 [sub_resource type="BoxMesh" id="FlashbackDoorMesh"]
 material = SubResource("FlashbackDoorMaterial")
+size = Vector3(1.8, 2.7, 0.12)
+
+[sub_resource type="StandardMaterial3D" id="ForestFlashbackDoorMaterial"]
+albedo_color = Color(0.23, 0.38, 0.26, 1)
+roughness = 0.82
+
+[sub_resource type="BoxMesh" id="ForestFlashbackDoorMesh"]
+material = SubResource("ForestFlashbackDoorMaterial")
 size = Vector3(1.8, 2.7, 0.12)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape_player"]
@@ -267,6 +278,9 @@ size = Vector3(0.55, 2.8, 2.03)
 [sub_resource type="BoxShape3D" id="FlashbackExitShape"]
 size = Vector3(1.2, 3, 2.5)
 
+[sub_resource type="BoxShape3D" id="ForestExitShape"]
+size = Vector3(1.2, 3, 2.5)
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_5he1u"]
 size = Vector3(2, 3, 8)
 
@@ -388,6 +402,22 @@ font_size = 52
 transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, -7.7, 1.35, 4)
 mesh = SubResource("FlashbackDoorMesh")
 
+[node name="ForestMemoryDoor" type="MeshInstance3D" parent="Room"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.7, 1.35, 4)
+mesh = SubResource("ForestFlashbackDoorMesh")
+
+[node name="ForestMemorySign" type="Label3D" parent="Room"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.6, 3.1, 4)
+pixel_size = 0.006
+text = "ЛЕСНОЕ ВОСПОМИНАНИЕ"
+font_size = 32
+
+[node name="ForestMemoryDoorLight" type="OmniLight3D" parent="Room"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.8, 2.5, 4)
+light_color = Color(0.67, 0.9, 0.67, 1)
+light_energy = 1.3
+omni_range = 4.0
+
 [node name="MemorySign" type="Label3D" parent="Room" unique_id=390821479]
 transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, -7.6, 3.1, 4)
 pixel_size = 0.006
@@ -409,10 +439,6 @@ omni_range = 4.0
 [node name="Player" type="CharacterBody3D" parent="." unique_id=1140905256]
 transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 169, 0.92, 180)
 script = ExtResource("1_player")
-
-[node name="WakeCutscene" type="CanvasLayer" parent="." node_paths=PackedStringArray("player_path")]
-script = ExtResource("33_wake_cutscene")
-player_path = NodePath("../Player")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=1231908845]
 shape = SubResource("CapsuleShape_player")
@@ -462,6 +488,9 @@ current = true
 
 [node name="CenterRay" type="RayCast3D" parent="Player/CameraPivot/Camera3D" unique_id=1126347710]
 target_position = Vector3(0, 0, -15)
+
+[node name="WakeCutscene" type="CanvasLayer" parent="." unique_id=595413691]
+script = ExtResource("33_wake_cutscene")
 
 [node name="SmallBox" type="RigidBody3D" parent="." unique_id=660320988 groups=["swapAble", "swappable"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 167, 0.5, 175)
@@ -1626,7 +1655,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.38, 0)
 shape = SubResource("BoxShape3D_c6pm6")
 
 [node name="FlashbackRoom" parent="." unique_id=1227615780 instance=ExtResource("11_flashback")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -319.846, 0.19960308, -319.24637)
 
 [node name="StreetWeatherPanel" parent="FlashbackRoom" unique_id=1674759684 node_paths=PackedStringArray("controller") instance=ExtResource("42_weather_panel")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 2.8, 0, 5.3)
@@ -1670,6 +1699,32 @@ omni_range = 16.0
 script = ExtResource("41_weather")
 street = NodePath("../FlashbackRoom")
 transition = NodePath("../FlashbackTransition")
+
+[node name="ForestRoom" parent="." instance=ExtResource("44_forest")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -640, 0, -320)
+
+[node name="ForestTransition" type="Node" parent="." node_paths=PackedStringArray("city_room", "player", "laboratory_light")]
+script = ExtResource("45_forest_transition")
+city_room = NodePath("../ForestRoom")
+player = NodePath("../Player")
+laboratory_light = NodePath("../OmniLight3D")
+destination_environment = ExtResource("46_forest_environment")
+destination_location_id = "forest"
+fade_out_duration = 1.6
+black_hold_duration = 0.8
+fade_in_duration = 2.8
+
+[node name="LaboratoryExit" type="Area3D" parent="ForestTransition"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6, 1.5, 4)
+collision_layer = 0
+script = ExtResource("12_marker")
+transition_style = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ForestTransition/LaboratoryExit"]
+shape = SubResource("ForestExitShape")
+
+[node name="LaboratoryArrival" type="Marker3D" parent="ForestTransition"]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 4.8, 0.92, 4)
 
 [node name="Room3Light" type="OmniLight3D" parent="." unique_id=1453178613]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 113, 4, 180)

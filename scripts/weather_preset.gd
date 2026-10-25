@@ -12,4 +12,6 @@ extends Resource
 @export var ambient_energy: float = 0.7
 @export var fog_color: Color = Color(0.77, 0.86, 0.94)
 @export var fog_density: float = 0.0015
+@export var fog_height: float = 0.0
+@export var fog_height_density: float = 0.0
 @export var rain: float = 0.0
