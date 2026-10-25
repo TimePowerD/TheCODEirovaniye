@@ -7,6 +7,7 @@ uniform vec3 sun_direction = vec3(0.3, 0.6, 0.4);
 uniform vec4 sun_color : source_color = vec4(1.0, 0.94, 0.79, 1.0);
 uniform float cloud_cover = 0.18;
 uniform float lightning = 0.0;
+uniform float night_amount : hint_range(0.0, 1.0) = 0.0;
 void sky() {
  float height = max(EYEDIR.y, 0.0);
  vec3 base = mix(horizon_color.rgb, top_color.rgb, pow(height, 0.55));
@@ -17,5 +18,8 @@ void sky() {
  float sun = smoothstep(0.9985, 0.9995, dot(normalize(EYEDIR), normalize(sun_direction)));
  float glow = pow(max(dot(normalize(EYEDIR), normalize(sun_direction)), 0.0), 24.0) * 0.22;
  COLOR = mix(base + sun_color.rgb * (sun + glow) * (1.0 - cloud_cover), cloud_color.rgb, cloud);
+ vec2 star_cell = floor(EYEDIR.xz / (height + 0.15) * 240.0);
+ float star = fract(sin(dot(star_cell, vec2(127.1, 311.7))) * 43758.5453);
+ COLOR += vec3(0.75, 0.83, 1.0) * step(0.9985, star) * night_amount * (1.0 - cloud_cover) * smoothstep(0.1, 0.4, height);
  COLOR += vec3(0.66, 0.75, 1.0) * lightning;
 }
