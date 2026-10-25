@@ -1544,6 +1544,7 @@ script = ExtResource("10_transition")
 city_room = NodePath("../FlashbackRoom")
 player = NodePath("../Player")
 laboratory_light = NodePath("../OmniLight3D")
+destination_location_id = "flashback"
 fade_out_duration = 1.6
 black_hold_duration = 0.8
 fade_in_duration = 2.8

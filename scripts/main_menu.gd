@@ -24,6 +24,7 @@ var status_label: Label
 var game_started: bool = false
 var settings_return_to_pause: bool = false
 var starting_game: bool = false
+var start_with_cutscene := true
 var menu_music_player: AudioStreamPlayer
 var game_music_players: Array[AudioStreamPlayer] = []
 var current_game_music_player: AudioStreamPlayer
@@ -311,7 +312,11 @@ func _show_main_menu() -> void:
 	_add_title("ПОСЛЕДНИЙ\nПЕРЕЗАПУСК")
 	_add_label("Похоже, этот мир снова нуждается в паре правок.", MUTED_COLOR, 15)
 	_add_spacer(12)
-	_add_button("Играть", _on_play_pressed, true)
+	_add_button("Новая игра", _on_new_game_pressed, true)
+	var continue_button := _add_button("Продолжить", _on_continue_pressed)
+	continue_button.disabled = not SaveManager.has_valid_checkpoint()
+	if continue_button.disabled:
+		continue_button.modulate = Color(0.55, 0.58, 0.55, 0.62)
 	_add_button("Настройки", _show_settings)
 	_add_button("Разработчики", _show_developers)
 	_add_button("Выйти", _on_quit_pressed)
@@ -421,8 +426,27 @@ func _show_developers() -> void:
 	_add_button("Назад", _show_main_menu)
 
 func _on_play_pressed() -> void:
+	_on_new_game_pressed()
+
+func _on_new_game_pressed() -> void:
 	if starting_game:
 		return
+	var player := get_tree().current_scene.find_child("Player", true, false) as CharacterBody3D
+	if player != null:
+		SaveManager.start_new_game(player)
+	start_with_cutscene = true
+	_begin_game_start()
+
+func _on_continue_pressed() -> void:
+	if starting_game or not SaveManager.has_valid_checkpoint():
+		return
+	var player := get_tree().current_scene.find_child("Player", true, false) as CharacterBody3D
+	if player == null or not SaveManager.restore_player(player):
+		return
+	start_with_cutscene = false
+	_begin_game_start()
+
+func _begin_game_start() -> void:
 	starting_game = true
 	var tween := create_tween()
 	tween.tween_property(menu_root, "modulate:a", 0.0, 1.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
@@ -435,7 +459,8 @@ func _start_game() -> void:
 	menu_root.hide()
 	get_tree().paused = false
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
-	_start_wake_cutscene()
+	if start_with_cutscene:
+		_start_wake_cutscene()
 
 func _start_wake_cutscene() -> void:
 	var cutscene := get_tree().current_scene.find_child("WakeCutscene", true, false)

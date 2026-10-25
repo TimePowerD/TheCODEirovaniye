@@ -59,6 +59,9 @@ static func can_swap(first: Node3D, second: Node3D, first_destination: Vector3, 
 	if first_shapes.is_empty() or second_shapes.is_empty():
 		return false
 	var excluded: Array[RID] = [first.get_rid(), second.get_rid()]
+	for player in first.get_tree().get_nodes_in_group("player"):
+		if player is PhysicsBody3D:
+			excluded.append(player.get_rid())
 	var state := first.get_world_3d().direct_space_state
 	if not _clear(state, first_shapes, excluded) or not _clear(state, second_shapes, excluded):
 		return false
