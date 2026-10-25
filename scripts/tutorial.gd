@@ -122,7 +122,7 @@ func _set_door_open(index: int, should_open: bool) -> void:
 	collision_tweener.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 func _process(_delta: float) -> void:
-	var can_show_ui: bool = menu.game_started \
+	var can_show_ui := bool(menu.get("game_started")) \
 		and not player.has_meta("developer_tools_open") \
 		and not player.has_meta("cutscene_active")
 	tutorial_panel.visible = can_show_ui and step < TASKS.size()

@@ -6,4 +6,3 @@
 cull_mode = 2
 albedo_texture = ExtResource("1_floor_texture")
 roughness = 0.88
-uv1_scale = Vector3(5.336, 5.336, 5.336)

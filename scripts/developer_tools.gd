@@ -419,8 +419,8 @@ func spawn_object_template(template_id: String) -> Node3D:
 			object.set_script(preload("res://scripts/physics_object.gd"))
 			object.add_to_group("swappable")
 			object.add_to_group("swapAble")
-			var mesh := MeshInstance3D.new()
 			if template_id == "swap_sphere":
+				var mesh := MeshInstance3D.new()
 				var sphere_mesh := SphereMesh.new()
 				sphere_mesh.radius = 0.5
 				sphere_mesh.height = 1.0
@@ -428,15 +428,15 @@ func spawn_object_template(template_id: String) -> Node3D:
 				var sphere_shape := SphereShape3D.new()
 				sphere_shape.radius = 0.5
 				shape = sphere_shape
+				var material := StandardMaterial3D.new()
+				material.albedo_color = Color(0.25, 0.7, 0.85)
+				mesh.material_override = material
+				object.add_child(mesh)
 			else:
-				mesh.mesh = BoxMesh.new()
+				object.add_child(preload("res://scenes/items/lab_box_visual.tscn").instantiate())
 				var box_shape := BoxShape3D.new()
 				box_shape.size = Vector3.ONE
 				shape = box_shape
-			var material := StandardMaterial3D.new()
-			material.albedo_color = Color(0.25, 0.7, 0.85)
-			mesh.material_override = material
-			object.add_child(mesh)
 			var collision := CollisionShape3D.new()
 			collision.shape = shape
 			object.add_child(collision)

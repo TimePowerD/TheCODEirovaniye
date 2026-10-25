@@ -18,6 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://blfie3cwpkog7" path="res://assets/models/labWallWindow.glb" id="14_window"]
 [ext_resource type="PackedScene" uid="uid://d3yup5qrj0m10" path="res://assets/materials/animations/zombieChar.glb" id="19_zombie"]
 [ext_resource type="AudioStream" uid="uid://c1hhm3eft7w4p" path="res://assets/audio/final sounds/menu_click.mp3" id="20_menu_click"]
+[ext_resource type="PackedScene" path="res://scenes/items/lab_box_visual.tscn" id="21_cjqg0"]
 [ext_resource type="AudioStream" uid="uid://c6q62f1vgpvkb" path="res://assets/audio/final sounds/footstep_concrete_1.mp3" id="21_footstep"]
 [ext_resource type="AudioStream" uid="uid://vjkxk3id7p7t" path="res://assets/audio/final sounds/jump_land.mp3" id="22_jump"]
 [ext_resource type="AudioStream" uid="uid://d2g5n0k03m0jw" path="res://assets/audio/final sounds/item_pickup.mp3" id="23_pickup"]
@@ -41,6 +42,7 @@
 [ext_resource type="Environment" uid="uid://qaejoxlcqb1k" path="res://assets/environments/memory_street.tres" id="40_street_environment"]
 [ext_resource type="Script" uid="uid://cqfisoiwav4sl" path="res://scripts/street_weather.gd" id="41_weather"]
 [ext_resource type="PackedScene" path="res://scenes/weather_panel.tscn" id="42_weather_panel"]
+[ext_resource type="PackedScene" uid="uid://cqf48e1e6c5hy" path="res://assets/models/obstanowkadoma/Models/GLTF format/bedSingle.glb" id="43_chjal"]
 [ext_resource type="Environment" path="res://assets/environments/laboratory.tres" id="43_laboratory_environment"]
 [ext_resource type="PackedScene" path="res://scenes/forest_room.tscn" id="44_forest"]
 [ext_resource type="Script" path="res://scripts/forest_transition.gd" id="45_forest_transition"]
@@ -77,12 +79,6 @@ size = Vector3(1.8, 2.7, 0.12)
 [sub_resource type="CapsuleShape3D" id="CapsuleShape_player"]
 radius = 0.35
 height = 1.8
-
-[sub_resource type="BoxMesh" id="BoxMesh_small"]
-
-[sub_resource type="StandardMaterial3D" id="TestMaterial_blue"]
-albedo_color = Color(0.18, 0.48, 0.78, 1)
-roughness = 0.7
 
 [sub_resource type="BoxShape3D" id="BoxShape_small"]
 
@@ -446,7 +442,7 @@ shape = SubResource("CapsuleShape_player")
 [node name="FootstepSound" type="AudioStreamPlayer3D" parent="Player" unique_id=1424943272]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.7, 0)
 stream = ExtResource("21_footstep")
-volume_db = -8.0
+volume_db = -19.0
 unit_size = 8.0
 
 [node name="JumpSound" type="AudioStreamPlayer3D" parent="Player" unique_id=1276516457]
@@ -489,22 +485,21 @@ current = true
 [node name="CenterRay" type="RayCast3D" parent="Player/CameraPivot/Camera3D" unique_id=1126347710]
 target_position = Vector3(0, 0, -15)
 
-[node name="WakeCutscene" type="CanvasLayer" parent="." unique_id=595413691]
+[node name="WakeCutscene" type="CanvasLayer" parent="." unique_id=853459605]
 script = ExtResource("33_wake_cutscene")
 
 [node name="SmallBox" type="RigidBody3D" parent="." unique_id=660320988 groups=["swapAble", "swappable"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 167, 0.5, 175)
 script = ExtResource("9_physics_object")
 
-[node name="Mesh" type="MeshInstance3D" parent="SmallBox" unique_id=1206711177]
-mesh = SubResource("BoxMesh_small")
-surface_material_override/0 = SubResource("TestMaterial_blue")
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="SmallBox" unique_id=718676204]
 shape = SubResource("BoxShape_small")
 
 [node name="CollisionSound" type="AudioStreamPlayer3D" parent="SmallBox" unique_id=25227260]
 script = ExtResource("28_collision_audio")
+
+[node name="Mesh" parent="SmallBox" unique_id=1838892602 instance=ExtResource("21_cjqg0")]
+transform = Transform3D(1.738, 0, 0, 0, 1.738, 0, 0, 0, 1.738, 0, 0, 0)
 
 [node name="MediumSphere" type="RigidBody3D" parent="." unique_id=547506107 groups=["swapAble", "swappable"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 169, 0.8, 175)
@@ -553,15 +548,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 127.601, 0.5, 184.47037)
 mass = 2.0
 script = ExtResource("9_physics_object")
 
-[node name="Mesh" type="MeshInstance3D" parent="SwapTestObject" unique_id=1141367552]
-mesh = SubResource("BoxMesh_small")
-surface_material_override/0 = SubResource("TestMaterial_blue")
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="SwapTestObject" unique_id=1091873219]
 shape = SubResource("BoxShape_small")
 
 [node name="CollisionSound" type="AudioStreamPlayer3D" parent="SwapTestObject" unique_id=1073945470]
 script = ExtResource("28_collision_audio")
+
+[node name="Mesh" parent="SwapTestObject" unique_id=460348862 instance=ExtResource("21_cjqg0")]
 
 [node name="PickupTestItem" parent="." unique_id=473309018 instance=ExtResource("10_pickup_item")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 164, 1.2, 180)
@@ -1785,5 +1778,8 @@ transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58
 [node name="scientist" parent="." unique_id=2089029073 instance=ExtResource("36_fuf3a")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 161.70422, 0.0017670757, 187.98111)
 script = ExtResource("37_pibwh")
+
+[node name="bedSingle" parent="." unique_id=1922355786 instance=ExtResource("43_chjal")]
+transform = Transform3D(-1.2807438e-07, 0, -2.93, 0, 2.93, 0, 2.93, 0, -1.2807438e-07, 168.17847, 0, 170.58092)
 
 [editable path="LabModuleLibrary"]
