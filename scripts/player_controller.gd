@@ -38,11 +38,11 @@ var tutorial_look_distance := 0.0
 @onready var animation_player: AnimationPlayer = $ZombieModel/AnimationPlayer
 
 var footstep_streams: Array[AudioStream] = [
-	preload("res://assets/audio/Footstep Concrete 1.mp3"),
-	preload("res://assets/audio/Footstep Concrete 2.mp3"),
-	preload("res://assets/audio/Footstep Concrete 3.mp3"),
-	preload("res://assets/audio/Footstep Concrete 4.mp3"),
-	preload("res://assets/audio/Footstep Concrete 5.mp3"),
+	preload("res://assets/audio/final sounds/footstep_concrete_1.mp3"),
+	preload("res://assets/audio/final sounds/footstep_concrete_2.mp3"),
+	preload("res://assets/audio/final sounds/footstep_concrete_3.mp3"),
+	preload("res://assets/audio/final sounds/footstep_concrete_4.mp3"),
+	preload("res://assets/audio/final sounds/footstep_concrete_5.mp3"),
 ]
 var footstep_timer: float = 0.0
 
@@ -224,9 +224,10 @@ func _update_footstep_sound(delta: float, is_moving_on_floor: bool) -> void:
 
 	footstep_timer -= delta
 	if footstep_timer <= 0.0:
+		var is_running := Input.is_key_pressed(KEY_SHIFT)
 		footstep_sound.stream = footstep_streams.pick_random()
 		footstep_sound.play()
-		footstep_timer = 0.36 if Input.is_key_pressed(KEY_SHIFT) else 0.5
+		footstep_timer = 0.36 if is_running else 0.5
 
 func _try_grab_object() -> void:
 	if held_object != null or held_item != null or not aim_ray.is_colliding():

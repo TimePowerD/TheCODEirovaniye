@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/carryable_item.gd" id="1_item"]
+[ext_resource type="Script" path="res://scripts/collision_audio.gd" id="2_collision_audio"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_pickup"]
 size = Vector3(0.7, 0.7, 0.7)
@@ -25,3 +26,6 @@ surface_material_override/0 = SubResource("Material_pickup")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape_pickup")
+
+[node name="CollisionSound" type="AudioStreamPlayer3D" parent="."]
+script = ExtResource("2_collision_audio")

@@ -17,15 +17,16 @@
 [ext_resource type="PackedScene" path="res://scenes/items/pickup_test_item.tscn" id="10_pickup_item"]
 [ext_resource type="PackedScene" path="res://scenes/flashback_room.tscn" id="11_flashback"]
 [ext_resource type="Script" path="res://scripts/transition_marker.gd" id="12_marker"]
-[ext_resource type="AudioStream" path="res://assets/audio/metal_button_press1.mp3" id="11_ui_click"]
-[ext_resource type="AudioStream" path="res://assets/audio/Footstep Concrete 1.mp3" id="12_footstep"]
-[ext_resource type="AudioStream" path="res://assets/audio/jumpland.mp3" id="13_jump"]
-[ext_resource type="AudioStream" path="res://assets/audio/metal_interaction1.mp3" id="14_pickup"]
-[ext_resource type="AudioStream" path="res://assets/audio/magical_1.mp3" id="15_item_use"]
-[ext_resource type="AudioStream" path="res://assets/audio/swosh-01.mp3" id="16_throw"]
-[ext_resource type="AudioStream" path="res://assets/audio/metal_interaction2.mp3" id="17_place"]
-[ext_resource type="AudioStream" path="res://assets/audio/pop.mp3" id="18_swap"]
+[ext_resource type="AudioStream" path="res://assets/audio/final sounds/menu_click.mp3" id="20_menu_click"]
+[ext_resource type="AudioStream" path="res://assets/audio/final sounds/footstep_concrete_1.mp3" id="21_footstep"]
+[ext_resource type="AudioStream" path="res://assets/audio/final sounds/jump_land.mp3" id="22_jump"]
+[ext_resource type="AudioStream" path="res://assets/audio/final sounds/item_pickup.mp3" id="23_pickup"]
+[ext_resource type="AudioStream" path="res://assets/audio/final sounds/item_use.mp3" id="24_item_use"]
+[ext_resource type="AudioStream" path="res://assets/audio/final sounds/item_throw.mp3" id="25_throw"]
+[ext_resource type="AudioStream" path="res://assets/audio/final sounds/item_place.mp3" id="26_place"]
+[ext_resource type="AudioStream" path="res://assets/audio/final sounds/object_swap.mp3" id="27_swap"]
 [ext_resource type="PackedScene" uid="uid://d3yup5qrj0m10" path="res://assets/materials/animations/zombieChar.glb" id="19_zombie"]
+[ext_resource type="Script" path="res://scripts/collision_audio.gd" id="28_collision_audio"]
 
 [sub_resource type="BoxShape3D" id="FlashbackExitShape"]
 size = Vector3(1.2, 3, 2.5)
@@ -98,7 +99,7 @@ script = ExtResource("3_main_menu")
 
 [node name="ClickSound" type="AudioStreamPlayer" parent="MainMenu"]
 process_mode = 3
-stream = ExtResource("11_ui_click")
+stream = ExtResource("20_menu_click")
 
 [node name="Room" type="Node3D" parent="." unique_id=129221302]
 
@@ -197,31 +198,35 @@ shape = SubResource("CapsuleShape_player")
 
 [node name="FootstepSound" type="AudioStreamPlayer3D" parent="Player"]
 position = Vector3(0, -0.7, 0)
-stream = ExtResource("12_footstep")
+stream = ExtResource("21_footstep")
+volume_db = -8.0
 unit_size = 8.0
 
 [node name="JumpSound" type="AudioStreamPlayer3D" parent="Player"]
-stream = ExtResource("13_jump")
+stream = ExtResource("22_jump")
+volume_db = -9.0
 unit_size = 8.0
 
 [node name="PickupSound" type="AudioStreamPlayer3D" parent="Player"]
-stream = ExtResource("14_pickup")
+stream = ExtResource("23_pickup")
 unit_size = 8.0
 
 [node name="ItemUseSound" type="AudioStreamPlayer3D" parent="Player"]
-stream = ExtResource("15_item_use")
+stream = ExtResource("24_item_use")
+pitch_scale = 0.92
 unit_size = 8.0
 
 [node name="ThrowSound" type="AudioStreamPlayer3D" parent="Player"]
-stream = ExtResource("16_throw")
+stream = ExtResource("25_throw")
+pitch_scale = 0.85
 unit_size = 8.0
 
 [node name="PlaceSound" type="AudioStreamPlayer3D" parent="Player"]
-stream = ExtResource("17_place")
+stream = ExtResource("26_place")
 unit_size = 8.0
 
 [node name="SwapSound" type="AudioStreamPlayer3D" parent="Player"]
-stream = ExtResource("18_swap")
+stream = ExtResource("27_swap")
 unit_size = 8.0
 
 [node name="ZombieModel" parent="Player" unique_id=759617965 instance=ExtResource("19_zombie")]
@@ -249,6 +254,9 @@ surface_material_override/0 = SubResource("TestMaterial_blue")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="SmallBox" unique_id=718676204]
 shape = SubResource("BoxShape_small")
 
+[node name="CollisionSound" type="AudioStreamPlayer3D" parent="SmallBox"]
+script = ExtResource("28_collision_audio")
+
 [node name="MediumSphere" type="RigidBody3D" parent="." unique_id=547506107 groups=["swapAble", "swappable"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, -2)
 mass = 4.0
@@ -262,6 +270,9 @@ surface_material_override/0 = SubResource("TestMaterial_orange")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MediumSphere" unique_id=121771030]
 shape = SubResource("SphereShape_medium")
 
+[node name="CollisionSound" type="AudioStreamPlayer3D" parent="MediumSphere"]
+script = ExtResource("28_collision_audio")
+
 [node name="LargeCylinder" type="RigidBody3D" parent="." unique_id=1913122171 groups=["swapAble", "swappable"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1.2, -1)
 mass = 10.0
@@ -274,6 +285,9 @@ surface_material_override/0 = SubResource("TestMaterial_green")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LargeCylinder" unique_id=1552868974]
 shape = SubResource("CylinderShape_large")
+
+[node name="CollisionSound" type="AudioStreamPlayer3D" parent="LargeCylinder"]
+script = ExtResource("28_collision_audio")
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=935775243]
 
@@ -299,6 +313,9 @@ surface_material_override/0 = SubResource("TestMaterial_blue")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="SwapTestObject" unique_id=1091873219]
 shape = SubResource("BoxShape_small")
+
+[node name="CollisionSound" type="AudioStreamPlayer3D" parent="SwapTestObject"]
+script = ExtResource("28_collision_audio")
 
 [node name="PickupTestItem" parent="." instance=ExtResource("10_pickup_item")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0.5)
