@@ -159,7 +159,7 @@ func _unhandled_input(event: InputEvent) -> void:
 				if button != null:
 					weather_press_consumed = true
 					e_hold_pending = false
-					button.get_parent().activate(int(button.get_meta("weather_mode")))
+					button.get_parent().activate(int(button.get_meta("weather_mode")), self)
 					get_viewport().set_input_as_handled()
 					return
 			if event.pressed:
@@ -193,7 +193,9 @@ func _weather_button() -> StaticBody3D:
 	query.exclude = [get_rid()]
 	var hit := get_world_3d().direct_space_state.intersect_ray(query)
 	if not hit.is_empty() and hit.collider is StaticBody3D and hit.collider.is_in_group("weather_button"):
-		return hit.collider
+		var panel := hit.collider.get_parent()
+		if panel.has_method("is_player_in_zone") and panel.is_player_in_zone(self):
+			return hit.collider
 	return null
 
 func apply_look(relative: Vector2) -> void:

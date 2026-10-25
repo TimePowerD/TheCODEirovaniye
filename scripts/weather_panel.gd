@@ -4,9 +4,12 @@ extends Node3D
 @export_flags_3d_render var visual_layer: int = 1
 var buttons: Array[StaticBody3D] = []
 var lights: Array[StandardMaterial3D] = []
+var players_in_zone: Dictionary = {}
 const TITLES = ["1 — Солнечно", "2 — Тёплый вечер", "3 — Пасмурно", "4 — Гроза"]
 
 func _ready() -> void:
+	$Weather.body_entered.connect(_on_zone_body_entered)
+	$Weather.body_exited.connect(_on_zone_body_exited)
 	var backing := StaticBody3D.new()
 	backing.name = "Backing"
 	add_child(backing)
@@ -29,10 +32,22 @@ func _ready() -> void:
 	controller.weather_changed.connect(_sync)
 	_sync(controller.mode)
 
-func activate(index: int) -> bool:
-	if not controller.in_street:
+func activate(index: int, player: CharacterBody3D = null) -> bool:
+	if player == null:
+		player = controller.transition.player
+	if not controller.in_street or not is_player_in_zone(player):
 		return false
 	return controller.set_weather(index)
+
+func is_player_in_zone(player: Node) -> bool:
+	return is_instance_valid(player) and players_in_zone.has(player.get_instance_id())
+
+func _on_zone_body_entered(body: Node3D) -> void:
+	if body.is_in_group("player"):
+		players_in_zone[body.get_instance_id()] = weakref(body)
+
+func _on_zone_body_exited(body: Node3D) -> void:
+	players_in_zone.erase(body.get_instance_id())
 
 func _sync(index: int) -> void:
 	for i in range(lights.size()):
