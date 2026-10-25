@@ -239,7 +239,7 @@ func _update_footstep_sound(delta: float, is_moving_on_floor: bool) -> void:
 		footstep_timer = 0.36 if Input.is_key_pressed(KEY_SHIFT) else 0.5
 
 func _try_grab_object() -> void:
-	if held_object != null or held_item != null or not aim_ray.is_colliding():
+	if swap_in_progress or held_object != null or held_item != null or not aim_ray.is_colliding():
 		return
 	var collider := aim_ray.get_collider()
 	if not collider is RigidBody3D:
@@ -266,7 +266,7 @@ func _release_object() -> void:
 		gameplay_action.emit(&"release_grab")
 
 func _try_pickup_item() -> void:
-	if held_object != null or not aim_ray.is_colliding():
+	if swap_in_progress or held_object != null or held_item != null or not aim_ray.is_colliding():
 		return
 	var collider := aim_ray.get_collider()
 	if not collider is RigidBody3D:
@@ -307,6 +307,11 @@ func _play_item_use_animation() -> void:
 	item_use_tween.parallel().tween_property(held_item, "rotation", start_rotation, 0.18)
 
 func _pick_up_item(item: RigidBody3D) -> void:
+	# Also enforce the lock for calls from scripts, not only keyboard input.
+	if swap_in_progress or held_object != null or held_item != null or not is_instance_valid(item):
+		return
+	if item.is_queued_for_deletion() or item.has_meta("object_swap_locked"):
+		return
 	held_item = item
 	held_item_parent = item.get_parent()
 	held_item_collision_layer = item.collision_layer
@@ -407,6 +412,10 @@ func _build_interaction_hint() -> void:
 
 func _update_interaction_hint() -> void:
 	if not is_instance_valid(interaction_hint):
+		return
+	if swap_in_progress:
+		interaction_hint.text = "Выполняется обмен…\nЗахват, подбор и вращение временно недоступны"
+		interaction_hint.show()
 		return
 	if swap_error_remaining > 0.0:
 		interaction_hint.text = swap_error_text
@@ -528,6 +537,9 @@ func _update_held_object() -> void:
 	if not is_instance_valid(held_object):
 		held_object = null
 		return
+	if swap_in_progress or held_object.has_meta("object_swap_locked"):
+		_release_object()
+		return
 	if not Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
 		_release_object()
 		return
@@ -540,8 +552,12 @@ func _update_held_object() -> void:
 	held_object.apply_central_force(acceleration * held_object.mass)
 
 func _update_held_rotation(delta: float) -> void:
+	if swap_in_progress:
+		return
 	var target := _get_rotation_target()
 	if not rotation_mode or rotation_axis_index < 0 or target == null:
+		return
+	if target.has_meta("object_swap_locked"):
 		return
 	var rotation_axis := _get_rotation_axis()
 	if target == held_item:
@@ -593,8 +609,20 @@ func _build_rotation_gizmo() -> void:
 		ring_instance.mesh = ring_mesh
 		rotation_gizmo.add_child(ring_instance)
 
+func reset_interaction_modes() -> void:
+	# Releases may happen while gameplay input is paused and never reach us.
+	# Keep the carried item, but require a fresh press for rotation/placement.
+	_set_rotation_mode(false)
+	e_hold_pending = false
+	e_hold_elapsed = 0.0
+	_set_placement_mode(false)
+
 func _set_rotation_mode(active: bool) -> void:
+	if active and swap_in_progress:
+		return
 	if active and _get_rotation_target() == null:
+		return
+	if active and _get_rotation_target().has_meta("object_swap_locked"):
 		return
 	rotation_mode = active
 	rotation_axis_index = -1
@@ -730,12 +758,14 @@ func _is_swap_target_visible(target: Node3D) -> bool:
 	return not hit.is_empty() and (hit.collider == target or target.is_ancestor_of(hit.collider))
 
 func _start_swap(first: Node3D, second: Node3D) -> bool:
-	if swap_in_progress:
+	if swap_in_progress or held_object != null or held_item != null:
 		return false
 	if first == second or not _is_swap_target_visible(first) or not _is_swap_target_visible(second):
 		swap_error_text = SWAP_VISIBILITY_ERROR
 		swap_error_remaining = 1.5
 		_update_interaction_hint()
+		return false
+	if first.has_meta("object_swap_locked") or second.has_meta("object_swap_locked"):
 		return false
 	if not SwapSpaceCheck.can_swap(first, second, second.global_position, first.global_position):
 		swap_error_text = SWAP_SPACE_ERROR
