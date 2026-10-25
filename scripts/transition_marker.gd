@@ -45,6 +45,8 @@ func _update_preview() -> void:
 	if collision != null and collision.shape is BoxShape3D:
 		box_size = collision.shape.size
 		preview.transform = collision.transform
+	else:
+		preview.transform = Transform3D.IDENTITY
 	(preview.mesh as BoxMesh).size = box_size
 	var color := Color(1.0, 0.83, 0.4, 0.2) if transition_style == 1 else Color(0.25, 0.55, 0.95, 0.2)
 	var material := preview.material_override as StandardMaterial3D

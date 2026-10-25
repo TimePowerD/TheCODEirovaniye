@@ -11,6 +11,7 @@ var content: VBoxContainer
 var status_label: Label
 var game_started: bool = false
 var settings_return_to_pause: bool = false
+var starting_game: bool = false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -110,7 +111,9 @@ func _show_pause_menu() -> void:
 	_add_title("Игра приостановлена")
 	_add_button("Продолжить", _resume_game, true)
 	_add_button("Настройки", _show_pause_settings)
-	_add_button("Вернуться на точку сохранения", _return_to_checkpoint)
+	var checkpoint_button := _add_button("Вернуться на точку сохранения", _return_to_checkpoint)
+	var player := get_tree().current_scene.find_child("Player", true, false)
+	checkpoint_button.disabled = player != null and player.has_meta("location_transition_active")
 	_add_button("Выйти в главное меню", _return_to_main_menu)
 
 func _show_pause_settings() -> void:
@@ -125,21 +128,15 @@ func _resume_game() -> void:
 
 func _return_to_checkpoint() -> void:
 	var player := get_tree().current_scene.find_child("Player", true, false)
+	if player != null and player.has_meta("location_transition_active"):
+		return
 	if player != null and player.has_method("return_to_checkpoint"):
 		player.return_to_checkpoint()
 	_resume_game()
 
 func _return_to_main_menu() -> void:
-	var player := get_tree().current_scene.find_child("Player", true, false)
-	if player != null and player.has_method("return_to_checkpoint"):
-		player.return_to_checkpoint()
-	game_started = false
-	get_tree().paused = true
-	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	menu_root.show()
-	menu_root.modulate.a = 1.0
-	settings_return_to_pause = false
-	_show_main_menu()
+	# Recreate scene state too: overlays, route state, items and checkpoints.
+	get_tree().reload_current_scene()
 
 func _show_developers() -> void:
 	_clear_content()
@@ -151,11 +148,15 @@ func _show_developers() -> void:
 	_add_button("Назад", _show_main_menu)
 
 func _on_play_pressed() -> void:
+	if starting_game:
+		return
+	starting_game = true
 	var tween := create_tween()
 	tween.tween_property(menu_root, "modulate:a", 0.0, 1.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	tween.finished.connect(_start_game)
 
 func _start_game() -> void:
+	starting_game = false
 	game_started = true
 	menu_root.hide()
 	get_tree().paused = false
@@ -194,8 +195,10 @@ func _add_spacer(height: float) -> void:
 	spacer.custom_minimum_size.y = height
 	content.add_child(spacer)
 
-func _add_button(text: String, callback: Callable, primary: bool = false) -> void:
-	content.add_child(_make_button(text, callback, primary))
+func _add_button(text: String, callback: Callable, primary: bool = false) -> Button:
+	var button := _make_button(text, callback, primary)
+	content.add_child(button)
+	return button
 
 func _make_button(text: String, callback: Callable, primary: bool = false) -> Button:
 	var button := Button.new()

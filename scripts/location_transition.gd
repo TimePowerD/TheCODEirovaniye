@@ -4,7 +4,7 @@ extends Node
 @export var city_room: Node3D
 @export var player: CharacterBody3D
 @export var laboratory_light: OmniLight3D
-@export_enum("Dark", "Flashback") var transition_style: int = 0
+var transition_style: int = 0
 @export_range(0.1, 5.0, 0.05) var fade_out_duration: float = 1.2
 @export_range(0.0, 3.0, 0.05) var black_hold_duration: float = 0.65
 @export_range(0.1, 5.0, 0.05) var fade_in_duration: float = 2.0
@@ -16,12 +16,13 @@ var veil: ColorRect
 var fade_material: ShaderMaterial
 var ambience: AudioStreamPlayer
 var laboratory_energy: float
+var laboratory_dimmed := false
 
 func _ready() -> void:
 	transition_style = $LaboratoryExit.transition_style
 	laboratory_energy = laboratory_light.light_energy
 	var layer := CanvasLayer.new()
-	layer.layer = 30
+	layer.layer = 5 # Above the HUD, below the pause menu (layer 10).
 	add_child(layer)
 	veil = ColorRect.new()
 	veil.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -36,6 +37,10 @@ func _ready() -> void:
 	veil.hide()
 	$LaboratoryExit.body_entered.connect(_on_exit.bind(true))
 	city_room.get_node("ReturnArea").body_entered.connect(_on_exit.bind(false))
+	# Both routes use one continuous ambience, rather than stacking two hums.
+	ambience = player.get_node_or_null("TransitionAmbience") as AudioStreamPlayer
+	if ambience != null:
+		return
 	# A quiet, continuous electrical tone bridges the blackout without a cut.
 	var sound := AudioStreamWAV.new()
 	sound.format = AudioStreamWAV.FORMAT_16_BITS
@@ -49,10 +54,19 @@ func _ready() -> void:
 		samples.encode_s16(i * 2, int(wave * 2400.0))
 	sound.data = samples
 	ambience = AudioStreamPlayer.new()
+	ambience.name = "TransitionAmbience"
 	ambience.stream = sound
 	ambience.volume_db = -26.0
-	add_child(ambience)
+	player.add_child(ambience)
 	ambience.play()
+
+func _physics_process(_delta: float) -> void:
+	# Retry an occupied entrance after a swap or another transition finishes.
+	if transitioning or player.swap_in_progress or player.has_meta("location_transition_active"):
+		return
+	var area: Area3D = city_room.get_node("ReturnArea") if in_city else $LaboratoryExit
+	if area.overlaps_body(player):
+		_on_exit(player, not in_city)
 
 func _on_exit(body: Node3D, to_city: bool) -> void:
 	if body != player or transitioning or to_city == in_city:
@@ -61,8 +75,17 @@ func _on_exit(body: Node3D, to_city: bool) -> void:
 		return
 	if player.has_meta("location_transition_active"):
 		return
+	var entrance: Area3D = $LaboratoryExit if to_city else city_room.get_node("ReturnArea")
+	transition_style = entrance.transition_style
+	fade_material.shader = preload("res://scripts/flashback_fade.gdshader") if transition_style == 1 else preload("res://scripts/location_fade.gdshader")
+	fade_material.set_shader_parameter("darkness", 0.0)
+	if transition_style == 1:
+		fade_material.set_shader_parameter("blur_amount", 0.0)
 	player.set_meta("location_transition_active", true)
 	transitioning = true
+	if transition_style == 0 and to_city:
+		laboratory_energy = laboratory_light.light_energy
+		laboratory_dimmed = true
 	veil.show()
 	# Physical grabs stay in the source room; a pocket item travels in the hand.
 	player._release_object()
@@ -81,7 +104,7 @@ func _on_exit(body: Node3D, to_city: bool) -> void:
 	fade.tween_property(fade_material, "shader_parameter/darkness", 1.0, fade_out_duration)
 	if transition_style == 1:
 		fade.tween_property(fade_material, "shader_parameter/blur_amount", 1.0, fade_out_duration)
-	if transition_style == 0:
+	if transition_style == 0 and to_city:
 		fade.tween_property(laboratory_light, "light_energy", 0.0, fade_out_duration)
 	fade.tween_property(ambience, "pitch_scale", 0.8 if to_city else 1.0, fade_out_duration)
 	await fade.finished
@@ -91,8 +114,9 @@ func _on_exit(body: Node3D, to_city: bool) -> void:
 	player.camera_pivot.rotation = Vector3.ZERO
 	player.reset_physics_interpolation()
 	in_city = to_city
-	if not to_city and transition_style == 0:
+	if not to_city and laboratory_dimmed:
 		laboratory_light.light_energy = laboratory_energy
+		laboratory_dimmed = false
 	await get_tree().create_timer(black_hold_duration, false).timeout
 	var reveal := create_tween()
 	reveal.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)

@@ -718,7 +718,7 @@ func _update_swap_highlight() -> void:
 		var collider := aim_ray.get_collider()
 		if collider is Node3D:
 			var target: Node3D = collider
-			if target.is_in_group("swapAble"):
+			if target.is_in_group("swappable"):
 				next_target = target
 	if suppressed_hover_outline != null and next_target != suppressed_hover_outline:
 		suppressed_hover_outline = null
