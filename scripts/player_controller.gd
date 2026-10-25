@@ -98,6 +98,7 @@ var current_player_animation: StringName = &""
 const IDLE_ANIMATION: StringName = &"idleAnim"
 const WALK_ANIMATION: StringName = &"walkAnim"
 const JUMP_ANIMATION: StringName = &"jumpAnim_001"
+const FALL_RESPAWN_Y := -3.0
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -194,7 +195,7 @@ func _physics_process(delta: float) -> void:
 
 	if not is_on_floor():
 		velocity.y -= gravity * delta
-	elif Input.is_key_pressed(KEY_SPACE) and (not has_meta("tutorial_skip_hold") or has_meta("tutorial_jump_step")):
+	elif Input.is_key_pressed(KEY_SPACE):
 		velocity.y = jump_velocity
 		jump_sound.play()
 		gameplay_action.emit(&"jump")
@@ -218,7 +219,7 @@ func _physics_process(delta: float) -> void:
 	velocity.z = horizontal_velocity.z
 	var previous_position := global_position
 	move_and_slide()
-	if global_position.y < -20.0:
+	if global_position.y < FALL_RESPAWN_Y:
 		return_to_checkpoint()
 		return
 	if input_2d.length_squared() > 0.0:

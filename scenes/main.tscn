@@ -31,8 +31,13 @@
 [ext_resource type="Script" uid="uid://jres68cawvro" path="res://scripts/developer_tools.gd" id="30_developer"]
 [ext_resource type="Script" uid="uid://d3tec84dagtpc" path="res://scripts/developer_cutscene.gd" id="31_cutscene"]
 [ext_resource type="PackedScene" uid="uid://bvja2mj08ypks" path="res://assets/models/labFloor2x1SwapLevel.glb" id="31_dgi5k"]
+[ext_resource type="Script" uid="uid://cvud1ammrw4gc" path="res://scripts/tutorial_button.gd" id="32_dgi5k"]
 [ext_resource type="Script" uid="uid://wxiqca4vor6c" path="res://scripts/tutorial.gd" id="32_tutorial"]
 [ext_resource type="Script" path="res://scripts/wake_cutscene.gd" id="33_wake_cutscene"]
+[ext_resource type="PackedScene" uid="uid://o624yhsqsgsg" path="res://assets/models/labDoor.glb" id="33_j8jky"]
+[ext_resource type="Script" uid="uid://djsilhiyv7a0x" path="res://scripts/level_checkpoint.gd" id="35_j8jky"]
+[ext_resource type="PackedScene" uid="uid://cf4gnrq2fm0mr" path="res://assets/materials/animations/scientist.glb" id="36_fuf3a"]
+[ext_resource type="Script" uid="uid://h1h8wrp8phm8" path="res://scripts/scientist.gd" id="37_pibwh"]
 
 [sub_resource type="BoxShape3D" id="RoomFloorShape"]
 size = Vector3(18, 0.2, 32)
@@ -240,8 +245,35 @@ data = PackedVector3Array(-8.0002, 0, 7.9997997, 8, 0, -8, 8, 0, 7.9997997, -8.0
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_xaipn"]
 data = PackedVector3Array(-8.0002, 0, 7.9997997, 8, 0, -8, 8, 0, 7.9997997, -8.0002, 0, 7.9997997, -8.0002, 0, -8, 8, 0, -8, -8.0002, 0, 7.9997997, -10, 0, -8, -8.0002, 0, -8, -8.0002, 0, 7.9997997, -10, 0, 7.9997997, -10, 0, -8, 8, 0, 7.9997997, -8.0002, 0, 24, -8.0002, 0, 7.9997997, -8.0002, 0, 24, -10, 0, 7.9997997, -8.0002, 0, 7.9997997, 8, 0, 7.9997997, 8, 0, 24, -8.0002, 0, 24, -8.0002, 0, 24, -10, 0, 24, -10, 0, 7.9997997)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_kmb1v"]
+size = Vector3(0.55, 2.8, 2.03)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fuf3a"]
+size = Vector3(1.9, 0.12, 1.9)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dgi5k"]
+size = Vector3(1.9, 0.42, 1.9)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pibwh"]
+size = Vector3(0.55, 2.8, 2.03)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_c6pm6"]
+size = Vector3(0.55, 2.8, 2.03)
+
 [sub_resource type="BoxShape3D" id="FlashbackExitShape"]
 size = Vector3(1.2, 3, 2.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5he1u"]
+size = Vector3(2, 3, 8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5poiv"]
+size = Vector3(2, 3, 8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2cjbq"]
+size = Vector3(2, 3, 8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_chjal"]
+size = Vector3(2, 3, 8)
 
 [node name="Main" type="Node3D" unique_id=417695300]
 script = ExtResource("4_room_materials")
@@ -450,7 +482,7 @@ shape = SubResource("SphereShape_medium")
 script = ExtResource("28_collision_audio")
 
 [node name="LargeCylinder" type="RigidBody3D" parent="." unique_id=1913122171 groups=["swapAble", "swappable"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 167, 1.2, 198)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 161.04843, 1.2, 182.63205)
 mass = 10.0
 script = ExtResource("9_physics_object")
 
@@ -477,7 +509,7 @@ mouse_filter = 2
 script = ExtResource("2_crosshair")
 
 [node name="SwapTestObject" type="RigidBody3D" parent="." unique_id=1694027731 groups=["swapAble", "swappable"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 169, 0.5, 198)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 127.601, 0.5, 184.47037)
 mass = 2.0
 script = ExtResource("9_physics_object")
 
@@ -1527,14 +1559,60 @@ metadata/_godot_ai_physics_v1 = {
 [node name="Props" parent="LabModuleLibrary" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 48)
 
+[node name="Door" parent="LabModuleLibrary/Props" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.792999, 0, 131.20598)
+
+[node name="DoorCollisionBody" type="AnimatableBody3D" parent="LabModuleLibrary/Props/Door" index="1" unique_id=1730703271]
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Props/Door/DoorCollisionBody" unique_id=791144583]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.38, 0)
+shape = SubResource("BoxShape3D_kmb1v")
+
 [node name="Door_Label" parent="LabModuleLibrary/Props" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
 
 [node name="Button" parent="LabModuleLibrary/Props" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.116356, 0, 125.48718)
+
+[node name="ButtonSensor" type="Area3D" parent="LabModuleLibrary/Props/Button" index="1" unique_id=860879321]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 0)
+collision_layer = 0
+collision_mask = 3
+script = ExtResource("32_dgi5k")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Props/Button/ButtonSensor" unique_id=1385498169]
+shape = SubResource("BoxShape3D_fuf3a")
+
+[node name="ButtonCollisionBody" type="AnimatableBody3D" parent="LabModuleLibrary/Props/Button" index="2" unique_id=1501182605]
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Props/Button/ButtonCollisionBody" unique_id=1615545816]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.196, 0)
+shape = SubResource("BoxShape3D_dgi5k")
 
 [node name="Button_Label" parent="LabModuleLibrary/Props" index="3"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 5, 0)
+
+[node name="TutorialDoor2" parent="LabModuleLibrary/Props" index="4" unique_id=335796051 instance=ExtResource("33_j8jky")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.793, 0, 131.20598)
+
+[node name="DoorCollisionBody" type="AnimatableBody3D" parent="LabModuleLibrary/Props/TutorialDoor2" unique_id=377610058]
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Props/TutorialDoor2/DoorCollisionBody" unique_id=1281225645]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.38, 0)
+shape = SubResource("BoxShape3D_pibwh")
+
+[node name="TutorialDoor3" parent="LabModuleLibrary/Props" index="5" unique_id=353511235 instance=ExtResource("33_j8jky")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46.793, 0, 131.20598)
+
+[node name="DoorCollisionBody" type="AnimatableBody3D" parent="LabModuleLibrary/Props/TutorialDoor3" unique_id=346580228]
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Props/TutorialDoor3/DoorCollisionBody" unique_id=499416984]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.38, 0)
+shape = SubResource("BoxShape3D_c6pm6")
 
 [node name="FlashbackRoom" parent="." unique_id=1227615780 instance=ExtResource("11_flashback")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 0, 0)
@@ -1580,5 +1658,55 @@ omni_range = 16.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 95, 4, 179)
 light_energy = 1.6
 omni_range = 16.0
+
+[node name="LevelCheckpoints" type="Node3D" parent="." unique_id=540498410]
+
+[node name="Level1Checkpoint" type="Area3D" parent="LevelCheckpoints" unique_id=983535690]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 151, 1.5, 180)
+collision_layer = 0
+script = ExtResource("35_j8jky")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/Level1Checkpoint" unique_id=529709638]
+shape = SubResource("BoxShape3D_5he1u")
+
+[node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/Level1Checkpoint" unique_id=7813662]
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
+
+[node name="Level2Checkpoint" type="Area3D" parent="LevelCheckpoints" unique_id=1259052853]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 133, 1.5, 180)
+collision_layer = 0
+script = ExtResource("35_j8jky")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/Level2Checkpoint" unique_id=1838546307]
+shape = SubResource("BoxShape3D_5poiv")
+
+[node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/Level2Checkpoint" unique_id=807021569]
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
+
+[node name="Level3Checkpoint" type="Area3D" parent="LevelCheckpoints" unique_id=1667449562]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 115, 1.5, 180)
+collision_layer = 0
+script = ExtResource("35_j8jky")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/Level3Checkpoint" unique_id=426440603]
+shape = SubResource("BoxShape3D_2cjbq")
+
+[node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/Level3Checkpoint" unique_id=925194398]
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
+
+[node name="Level4Checkpoint" type="Area3D" parent="LevelCheckpoints" unique_id=1626471330]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 97, 1.5, 179)
+collision_layer = 0
+script = ExtResource("35_j8jky")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/Level4Checkpoint" unique_id=1729734908]
+shape = SubResource("BoxShape3D_chjal")
+
+[node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/Level4Checkpoint" unique_id=600734842]
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
+
+[node name="scientist" parent="." unique_id=2089029073 instance=ExtResource("36_fuf3a")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 161.70422, 0.0017670757, 187.98111)
+script = ExtResource("37_pibwh")
 
 [editable path="LabModuleLibrary"]

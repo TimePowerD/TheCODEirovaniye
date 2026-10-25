@@ -20,6 +20,7 @@ var pivot: Node3D
 var original_position := Vector3.ZERO
 var original_rotation := Vector3.ZERO
 var original_body_yaw := 0.0
+var original_player_position := Vector3.ZERO
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -124,6 +125,7 @@ func play() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 	pivot = player.get_node("CameraPivot") as Node3D
+	original_player_position = player.global_position
 	original_position = pivot.position
 	original_rotation = pivot.rotation
 	original_body_yaw = player.rotation.y
@@ -178,6 +180,7 @@ func _skip() -> void:
 func _finish() -> void:
 	if not is_instance_valid(player):
 		return
+	player.global_position = original_player_position
 	player.remove_meta("cutscene_active")
 	player.set_physics_process(true)
 	player.set_process_unhandled_input(true)
