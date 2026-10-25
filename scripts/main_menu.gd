@@ -303,6 +303,7 @@ func start_test_session() -> void:
 	menu_root.hide()
 	get_tree().paused = false
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	_start_wake_cutscene()
 
 func _show_main_menu() -> void:
 	_clear_content()
@@ -434,6 +435,12 @@ func _start_game() -> void:
 	menu_root.hide()
 	get_tree().paused = false
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	_start_wake_cutscene()
+
+func _start_wake_cutscene() -> void:
+	var cutscene := get_tree().current_scene.find_child("WakeCutscene", true, false)
+	if cutscene != null and cutscene.has_method("play"):
+		cutscene.call_deferred("play")
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()

@@ -27,6 +27,7 @@
 [ext_resource type="AudioStream" path="res://assets/audio/final sounds/object_swap.mp3" id="27_swap"]
 [ext_resource type="PackedScene" uid="uid://d3yup5qrj0m10" path="res://assets/materials/animations/zombieChar.glb" id="19_zombie"]
 [ext_resource type="Script" path="res://scripts/collision_audio.gd" id="28_collision_audio"]
+[ext_resource type="Script" path="res://scripts/wake_cutscene.gd" id="33_wake_cutscene"]
 
 [sub_resource type="BoxShape3D" id="FlashbackExitShape"]
 size = Vector3(1.2, 3, 2.5)
@@ -192,6 +193,10 @@ shape = SubResource("RoomWallShape")
 [node name="Player" type="CharacterBody3D" parent="." unique_id=1140905256]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 4)
 script = ExtResource("1_player")
+
+[node name="WakeCutscene" type="CanvasLayer" parent="." node_paths=PackedStringArray("player_path")]
+script = ExtResource("33_wake_cutscene")
+player_path = NodePath("../Player")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=1231908845]
 shape = SubResource("CapsuleShape_player")
