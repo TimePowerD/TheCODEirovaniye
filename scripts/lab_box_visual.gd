@@ -1,9 +1,11 @@
 @tool
 extends Node3D
 
-@onready var imported_model: Node3D = $ImportedModel
+@onready var imported_model: Node = get_node_or_null("ImportedModel")
 
 func _ready() -> void:
+	if not imported_model is Node3D:
+		return
 	var pending: Array[Node] = [imported_model]
 	while not pending.is_empty():
 		var node: Node = pending.pop_back()

@@ -1,0 +1,95 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/weighted_plate.tscn" id="1_plate"]
+[ext_resource type="Material" path="res://assets/materials/lab_wall.tres" id="2_wall_material"]
+
+[sub_resource type="BoxMesh" id="wall_panel_mesh"]
+size = Vector3(1, 1, 1)
+
+[sub_resource type="BoxShape3D" id="wall_panel_shape"]
+size = Vector3(1, 1, 1)
+
+[node name="WeightPuzzleWall" type="Node3D"]
+
+[node name="Wall" type="StaticBody3D" parent="."]
+
+[node name="LowerVisual" type="MeshInstance3D" parent="Wall"]
+position = Vector3(0, 0.74, 0)
+scale = Vector3(0.3, 1.48, 16)
+mesh = SubResource("wall_panel_mesh")
+surface_material_override/0 = ExtResource("2_wall_material")
+
+[node name="LowerCollision" type="CollisionShape3D" parent="Wall"]
+position = Vector3(0, 0.74, 0)
+scale = Vector3(0.3, 1.48, 16)
+shape = SubResource("wall_panel_shape")
+
+[node name="WindowBridgeVisual" type="MeshInstance3D" parent="Wall"]
+position = Vector3(0, 1.83, 0)
+scale = Vector3(0.3, 0.14, 16)
+mesh = SubResource("wall_panel_mesh")
+surface_material_override/0 = ExtResource("2_wall_material")
+
+[node name="WindowBridgeCollision" type="CollisionShape3D" parent="Wall"]
+position = Vector3(0, 1.83, 0)
+scale = Vector3(0.3, 0.14, 16)
+shape = SubResource("wall_panel_shape")
+
+[node name="TopVisual" type="MeshInstance3D" parent="Wall"]
+position = Vector3(0, 5.5, 0)
+scale = Vector3(0.3, 5, 16)
+mesh = SubResource("wall_panel_mesh")
+surface_material_override/0 = ExtResource("2_wall_material")
+
+[node name="TopCollision" type="CollisionShape3D" parent="Wall"]
+position = Vector3(0, 5.5, 0)
+scale = Vector3(0.3, 5, 16)
+shape = SubResource("wall_panel_shape")
+
+[node name="UpperLeftVisual" type="MeshInstance3D" parent="Wall"]
+position = Vector3(0, 2.45, -5.6875)
+scale = Vector3(0.3, 1.1, 4.625)
+mesh = SubResource("wall_panel_mesh")
+surface_material_override/0 = ExtResource("2_wall_material")
+
+[node name="UpperLeftCollision" type="CollisionShape3D" parent="Wall"]
+position = Vector3(0, 2.45, -5.6875)
+scale = Vector3(0.3, 1.1, 4.625)
+shape = SubResource("wall_panel_shape")
+
+[node name="UpperRightVisual" type="MeshInstance3D" parent="Wall"]
+position = Vector3(0, 2.45, 2.6875)
+scale = Vector3(0.3, 1.1, 10.625)
+mesh = SubResource("wall_panel_mesh")
+surface_material_override/0 = ExtResource("2_wall_material")
+
+[node name="UpperRightCollision" type="CollisionShape3D" parent="Wall"]
+position = Vector3(0, 2.45, 2.6875)
+scale = Vector3(0.3, 1.1, 10.625)
+shape = SubResource("wall_panel_shape")
+
+[node name="WindowLeftVisual" type="MeshInstance3D" parent="Wall"]
+position = Vector3(0, 1.62, -7)
+scale = Vector3(0.3, 0.28, 2)
+mesh = SubResource("wall_panel_mesh")
+surface_material_override/0 = ExtResource("2_wall_material")
+
+[node name="WindowLeftCollision" type="CollisionShape3D" parent="Wall"]
+position = Vector3(0, 1.62, -7)
+scale = Vector3(0.3, 0.28, 2)
+shape = SubResource("wall_panel_shape")
+
+[node name="WindowRightVisual" type="MeshInstance3D" parent="Wall"]
+position = Vector3(0, 1.62, 4)
+scale = Vector3(0.3, 0.28, 8)
+mesh = SubResource("wall_panel_mesh")
+surface_material_override/0 = ExtResource("2_wall_material")
+
+[node name="WindowRightCollision" type="CollisionShape3D" parent="Wall"]
+position = Vector3(0, 1.62, 4)
+scale = Vector3(0.3, 0.28, 8)
+shape = SubResource("wall_panel_shape")
+
+[node name="WeightPlate" parent="." instance=ExtResource("1_plate")]
+position = Vector3(1.15, 0, -3)
+minimum_weight = 2.0

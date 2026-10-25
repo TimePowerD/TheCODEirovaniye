@@ -6,11 +6,10 @@ var tutorial_sprint_distance := 0.0
 var tutorial_look_distance := 0.0
 var swap_error_remaining := 0.0
 var weather_press_consumed := false
-const SWAP_VISIBILITY_ERROR := "Оба объекта должны быть видны и не закрыты препятствиями"
 const SWAP_SPACE_ERROR := "Недостаточно свободного места для обмена"
+const SWAP_ROOM_ERROR := "Обменивать объекты можно только в пределах одной комнаты"
 const SwapSpaceCheck := preload("res://scripts/swap_space_check.gd")
 const SwapMotionPlanner := preload("res://scripts/swap_motion_planner.gd")
-const SwapVisibility := preload("res://scripts/swap_visibility.gd")
 var swap_error_text := SWAP_SPACE_ERROR
 var swap_body_states: Array[Dictionary] = []
 var swap_source_transforms: Array[Transform3D] = []
@@ -62,6 +61,7 @@ var footstep_timer: float = 0.0
 var gravity: float = float(ProjectSettings.get_setting("physics/3d/default_gravity"))
 var hovered_target: Node3D
 var selected_target: Node3D
+var swap_cycle_index := 0
 var suppressed_hover_outline: Node3D
 var outline_states: Dictionary = {}
 var hover_outline_material: ShaderMaterial
@@ -153,7 +153,15 @@ func _unhandled_input(event: InputEvent) -> void:
 			else:
 				_release_object()
 	elif event is InputEventKey:
-		if event.keycode == KEY_R:
+		if event.keycode == KEY_TAB and event.pressed and not event.echo:
+			_cycle_swap_selection()
+			get_viewport().set_input_as_handled()
+		elif event.keycode == KEY_BACKSPACE and event.pressed and not event.echo and selected_target != null:
+			selected_target = null
+			swap_cycle_index = 0
+			_refresh_outlines()
+			_update_interaction_hint()
+		elif event.keycode == KEY_R:
 			if not event.echo:
 				_set_rotation_mode(event.pressed)
 		elif event.keycode == KEY_E and not event.echo:
@@ -515,6 +523,10 @@ func _update_interaction_hint() -> void:
 					hint_text = "ЛКМ — выбрать для обмена\nПКМ — перемещать\nR — вращать"
 				else:
 					hint_text = "ПКМ — перемещать\nR — вращать"
+	if selected_target != null:
+		hint_text += "\nTab — обменять с ближайшим объектом комнаты · Backspace — отменить"
+	elif has_swap_technology:
+		hint_text += "\nTab — выбрать объект для обмена"
 	interaction_hint.text = hint_text
 	interaction_hint.visible = not hint_text.is_empty()
 
@@ -694,6 +706,7 @@ func reset_interaction_modes() -> void:
 
 func clear_swap_selection() -> void:
 	selected_target = null
+	swap_cycle_index = 0
 	hovered_target = null
 	suppressed_hover_outline = null
 	_refresh_outlines()
@@ -826,7 +839,60 @@ func _handle_swap_click() -> void:
 	elif selected_target != hovered_target:
 		if _start_swap(selected_target, hovered_target):
 			selected_target = null
+			swap_cycle_index = 0
 	_refresh_outlines()
+	_update_interaction_hint()
+
+func _cycle_swap_selection() -> void:
+	if not has_swap_technology or swap_in_progress or held_object != null or held_item != null:
+		return
+	if selected_target != null and not is_instance_valid(selected_target):
+		selected_target = null
+		swap_cycle_index = 0
+	var current_room := _room_anchor_for_position(global_position)
+	var candidates: Array[Node3D] = []
+	for candidate in get_tree().get_nodes_in_group("swappable"):
+		if not candidate is Node3D or candidate == selected_target or not is_instance_valid(candidate):
+			continue
+		if candidate.get("physics_enabled") != true or candidate.has_meta("object_swap_locked"):
+			continue
+		if _room_anchor_for_position(candidate.global_position) != current_room:
+			continue
+		candidates.append(candidate)
+	candidates.sort_custom(func(a: Node3D, b: Node3D) -> bool:
+		return global_position.distance_squared_to(a.global_position) < global_position.distance_squared_to(b.global_position)
+	)
+	if candidates.is_empty():
+		swap_error_text = "В этой комнате нет доступной пары для обмена"
+		swap_error_remaining = 1.5
+		_update_interaction_hint()
+		return
+	if selected_target == null:
+		selected_target = candidates[0]
+		swap_cycle_index = 0
+		gameplay_action.emit(&"select_swap")
+	else:
+		var candidate := candidates[swap_cycle_index % candidates.size()]
+		swap_cycle_index = (swap_cycle_index + 1) % candidates.size()
+		if _start_swap(selected_target, candidate):
+			selected_target = null
+			swap_cycle_index = 0
+	_refresh_outlines()
+	_update_interaction_hint()
+
+func _room_anchor_for_position(position: Vector3) -> Node3D:
+	var closest: Node3D
+	var closest_distance := INF
+	for anchor in get_tree().get_nodes_in_group("swap_room_anchor"):
+		if not anchor is Node3D or not is_instance_valid(anchor):
+			continue
+		var offset: Vector3 = anchor.global_position - position
+		offset.y = 0.0
+		var distance := offset.length_squared()
+		if distance < closest_distance:
+			closest_distance = distance
+			closest = anchor
+	return closest
 
 func _start_swap(first: Node3D, second: Node3D) -> bool:
 	if swap_in_progress or held_object != null or held_item != null:
@@ -837,8 +903,11 @@ func _start_swap(first: Node3D, second: Node3D) -> bool:
 		return false
 	if first.has_meta("object_swap_locked") or second.has_meta("object_swap_locked"):
 		return false
-	if not _is_swap_target_visible(first) or not _is_swap_target_visible(second):
-		swap_error_text = SWAP_VISIBILITY_ERROR
+	var player_room := _room_anchor_for_position(global_position)
+	if player_room == null \
+		or _room_anchor_for_position(first.global_position) != player_room \
+		or _room_anchor_for_position(second.global_position) != player_room:
+		swap_error_text = SWAP_ROOM_ERROR
 		swap_error_remaining = 1.5
 		_update_interaction_hint()
 		return false
@@ -870,13 +939,6 @@ func _start_swap(first: Node3D, second: Node3D) -> bool:
 	tween.tween_method(update_motion, 0.0, 1.0, maxf(swap_duration, 0.01))
 	tween.finished.connect(_complete_swap.bind(first, second, first_start, second_start))
 	return true
-
-func _is_swap_target_visible(target: Node3D) -> bool:
-	if not is_instance_valid(target):
-		return false
-	var camera: Camera3D = camera_pivot.get_node("Camera3D")
-	var excluded: Array[RID] = [get_rid()]
-	return SwapVisibility.is_visible(target, camera, aim_ray.collision_mask, excluded)
 
 func _update_swap_motion(progress: float) -> void:
 	var shake_envelope := sin(progress * PI)
