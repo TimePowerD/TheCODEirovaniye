@@ -50,7 +50,7 @@ func _check() -> void:
 	player.hovered_target = second
 	player._handle_swap_click()
 	assert(not player.swap_in_progress and player.selected_target == first)
-	assert(player.interaction_hint.text == player.SWAP_SPACE_ERROR)
+	assert(player.interaction_hint.text.begins_with(player.SWAP_SPACE_ERROR))
 	assert(first.global_position == Vector3(-2, 20, 0) and second.global_position == Vector3(2, 20, 0))
 	# A wall on layer 1 must block just like a separate physical object on layer 2.
 	obstacle.collision_layer = 1

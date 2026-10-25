@@ -8,8 +8,11 @@ var swap_error_remaining := 0.0
 const SWAP_VISIBILITY_ERROR := "Оба объекта должны быть видны и не закрыты препятствиями"
 const SWAP_SPACE_ERROR := "Недостаточно свободного места для обмена"
 const SwapSpaceCheck := preload("res://scripts/swap_space_check.gd")
+const SwapMotionPlanner := preload("res://scripts/swap_motion_planner.gd")
 var swap_error_text := SWAP_VISIBILITY_ERROR
 var swap_body_states: Array[Dictionary] = []
+var swap_source_transforms: Array[Transform3D] = []
+var swap_visual_states: Array[Dictionary] = []
 
 @export var walk_speed: float = 5.0
 @export var sprint_multiplier: float = 1.4
@@ -767,13 +770,15 @@ func _start_swap(first: Node3D, second: Node3D) -> bool:
 		return false
 	if first.has_meta("object_swap_locked") or second.has_meta("object_swap_locked"):
 		return false
-	if not SwapSpaceCheck.can_swap(first, second, second.global_position, first.global_position):
-		swap_error_text = SWAP_SPACE_ERROR
+	var plan := SwapMotionPlanner.create_plan(first, second, first.global_transform, second.global_transform)
+	if not plan.ok:
+		swap_error_text = "%s: %s" % [SWAP_SPACE_ERROR, plan.reason]
 		swap_error_remaining = 1.5
 		_update_interaction_hint()
 		return false
 	swap_error_remaining = 0.0
 	swap_in_progress = true
+	swap_source_transforms.assign([first.global_transform, second.global_transform])
 	for target in [first, second]:
 		var state := {"target": target, "transform": target.global_transform}
 		target.set_meta("object_swap_locked", true)
@@ -783,17 +788,18 @@ func _start_swap(first: Node3D, second: Node3D) -> bool:
 			state["angular_velocity"] = target.angular_velocity
 			target.freeze = true
 		swap_body_states.append(state)
+		for mesh in _get_target_meshes(target):
+			if _can_animate_swap_mesh(mesh):
+				swap_visual_states.append({"mesh": mesh, "position": mesh.position, "direction": 1.0 if target == first else -1.0})
 	var first_start := first.global_position
 	var second_start := second.global_position
 	var tween := create_tween()
-	var update_motion := Callable(self, "_update_swap_motion").bind(first, second, first_start, second_start)
+	var update_motion := Callable(self, "_update_swap_motion")
 	tween.tween_method(update_motion, 0.0, 1.0, maxf(swap_duration, 0.01))
 	tween.finished.connect(_complete_swap.bind(first, second, first_start, second_start))
 	return true
 
-func _update_swap_motion(progress: float, first: Node3D, second: Node3D, first_start: Vector3, second_start: Vector3) -> void:
-	if not is_instance_valid(first) or not is_instance_valid(second):
-		return
+func _update_swap_motion(progress: float) -> void:
 	var shake_envelope := sin(progress * PI)
 	var shake_phase := progress * TAU * 8.0
 	var shake_offset := Vector3(
@@ -801,14 +807,27 @@ func _update_swap_motion(progress: float, first: Node3D, second: Node3D, first_s
 		cos(shake_phase * 0.83),
 		sin(shake_phase * 1.17)
 	) * swap_shake_strength * shake_envelope
-	first.global_position = first_start + shake_offset
-	second.global_position = second_start - shake_offset
+	# Shake visuals only: frozen colliders must not nudge neighbors or the floor.
+	for visual in swap_visual_states:
+		var mesh = visual.mesh
+		if is_instance_valid(mesh):
+			mesh.position = visual.position + mesh.get_parent().global_basis.inverse() * shake_offset * visual.direction
 
 func _complete_swap(first: Node3D, second: Node3D, first_start: Vector3, second_start: Vector3) -> void:
-	var success := SwapSpaceCheck.can_swap(first, second, second_start, first_start)
+	for visual in swap_visual_states:
+		if is_instance_valid(visual.mesh):
+			visual.mesh.position = visual.position
+	swap_visual_states.clear()
+	var plan := SwapMotionPlanner.create_plan(first, second, swap_source_transforms[0], swap_source_transforms[1])
+	var success: bool = plan.ok
 	if success:
-		first.global_position = second_start
-		second.global_position = first_start
+		for push in plan.pushes:
+			var body: RigidBody3D = push.body
+			body.global_transform = push.transform
+			body.sleeping = false
+			body.reset_physics_interpolation()
+		first.global_transform = plan.first
+		second.global_transform = plan.second
 		_spawn_swap_puff(first_start)
 		_spawn_swap_puff(second_start)
 		swap_sound.play()
@@ -817,7 +836,7 @@ func _complete_swap(first: Node3D, second: Node3D, first_start: Vector3, second_
 		_animate_swap_visuals(first)
 		_animate_swap_visuals(second)
 	else:
-		swap_error_text = SWAP_SPACE_ERROR
+		swap_error_text = "%s: %s" % [SWAP_SPACE_ERROR, plan.reason]
 		swap_error_remaining = 1.5
 		if is_instance_valid(first):
 			selected_target = first
@@ -833,14 +852,18 @@ func _complete_swap(first: Node3D, second: Node3D, first_start: Vector3, second_
 			target.linear_velocity = Vector3.ZERO if success else state.linear_velocity
 			target.angular_velocity = Vector3.ZERO if success else state.angular_velocity
 	swap_body_states.clear()
+	swap_source_transforms.clear()
 	swap_in_progress = false
 	_refresh_outlines()
 	_update_interaction_hint()
 
+func _can_animate_swap_mesh(mesh: MeshInstance3D) -> bool:
+	return mesh.find_children("*", "CollisionShape3D", true, false).is_empty() and mesh.find_children("*", "CollisionPolygon3D", true, false).is_empty() and mesh.find_children("*", "CollisionObject3D", true, false).is_empty()
+
 func _animate_swap_visuals(target: Node3D) -> void:
 	# Animate only render meshes: the checked physics volume stays full-size.
 	for mesh in _get_target_meshes(target):
-		if not mesh.find_children("*", "CollisionShape3D", true, false).is_empty() or not mesh.find_children("*", "CollisionPolygon3D", true, false).is_empty() or not mesh.find_children("*", "CollisionObject3D", true, false).is_empty():
+		if not _can_animate_swap_mesh(mesh):
 			continue
 		var original_scale := mesh.scale
 		mesh.scale = original_scale * 0.12
