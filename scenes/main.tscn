@@ -9,6 +9,9 @@
 [ext_resource type="PackedScene" uid="uid://bbfbr5domwuds" path="res://assets/models/labWall1x1.glb" id="7_wall"]
 [ext_resource type="PackedScene" uid="uid://c3proi1cxch5g" path="res://assets/models/labWallEntr.glb" id="8_entrance_wall"]
 [ext_resource type="PackedScene" path="res://scenes/city_room.tscn" id="9_city"]
+[ext_resource type="Script" path="res://scripts/developer_tools.gd" id="30_developer"]
+[ext_resource type="Script" path="res://scripts/developer_cutscene.gd" id="31_cutscene"]
+[ext_resource type="Script" path="res://scripts/tutorial.gd" id="32_tutorial"]
 [ext_resource type="Script" path="res://scripts/location_transition.gd" id="10_transition"]
 [ext_resource type="Script" path="res://scripts/physics_object.gd" id="9_physics_object"]
 [ext_resource type="PackedScene" path="res://scenes/items/pickup_test_item.tscn" id="10_pickup_item"]
@@ -306,6 +309,20 @@ omni_range = 14.586
 
 [node name="CityRoom" parent="." instance=ExtResource("9_city")]
 position = Vector3(40, 0, 0)
+
+[node name="DeveloperCameraPreview" type="Node" parent="." node_paths=PackedStringArray("player")]
+script = ExtResource("31_cutscene")
+player = NodePath("../Player")
+
+[node name="DeveloperTools" type="CanvasLayer" parent="." node_paths=PackedStringArray("player", "menu")]
+script = ExtResource("30_developer")
+player = NodePath("../Player")
+menu = NodePath("../MainMenu")
+
+[node name="Tutorial" type="CanvasLayer" parent="." node_paths=PackedStringArray("player", "menu")]
+script = ExtResource("32_tutorial")
+player = NodePath("../Player")
+menu = NodePath("../MainMenu")
 
 [node name="LocationTransition" type="Node" parent="." node_paths=PackedStringArray("city_room", "player", "laboratory_light")]
 script = ExtResource("10_transition")

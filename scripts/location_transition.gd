@@ -61,6 +61,8 @@ func _ready() -> void:
 	ambience.play()
 
 func _physics_process(_delta: float) -> void:
+	if player.has_meta("developer_tools_open") or player.has_meta("cutscene_active"):
+		return
 	# Retry an occupied entrance after a swap or another transition finishes.
 	if transitioning or player.swap_in_progress or player.has_meta("location_transition_active"):
 		return
@@ -69,6 +71,8 @@ func _physics_process(_delta: float) -> void:
 		_on_exit(player, not in_city)
 
 func _on_exit(body: Node3D, to_city: bool) -> void:
+	if player.has_meta("developer_tools_open") or player.has_meta("cutscene_active"):
+		return
 	if body != player or transitioning or to_city == in_city:
 		return
 	if player.swap_in_progress:
@@ -132,3 +136,13 @@ func _on_exit(body: Node3D, to_city: bool) -> void:
 	veil.hide()
 	transitioning = false
 	player.remove_meta("location_transition_active")
+	if transition_style == 1:
+		player.gameplay_action.emit(&"flashback_enter" if to_city else &"flashback_return")
+	else:
+		player.gameplay_action.emit(&"location_enter" if to_city else &"location_return")
+
+func request_transition(to_city: bool) -> bool:
+	if transitioning or to_city == in_city or player.swap_in_progress or player.has_meta("location_transition_active") or player.has_meta("cutscene_active") or player.has_meta("developer_tools_open"):
+		return false
+	_on_exit(player, to_city)
+	return transitioning

@@ -1,5 +1,10 @@
 extends CharacterBody3D
 
+signal gameplay_action(action: StringName)
+var tutorial_walk_distance := 0.0
+var tutorial_sprint_distance := 0.0
+var tutorial_look_distance := 0.0
+
 @export var walk_speed: float = 5.0
 @export var sprint_multiplier: float = 1.4
 @export var jump_velocity: float = 4.5
@@ -115,9 +120,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if _get_rotation_target() != null and rotation_mode:
 			_update_rotation_from_cursor(event.position)
 		elif Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-			rotate_y(-event.relative.x * mouse_sensitivity)
-			camera_pivot.rotate_x(-event.relative.y * mouse_sensitivity)
-			camera_pivot.rotation.x = clamp(camera_pivot.rotation.x, deg_to_rad(-85.0), deg_to_rad(85.0))
+			apply_look(event.relative)
 	elif event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 			_handle_swap_click()
@@ -151,6 +154,15 @@ func _unhandled_input(event: InputEvent) -> void:
 			elif event.keycode == KEY_Q and held_item != null:
 				_throw_item()
 
+func apply_look(relative: Vector2) -> void:
+	rotate_y(-relative.x * mouse_sensitivity)
+	camera_pivot.rotate_x(-relative.y * mouse_sensitivity)
+	camera_pivot.rotation.x = clampf(camera_pivot.rotation.x, deg_to_rad(-85.0), deg_to_rad(85.0))
+	tutorial_look_distance += relative.length()
+	if tutorial_look_distance >= 80.0:
+		tutorial_look_distance = 0.0
+		gameplay_action.emit(&"look")
+
 func _physics_process(delta: float) -> void:
 	if e_hold_pending and is_instance_valid(held_item) and Input.is_key_pressed(KEY_E):
 		e_hold_elapsed += delta
@@ -164,6 +176,7 @@ func _physics_process(delta: float) -> void:
 	elif Input.is_key_pressed(KEY_SPACE):
 		velocity.y = jump_velocity
 		jump_sound.play()
+		gameplay_action.emit(&"jump")
 
 	var input_2d := Vector2.ZERO
 	input_2d.y -= float(Input.is_key_pressed(KEY_W))
@@ -181,7 +194,19 @@ func _physics_process(delta: float) -> void:
 	horizontal_velocity = horizontal_velocity.move_toward(target_horizontal_velocity, acceleration * delta)
 	velocity.x = horizontal_velocity.x
 	velocity.z = horizontal_velocity.z
+	var previous_position := global_position
 	move_and_slide()
+	if input_2d.length_squared() > 0.0:
+		var traveled := Vector2(global_position.x - previous_position.x, global_position.z - previous_position.z).length()
+		tutorial_walk_distance += traveled
+		if Input.is_key_pressed(KEY_SHIFT):
+			tutorial_sprint_distance += traveled
+			if tutorial_sprint_distance >= 1.0:
+				tutorial_sprint_distance = 0.0
+				gameplay_action.emit(&"sprint")
+		if tutorial_walk_distance >= 1.0:
+			tutorial_walk_distance = 0.0
+			gameplay_action.emit(&"walk")
 	_update_footstep_sound(delta, is_on_floor() and not input_2d.is_zero_approx())
 	if placement_mode:
 		_update_placement_preview()
@@ -217,12 +242,16 @@ func _try_grab_object() -> void:
 	held_object = target
 	held_object.sleeping = false
 	add_collision_exception_with(held_object)
+	gameplay_action.emit(&"grab")
 
 func _release_object() -> void:
+	var was_holding := is_instance_valid(held_object)
 	_set_rotation_mode(false)
 	if is_instance_valid(held_object):
 		remove_collision_exception_with(held_object)
 	held_object = null
+	if was_holding:
+		gameplay_action.emit(&"release_grab")
 
 func _try_pickup_item() -> void:
 	if held_object != null or not aim_ray.is_colliding():
@@ -244,6 +273,7 @@ func _use_held_item() -> void:
 		held_item.call("use_item", self)
 		item_use_sound.play()
 		_play_item_use_animation()
+		gameplay_action.emit(&"use")
 
 func _play_item_use_animation() -> void:
 	if not is_instance_valid(held_item):
@@ -277,6 +307,7 @@ func _pick_up_item(item: RigidBody3D) -> void:
 	item.linear_velocity = Vector3.ZERO
 	item.angular_velocity = Vector3.ZERO
 	pickup_sound.play()
+	gameplay_action.emit(&"pickup")
 
 func _drop_item() -> void:
 	if not is_instance_valid(held_item):
@@ -294,6 +325,7 @@ func _throw_item() -> void:
 	if item != null and not item.freeze:
 		throw_sound.play()
 		item.apply_central_impulse((forward + Vector3.UP * throw_lift).normalized() * throw_impulse)
+		gameplay_action.emit(&"throw")
 
 func _release_held_item(drop_position: Vector3, drop_basis: Basis, initial_velocity: Vector3) -> RigidBody3D:
 	var item: RigidBody3D = held_item
@@ -420,6 +452,7 @@ func _place_held_item() -> void:
 	var item := _release_held_item(placement_position + placement_normal * surface_offset, align_basis, Vector3.ZERO)
 	if item != null:
 		place_sound.play()
+		gameplay_action.emit(&"place")
 
 func _get_item_surface_offset(item: RigidBody3D, item_basis: Basis, surface_normal: Vector3) -> float:
 	var local_normal := item_basis.inverse() * surface_normal
@@ -445,6 +478,8 @@ func return_to_checkpoint() -> void:
 	_drop_item()
 	global_transform = checkpoint_transform
 	velocity = Vector3.ZERO
+	reset_physics_interpolation()
+	gameplay_action.emit(&"checkpoint")
 
 func _update_held_object() -> void:
 	if not is_instance_valid(held_object):
@@ -471,6 +506,8 @@ func _update_held_rotation(delta: float) -> void:
 		target.global_basis = rotation_delta * target.global_basis
 	else:
 		target.angular_velocity = rotation_axis * rotation_speed
+	if absf(rotation_speed) > 0.01 and delta > 0.0:
+		gameplay_action.emit(&"rotate")
 
 func _get_rotation_target() -> RigidBody3D:
 	if is_instance_valid(held_object):
@@ -632,6 +669,7 @@ func _handle_swap_click() -> void:
 		selected_target = null
 	if selected_target == null:
 		selected_target = hovered_target
+		gameplay_action.emit(&"select_swap")
 		suppressed_hover_outline = null
 	elif selected_target != hovered_target:
 		_start_swap(selected_target, hovered_target)
@@ -669,6 +707,7 @@ func _complete_swap(first: Node3D, second: Node3D, first_start: Vector3, second_
 		_spawn_swap_puff(first_start)
 		_spawn_swap_puff(second_start)
 		swap_sound.play()
+		gameplay_action.emit(&"swap")
 
 		first.scale = first_scale * 0.12
 		second.scale = second_scale * 0.12
@@ -712,6 +751,8 @@ func _spawn_swap_puff(effect_position: Vector3) -> void:
 	get_tree().create_timer(puff.lifetime + 0.1).timeout.connect(puff.queue_free)
 
 func _update_swap_highlight() -> void:
+	if has_meta("developer_tools_open"):
+		return
 	aim_ray.force_raycast_update()
 	var next_target: Node3D
 	if aim_ray.is_colliding():

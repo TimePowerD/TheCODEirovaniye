@@ -54,6 +54,9 @@ func _build_interface() -> void:
 	_show_main_menu()
 
 func _input(event: InputEvent) -> void:
+	var player := get_tree().current_scene.find_child("Player", true, false)
+	if player != null and player.has_meta("developer_tools_open"):
+		return
 	if not game_started or not (event is InputEventKey):
 		return
 	var key_event: InputEventKey = event
@@ -113,7 +116,7 @@ func _show_pause_menu() -> void:
 	_add_button("Настройки", _show_pause_settings)
 	var checkpoint_button := _add_button("Вернуться на точку сохранения", _return_to_checkpoint)
 	var player := get_tree().current_scene.find_child("Player", true, false)
-	checkpoint_button.disabled = player != null and player.has_meta("location_transition_active")
+	checkpoint_button.disabled = player != null and (player.has_meta("location_transition_active") or player.has_meta("cutscene_active"))
 	_add_button("Выйти в главное меню", _return_to_main_menu)
 
 func _show_pause_settings() -> void:
@@ -121,14 +124,19 @@ func _show_pause_settings() -> void:
 	_show_settings()
 
 func _resume_game() -> void:
+	var resumed_from_pause := get_tree().paused and game_started
 	game_started = true
 	menu_root.hide()
 	get_tree().paused = false
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	if resumed_from_pause:
+		var player := get_tree().current_scene.find_child("Player", true, false)
+		if player != null:
+			player.gameplay_action.emit(&"pause_resume")
 
 func _return_to_checkpoint() -> void:
 	var player := get_tree().current_scene.find_child("Player", true, false)
-	if player != null and player.has_meta("location_transition_active"):
+	if player != null and (player.has_meta("location_transition_active") or player.has_meta("cutscene_active")):
 		return
 	if player != null and player.has_method("return_to_checkpoint"):
 		player.return_to_checkpoint()
