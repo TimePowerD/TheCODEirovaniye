@@ -5,12 +5,10 @@ var tutorial_walk_distance := 0.0
 var tutorial_sprint_distance := 0.0
 var tutorial_look_distance := 0.0
 var swap_error_remaining := 0.0
-const SWAP_VISIBILITY_ERROR := "Оба объекта должны быть видны и не закрыты препятствиями"
 const SWAP_SPACE_ERROR := "Недостаточно свободного места для обмена"
 const SwapSpaceCheck := preload("res://scripts/swap_space_check.gd")
 const SwapMotionPlanner := preload("res://scripts/swap_motion_planner.gd")
-const SwapVisibility := preload("res://scripts/swap_visibility.gd")
-var swap_error_text := SWAP_VISIBILITY_ERROR
+var swap_error_text := SWAP_SPACE_ERROR
 var swap_body_states: Array[Dictionary] = []
 var swap_source_transforms: Array[Transform3D] = []
 var swap_visual_states: Array[Dictionary] = []
@@ -85,6 +83,7 @@ var e_hold_pending: bool = false
 var e_hold_elapsed: float = 0.0
 var item_use_tween: Tween
 var checkpoint_transform: Transform3D
+var checkpoint_camera_rotation := Vector3.ZERO
 var rotation_gizmo: Node3D
 var rotation_axis_materials: Array[StandardMaterial3D] = []
 var rotation_ring_points: Array[PackedVector3Array] = []
@@ -105,6 +104,10 @@ func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	add_to_group("player")
 	checkpoint_transform = global_transform
+	get_node("/root/SaveManager").capture_scene_start(self)
+	if not get_node("/root/SaveManager").restore_player(self):
+		checkpoint_camera_rotation = camera_pivot.rotation
+		get_node("/root/SaveManager").set_location("laboratory")
 	collision_mask = 3
 	platform_floor_layers = 1
 	platform_on_leave = CharacterBody3D.PLATFORM_ON_LEAVE_DO_NOTHING
@@ -205,7 +208,8 @@ func _physics_process(delta: float) -> void:
 	input_2d = input_2d.normalized()
 
 	var move_direction := (transform.basis * Vector3(input_2d.x, 0.0, input_2d.y)).normalized()
-	var speed := walk_speed * (sprint_multiplier if Input.is_key_pressed(KEY_SHIFT) else 1.0)
+	var is_sprinting := Input.is_key_pressed(KEY_SHIFT)
+	var speed := walk_speed * (sprint_multiplier if is_sprinting else 1.0)
 	var target_horizontal_velocity := move_direction * speed
 	var horizontal_velocity := Vector3(velocity.x, 0.0, velocity.z)
 	var momentum_time := 0.2
@@ -559,8 +563,11 @@ func _get_item_surface_offset(item: RigidBody3D, item_basis: Basis, surface_norm
 func return_to_checkpoint() -> void:
 	_release_object()
 	_drop_item()
+	get_node("/root/SaveManager").reset_world_to_initial()
 	global_transform = checkpoint_transform
+	camera_pivot.rotation = checkpoint_camera_rotation
 	velocity = Vector3.ZERO
+	reset_interaction_modes()
 	reset_physics_interpolation()
 	gameplay_action.emit(&"checkpoint")
 
@@ -647,6 +654,12 @@ func reset_interaction_modes() -> void:
 	e_hold_pending = false
 	e_hold_elapsed = 0.0
 	_set_placement_mode(false)
+
+func clear_swap_selection() -> void:
+	selected_target = null
+	hovered_target = null
+	suppressed_hover_outline = null
+	_refresh_outlines()
 
 func _set_rotation_mode(active: bool) -> void:
 	if active and swap_in_progress:
@@ -778,18 +791,10 @@ func _handle_swap_click() -> void:
 			selected_target = null
 	_refresh_outlines()
 
-func _is_swap_target_visible(target: Node3D) -> bool:
-	var camera: Camera3D = camera_pivot.get_node("Camera3D")
-	var excluded: Array[RID] = [get_rid()]
-	return SwapVisibility.is_visible(target, camera, aim_ray.collision_mask, excluded)
-
 func _start_swap(first: Node3D, second: Node3D) -> bool:
 	if swap_in_progress or held_object != null or held_item != null:
 		return false
-	if first == second or not _is_swap_target_visible(first) or not _is_swap_target_visible(second):
-		swap_error_text = SWAP_VISIBILITY_ERROR
-		swap_error_remaining = 1.5
-		_update_interaction_hint()
+	if first == second:
 		return false
 	if first.has_meta("object_swap_locked") or second.has_meta("object_swap_locked"):
 		return false

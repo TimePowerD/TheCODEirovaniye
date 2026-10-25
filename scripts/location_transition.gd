@@ -6,6 +6,8 @@ const TRANSITION_STREAM: AudioStream = preload("res://assets/audio/final sounds/
 @export var city_room: Node3D
 @export var player: CharacterBody3D
 @export var laboratory_light: OmniLight3D
+@export var source_location_id := "laboratory"
+@export var destination_location_id := "city"
 var transition_style: int = 0
 @export_range(0.1, 5.0, 0.05) var fade_out_duration: float = 1.2
 @export_range(0.0, 3.0, 0.05) var black_hold_duration: float = 0.65
@@ -23,6 +25,7 @@ var laboratory_dimmed := false
 
 func _ready() -> void:
 	transition_style = $LaboratoryExit.transition_style
+	in_city = get_node("/root/SaveManager").current_location_id == destination_location_id
 	laboratory_energy = laboratory_light.light_energy
 	var layer := CanvasLayer.new()
 	layer.layer = 5 # Above the HUD, below the pause menu (layer 10).
@@ -109,10 +112,7 @@ func _on_exit(body: Node3D, to_city: bool) -> void:
 	player.set_physics_process(false)
 	player.set_process_unhandled_input(false)
 	player.velocity = Vector3.ZERO
-	player.selected_target = null
-	player.hovered_target = null
-	player.suppressed_hover_outline = null
-	player._refresh_outlines()
+	player.clear_swap_selection()
 	var fade := create_tween().set_parallel(true)
 	fade.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	fade.tween_property(fade_material, "shader_parameter/darkness", 1.0, fade_out_duration)
@@ -124,10 +124,12 @@ func _on_exit(body: Node3D, to_city: bool) -> void:
 	await fade.finished
 	var arrival: Marker3D = city_room.get_node("Arrival") if to_city else $LaboratoryArrival
 	player.global_transform = arrival.global_transform
-	player.checkpoint_transform = arrival.global_transform
 	player.camera_pivot.rotation = Vector3.ZERO
+	player.clear_swap_selection()
 	player.reset_physics_interpolation()
 	in_city = to_city
+	var next_location := destination_location_id if to_city else source_location_id
+	get_node("/root/SaveManager").save_player_checkpoint(player, "%s_entrance" % next_location, next_location, arrival.global_transform)
 	if not to_city and laboratory_dimmed:
 		laboratory_light.light_energy = laboratory_energy
 		laboratory_dimmed = false

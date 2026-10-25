@@ -33,6 +33,7 @@
 [ext_resource type="PackedScene" uid="uid://bvja2mj08ypks" path="res://assets/models/labFloor2x1SwapLevel.glb" id="31_dgi5k"]
 [ext_resource type="Script" uid="uid://cvud1ammrw4gc" path="res://scripts/tutorial_button.gd" id="32_dgi5k"]
 [ext_resource type="Script" uid="uid://wxiqca4vor6c" path="res://scripts/tutorial.gd" id="32_tutorial"]
+[ext_resource type="Script" path="res://scripts/wake_cutscene.gd" id="33_wake_cutscene"]
 [ext_resource type="PackedScene" uid="uid://o624yhsqsgsg" path="res://assets/models/labDoor.glb" id="33_j8jky"]
 [ext_resource type="Script" uid="uid://djsilhiyv7a0x" path="res://scripts/level_checkpoint.gd" id="35_j8jky"]
 [ext_resource type="PackedScene" uid="uid://cf4gnrq2fm0mr" path="res://assets/materials/animations/scientist.glb" id="36_fuf3a"]
@@ -398,6 +399,10 @@ omni_range = 4.0
 [node name="Player" type="CharacterBody3D" parent="." unique_id=1140905256]
 transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 169, 0.92, 180)
 script = ExtResource("1_player")
+
+[node name="WakeCutscene" type="CanvasLayer" parent="." node_paths=PackedStringArray("player_path")]
+script = ExtResource("33_wake_cutscene")
+player_path = NodePath("../Player")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=1231908845]
 shape = SubResource("CapsuleShape_player")
@@ -1617,6 +1622,7 @@ script = ExtResource("10_transition")
 city_room = NodePath("../FlashbackRoom")
 player = NodePath("../Player")
 laboratory_light = NodePath("../OmniLight3D")
+destination_location_id = "flashback"
 fade_out_duration = 1.6
 black_hold_duration = 0.8
 fade_in_duration = 2.8
