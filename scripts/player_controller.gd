@@ -10,6 +10,7 @@ const SWAP_VISIBILITY_ERROR := "Оба объекта должны быть ви
 const SWAP_SPACE_ERROR := "Недостаточно свободного места для обмена"
 const SwapSpaceCheck := preload("res://scripts/swap_space_check.gd")
 const SwapMotionPlanner := preload("res://scripts/swap_motion_planner.gd")
+const SwapVisibility := preload("res://scripts/swap_visibility.gd")
 var swap_error_text := SWAP_SPACE_ERROR
 var swap_body_states: Array[Dictionary] = []
 var swap_source_transforms: Array[Transform3D] = []
@@ -197,7 +198,7 @@ func _weather_button() -> StaticBody3D:
 	query.exclude = [get_rid()]
 	var hit := get_world_3d().direct_space_state.intersect_ray(query)
 	if not hit.is_empty() and hit.collider is StaticBody3D and hit.collider.is_in_group("weather_button"):
-		var panel := hit.collider.get_parent()
+		var panel: Node = (hit.collider as StaticBody3D).get_parent()
 		if panel.has_method("is_player_in_zone") and panel.is_player_in_zone(self):
 			return hit.collider
 	return null
@@ -828,9 +829,16 @@ func _handle_swap_click() -> void:
 func _start_swap(first: Node3D, second: Node3D) -> bool:
 	if swap_in_progress or held_object != null or held_item != null:
 		return false
+	if not is_instance_valid(first) or not is_instance_valid(second):
+		return false
 	if first == second:
 		return false
 	if first.has_meta("object_swap_locked") or second.has_meta("object_swap_locked"):
+		return false
+	if not _is_swap_target_visible(first) or not _is_swap_target_visible(second):
+		swap_error_text = SWAP_VISIBILITY_ERROR
+		swap_error_remaining = 1.5
+		_update_interaction_hint()
 		return false
 	var plan := SwapMotionPlanner.create_plan(first, second, first.global_transform, second.global_transform)
 	if not plan.ok:
@@ -860,6 +868,13 @@ func _start_swap(first: Node3D, second: Node3D) -> bool:
 	tween.tween_method(update_motion, 0.0, 1.0, maxf(swap_duration, 0.01))
 	tween.finished.connect(_complete_swap.bind(first, second, first_start, second_start))
 	return true
+
+func _is_swap_target_visible(target: Node3D) -> bool:
+	if not is_instance_valid(target):
+		return false
+	var camera: Camera3D = camera_pivot.get_node("Camera3D")
+	var excluded: Array[RID] = [get_rid()]
+	return SwapVisibility.is_visible(target, camera, aim_ray.collision_mask, excluded)
 
 func _update_swap_motion(progress: float) -> void:
 	var shake_envelope := sin(progress * PI)
