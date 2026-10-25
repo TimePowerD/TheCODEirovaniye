@@ -40,6 +40,7 @@ var swap_visual_states: Array[Dictionary] = []
 
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var aim_ray: RayCast3D = $CameraPivot/Camera3D/CenterRay
+@onready var crosshair: Control = get_node_or_null("../HUD/Crosshair") as Control
 @onready var footstep_sound: AudioStreamPlayer3D = $FootstepSound
 @onready var jump_sound: AudioStreamPlayer3D = $JumpSound
 @onready var pickup_sound: AudioStreamPlayer3D = $PickupSound
@@ -269,6 +270,7 @@ func _physics_process(delta: float) -> void:
 	_update_rotation_gizmo()
 	_update_player_animation(input_2d)
 	_update_swap_highlight()
+	_update_interaction_cursor()
 	_update_interaction_hint()
 
 func _update_footstep_sound(delta: float, is_moving_on_floor: bool) -> void:
@@ -996,6 +998,23 @@ func _update_swap_highlight() -> void:
 	if selected_target != null and not is_instance_valid(selected_target):
 		selected_target = null
 	_refresh_outlines()
+
+func _update_interaction_cursor() -> void:
+	if not is_instance_valid(crosshair):
+		return
+	var can_interact := false
+	if not has_meta("developer_tools_open") and not swap_in_progress and not placement_mode and aim_ray.is_colliding():
+		var target := aim_ray.get_collider() as Node3D
+		if target != null and held_object == null:
+			if target.is_in_group("interactable"):
+				can_interact = held_item == null and target.has_method("interact")
+			elif target.is_in_group("carryable"):
+				can_interact = held_item == null and global_position.distance_to(target.global_position) <= pickup_distance
+			elif target.is_in_group("swapAble"):
+				var can_grab: bool = target.get("physics_enabled") == true and global_position.distance_to(target.global_position) <= grab_distance
+				var can_swap: bool = has_swap_technology and target.is_in_group("swappable")
+				can_interact = held_item == null and (can_grab or can_swap)
+	crosshair.call("set_interaction_target", can_interact)
 
 func _refresh_outlines() -> void:
 	var desired_meshes: Dictionary = {}
