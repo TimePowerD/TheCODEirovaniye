@@ -9,42 +9,38 @@
 [ext_resource type="PackedScene" uid="uid://bbfbr5domwuds" path="res://assets/models/labWall1x1.glb" id="7_wall"]
 [ext_resource type="PackedScene" uid="uid://c3proi1cxch5g" path="res://assets/models/labWallEntr.glb" id="8_entrance_wall"]
 [ext_resource type="PackedScene" path="res://scenes/city_room.tscn" id="9_city"]
-[ext_resource type="Script" path="res://scripts/developer_tools.gd" id="30_developer"]
-[ext_resource type="Script" path="res://scripts/developer_cutscene.gd" id="31_cutscene"]
-[ext_resource type="Script" path="res://scripts/tutorial.gd" id="32_tutorial"]
-[ext_resource type="Script" path="res://scripts/location_transition.gd" id="10_transition"]
-[ext_resource type="Script" path="res://scripts/physics_object.gd" id="9_physics_object"]
+[ext_resource type="Script" uid="uid://cntvfwyc5c5cr" path="res://scripts/physics_object.gd" id="9_physics_object"]
 [ext_resource type="PackedScene" path="res://scenes/items/pickup_test_item.tscn" id="10_pickup_item"]
+[ext_resource type="Script" uid="uid://cbnc2cyce4krl" path="res://scripts/location_transition.gd" id="10_transition"]
 [ext_resource type="PackedScene" path="res://scenes/flashback_room.tscn" id="11_flashback"]
 [ext_resource type="Environment" path="res://assets/environments/memory_street.tres" id="40_street_environment"]
 [ext_resource type="Environment" path="res://assets/environments/laboratory.tres" id="43_laboratory_environment"]
 [ext_resource type="Script" path="res://scripts/street_weather.gd" id="41_weather"]
 [ext_resource type="PackedScene" path="res://scenes/weather_panel.tscn" id="42_weather_panel"]
-[ext_resource type="Script" path="res://scripts/transition_marker.gd" id="12_marker"]
-[ext_resource type="AudioStream" path="res://assets/audio/final sounds/menu_click.mp3" id="20_menu_click"]
-[ext_resource type="AudioStream" path="res://assets/audio/final sounds/footstep_concrete_1.mp3" id="21_footstep"]
-[ext_resource type="AudioStream" path="res://assets/audio/final sounds/jump_land.mp3" id="22_jump"]
-[ext_resource type="AudioStream" path="res://assets/audio/final sounds/item_pickup.mp3" id="23_pickup"]
-[ext_resource type="AudioStream" path="res://assets/audio/final sounds/item_use.mp3" id="24_item_use"]
-[ext_resource type="AudioStream" path="res://assets/audio/final sounds/item_throw.mp3" id="25_throw"]
-[ext_resource type="AudioStream" path="res://assets/audio/final sounds/item_place.mp3" id="26_place"]
-[ext_resource type="AudioStream" path="res://assets/audio/final sounds/object_swap.mp3" id="27_swap"]
+[ext_resource type="Script" uid="uid://c8ydo0fkcb1sg" path="res://scripts/transition_marker.gd" id="12_marker"]
+[ext_resource type="PackedScene" path="res://scenes/lab_module_library.tscn" id="13_library"]
+[ext_resource type="PackedScene" uid="uid://blfie3cwpkog7" path="res://assets/models/labWallWindow.glb" id="14_window"]
 [ext_resource type="PackedScene" uid="uid://d3yup5qrj0m10" path="res://assets/materials/animations/zombieChar.glb" id="19_zombie"]
-[ext_resource type="Script" path="res://scripts/collision_audio.gd" id="28_collision_audio"]
-
-[sub_resource type="BoxShape3D" id="FlashbackExitShape"]
-size = Vector3(1.2, 3, 2.5)
-
-[sub_resource type="StandardMaterial3D" id="FlashbackDoorMaterial"]
-albedo_color = Color(0.53, 0.36, 0.17, 1)
-roughness = 0.75
-
-[sub_resource type="BoxMesh" id="FlashbackDoorMesh"]
-material = SubResource("FlashbackDoorMaterial")
-size = Vector3(1.8, 2.7, 0.12)
-
-[sub_resource type="BoxShape3D" id="LocationExitShape"]
-size = Vector3(14, 3, 1)
+[ext_resource type="AudioStream" uid="uid://c1hhm3eft7w4p" path="res://assets/audio/final sounds/menu_click.mp3" id="20_menu_click"]
+[ext_resource type="AudioStream" uid="uid://c6q62f1vgpvkb" path="res://assets/audio/final sounds/footstep_concrete_1.mp3" id="21_footstep"]
+[ext_resource type="AudioStream" uid="uid://vjkxk3id7p7t" path="res://assets/audio/final sounds/jump_land.mp3" id="22_jump"]
+[ext_resource type="AudioStream" uid="uid://d2g5n0k03m0jw" path="res://assets/audio/final sounds/item_pickup.mp3" id="23_pickup"]
+[ext_resource type="AudioStream" uid="uid://d3e8q46t57ptn" path="res://assets/audio/final sounds/item_use.mp3" id="24_item_use"]
+[ext_resource type="AudioStream" uid="uid://bu6u3678ietei" path="res://assets/audio/final sounds/item_throw.mp3" id="25_throw"]
+[ext_resource type="AudioStream" uid="uid://sulw5sncaf1w" path="res://assets/audio/final sounds/item_place.mp3" id="26_place"]
+[ext_resource type="AudioStream" uid="uid://burl7oocvh6k1" path="res://assets/audio/final sounds/object_swap.mp3" id="27_swap"]
+[ext_resource type="Script" uid="uid://d1lj3xt12lqsc" path="res://scripts/collision_audio.gd" id="28_collision_audio"]
+[ext_resource type="PackedScene" uid="uid://c14m7c4nfo0ea" path="res://assets/models/labWallEntrLong.glb" id="29_qkpxi"]
+[ext_resource type="PackedScene" uid="uid://msqjnndbxeo0" path="res://assets/models/labWallEntrLongReversed.glb" id="30_5q0nq"]
+[ext_resource type="Script" uid="uid://jres68cawvro" path="res://scripts/developer_tools.gd" id="30_developer"]
+[ext_resource type="Script" uid="uid://d3tec84dagtpc" path="res://scripts/developer_cutscene.gd" id="31_cutscene"]
+[ext_resource type="PackedScene" uid="uid://bvja2mj08ypks" path="res://assets/models/labFloor2x1SwapLevel.glb" id="31_dgi5k"]
+[ext_resource type="Script" uid="uid://cvud1ammrw4gc" path="res://scripts/tutorial_button.gd" id="32_dgi5k"]
+[ext_resource type="Script" uid="uid://wxiqca4vor6c" path="res://scripts/tutorial.gd" id="32_tutorial"]
+[ext_resource type="PackedScene" uid="uid://o624yhsqsgsg" path="res://assets/models/labDoor.glb" id="33_j8jky"]
+[ext_resource type="Script" uid="uid://djsilhiyv7a0x" path="res://scripts/level_checkpoint.gd" id="35_j8jky"]
+[ext_resource type="PackedScene" uid="uid://cf4gnrq2fm0mr" path="res://assets/materials/animations/scientist.glb" id="36_fuf3a"]
+[ext_resource type="Script" uid="uid://h1h8wrp8phm8" path="res://scripts/scientist.gd" id="37_pibwh"]
 
 [sub_resource type="BoxShape3D" id="RoomFloorShape"]
 size = Vector3(18, 0.2, 32)
@@ -57,6 +53,14 @@ size = Vector3(2, 8, 7)
 
 [sub_resource type="BoxShape3D" id="DoorHeaderShape"]
 size = Vector3(2, 5.25, 2.02)
+
+[sub_resource type="StandardMaterial3D" id="FlashbackDoorMaterial"]
+albedo_color = Color(0.53, 0.36, 0.17, 1)
+roughness = 0.75
+
+[sub_resource type="BoxMesh" id="FlashbackDoorMesh"]
+material = SubResource("FlashbackDoorMaterial")
+size = Vector3(1.8, 2.7, 0.12)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape_player"]
 radius = 0.35
@@ -94,6 +98,186 @@ roughness = 0.7
 height = 2.4
 radius = 0.7
 
+[sub_resource type="BoxShape3D" id="LocationExitShape"]
+size = Vector3(14, 3, 1)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_qkpxi"]
+data = PackedVector3Array(8, 8, 8, 8, 0, -8, 8, 8, -8, 8, 8, 8, 8, 0, 8, 8, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_5q0nq"]
+data = PackedVector3Array(8, 8, 8, 8, 0, -8, 8, 8, -8, 8, 8, 8, 8, 0, 8, 8, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_dgi5k"]
+data = PackedVector3Array(8, 8, 8, 8, 0, -8, 8, 8, -8, 8, 8, 8, 8, 0, 8, 8, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_j8jky"]
+data = PackedVector3Array(8, 8, 8, 8, 0, -8, 8, 8, -8, 8, 8, 8, 8, 0, 8, 8, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_kmb1v"]
+data = PackedVector3Array(8, 8, 8, 8, 0, -8, 8, 8, -8, 8, 8, 8, 8, 0, 8, 8, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_fuf3a"]
+data = PackedVector3Array(8, 8, 8, 8, 0, -8, 8, 8, -8, 8, 8, 8, 8, 0, 8, 8, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_pibwh"]
+data = PackedVector3Array(8, 8, 8, 8, 0, -8, 8, 8, -8, 8, 8, 8, 8, 0, 8, 8, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_c6pm6"]
+data = PackedVector3Array(8, 8, 8, 8, 0, -8, 8, 8, -8, 8, 8, 8, 8, 0, 8, 8, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_5he1u"]
+data = PackedVector3Array(8, 8, 8, 8, 0, -8, 8, 8, -8, 8, 8, 8, 8, 0, 8, 8, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_5poiv"]
+data = PackedVector3Array(8, 8, 8, 8, 0, -8, 8, 8, -8, 8, 8, 8, 8, 0, 8, 8, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_2cjbq"]
+data = PackedVector3Array(8, 8, 8, 8, 0, -8, 8, 8, -8, 8, 8, 8, 8, 0, 8, 8, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_chjal"]
+data = PackedVector3Array(8, 8, 8, 8, 0, -8, 8, 8, -8, 8, 8, 8, 8, 0, 8, 8, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_cjqg0"]
+data = PackedVector3Array(8, 8, 8, 8, 0, -8, 8, 8, -8, 8, 8, 8, 8, 0, 8, 8, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_vchkt"]
+data = PackedVector3Array(8, 8, 8, 8, 0, -8, 8, 8, -8, 8, 8, 8, 8, 0, 8, 8, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_txyw0"]
+data = PackedVector3Array(8, 8, 8, 8, 0, -8, 8, 8, -8, 8, 8, 8, 8, 0, 8, 8, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_vc5cj"]
+data = PackedVector3Array(8, 8, 8, 8, 0, -8, 8, 8, -8, 8, 8, 8, 8, 0, 8, 8, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_nvyfr"]
+data = PackedVector3Array(8, 8, 8, 8, 0, -8, 8, 8, -8, 8, 8, 8, 8, 0, 8, 8, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_ty1g6"]
+data = PackedVector3Array(8, 8, 8, 8, 0, -8, 8, 8, -8, 8, 8, 8, 8, 0, 8, 8, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_j2jfr"]
+data = PackedVector3Array(8, 8, 8, 8, 0, -8, 8, 8, -8, 8, 8, 8, 8, 0, 8, 8, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_bjg73"]
+data = PackedVector3Array(8, 8, 8, 8, 0, -8, 8, 8, -8, 8, 8, 8, 8, 0, 8, 8, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_bu4jf"]
+data = PackedVector3Array(8, 8, 8, 8, 0, -8, 8, 8, -8, 8, 8, 8, 8, 0, 8, 8, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_o7ddy"]
+data = PackedVector3Array(5.8657, 0.9332, 8, 8, 0, 8, 8, 0.9332, 8, 5.8657, 0.9332, 8, 5.8657, 0, 8, 8, 0, 8, 5.8657, 2.6385999, 8, 5.8657, 0.9332, 8, 8, 0.9332, 8, -5.8659, 0.9332, 8, 5.8657, 0, 8, 5.8657, 0.9332, 8, 5.8657, 2.6385999, 8, 8, 0.9332, 8, 8, 2.6385999, 8, -5.8659, 0.9332, 8, -5.8659, 0, 8, 5.8657, 0, 8, 5.8657, 8, 8, 5.8657, 2.6385999, 8, 8, 2.6385999, 8, 5.8657, 8, 8, 8, 2.6385999, 8, 8, 8, 8, -5.8659, 8, 8, 5.8657, 2.6385999, 8, 5.8657, 8, 8, -5.8659, 8, 8, -5.8659, 2.6385999, 8, 5.8657, 2.6385999, 8, -8, 8, 8, -5.8659, 2.6385999, 8, -5.8659, 8, 8, -8, 8, 8, -8, 2.6385999, 8, -5.8659, 2.6385999, 8, -8, 2.6385999, 8, -5.8659, 0.9332, 8, -5.8659, 2.6385999, 8, -8, 2.6385999, 8, -8, 0.9332, 8, -5.8659, 0.9332, 8, -8, 0.9332, 8, -5.8659, 0, 8, -5.8659, 0.9332, 8, -8, 0.9332, 8, -8, 0, 8, -5.8659, 0, 8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_0loja"]
+data = PackedVector3Array(5.8657, 0.9332, 8, 8, 0, 8, 8, 0.9332, 8, 5.8657, 0.9332, 8, 5.8657, 0, 8, 8, 0, 8, 5.8657, 2.6385999, 8, 5.8657, 0.9332, 8, 8, 0.9332, 8, -5.8659, 0.9332, 8, 5.8657, 0, 8, 5.8657, 0.9332, 8, 5.8657, 2.6385999, 8, 8, 0.9332, 8, 8, 2.6385999, 8, -5.8659, 0.9332, 8, -5.8659, 0, 8, 5.8657, 0, 8, 5.8657, 8, 8, 5.8657, 2.6385999, 8, 8, 2.6385999, 8, 5.8657, 8, 8, 8, 2.6385999, 8, 8, 8, 8, -5.8659, 8, 8, 5.8657, 2.6385999, 8, 5.8657, 8, 8, -5.8659, 8, 8, -5.8659, 2.6385999, 8, 5.8657, 2.6385999, 8, -8, 8, 8, -5.8659, 2.6385999, 8, -5.8659, 8, 8, -8, 8, 8, -8, 2.6385999, 8, -5.8659, 2.6385999, 8, -8, 2.6385999, 8, -5.8659, 0.9332, 8, -5.8659, 2.6385999, 8, -8, 2.6385999, 8, -8, 0.9332, 8, -5.8659, 0.9332, 8, -8, 0.9332, 8, -5.8659, 0, 8, -5.8659, 0.9332, 8, -8, 0.9332, 8, -8, 0, 8, -5.8659, 0, 8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_ids8r"]
+data = PackedVector3Array(5.8657, 0.9332, 8, 8, 0, 8, 8, 0.9332, 8, 5.8657, 0.9332, 8, 5.8657, 0, 8, 8, 0, 8, 5.8657, 2.6385999, 8, 5.8657, 0.9332, 8, 8, 0.9332, 8, -5.8659, 0.9332, 8, 5.8657, 0, 8, 5.8657, 0.9332, 8, 5.8657, 2.6385999, 8, 8, 0.9332, 8, 8, 2.6385999, 8, -5.8659, 0.9332, 8, -5.8659, 0, 8, 5.8657, 0, 8, 5.8657, 8, 8, 5.8657, 2.6385999, 8, 8, 2.6385999, 8, 5.8657, 8, 8, 8, 2.6385999, 8, 8, 8, 8, -5.8659, 8, 8, 5.8657, 2.6385999, 8, 5.8657, 8, 8, -5.8659, 8, 8, -5.8659, 2.6385999, 8, 5.8657, 2.6385999, 8, -8, 8, 8, -5.8659, 2.6385999, 8, -5.8659, 8, 8, -8, 8, 8, -8, 2.6385999, 8, -5.8659, 2.6385999, 8, -8, 2.6385999, 8, -5.8659, 0.9332, 8, -5.8659, 2.6385999, 8, -8, 2.6385999, 8, -8, 0.9332, 8, -5.8659, 0.9332, 8, -8, 0.9332, 8, -5.8659, 0, 8, -5.8659, 0.9332, 8, -8, 0.9332, 8, -8, 0, 8, -5.8659, 0, 8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_dnhof"]
+data = PackedVector3Array(5.8657, 0.9332, 8, 8, 0, 8, 8, 0.9332, 8, 5.8657, 0.9332, 8, 5.8657, 0, 8, 8, 0, 8, 5.8657, 2.6385999, 8, 5.8657, 0.9332, 8, 8, 0.9332, 8, -5.8659, 0.9332, 8, 5.8657, 0, 8, 5.8657, 0.9332, 8, 5.8657, 2.6385999, 8, 8, 0.9332, 8, 8, 2.6385999, 8, -5.8659, 0.9332, 8, -5.8659, 0, 8, 5.8657, 0, 8, 5.8657, 8, 8, 5.8657, 2.6385999, 8, 8, 2.6385999, 8, 5.8657, 8, 8, 8, 2.6385999, 8, 8, 8, 8, -5.8659, 8, 8, 5.8657, 2.6385999, 8, 5.8657, 8, 8, -5.8659, 8, 8, -5.8659, 2.6385999, 8, 5.8657, 2.6385999, 8, -8, 8, 8, -5.8659, 2.6385999, 8, -5.8659, 8, 8, -8, 8, 8, -8, 2.6385999, 8, -5.8659, 2.6385999, 8, -8, 2.6385999, 8, -5.8659, 0.9332, 8, -5.8659, 2.6385999, 8, -8, 2.6385999, 8, -8, 0.9332, 8, -5.8659, 0.9332, 8, -8, 0.9332, 8, -5.8659, 0, 8, -5.8659, 0.9332, 8, -8, 0.9332, 8, -8, 0, 8, -5.8659, 0, 8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_1v6qk"]
+data = PackedVector3Array(-8, 2.7474, 1.0066, -8, 0, 8, -8, 2.7474, 8, -8, 2.7474, 1.0066, -8, 0, 1.0066, -8, 0, 8, -8, 8, 1.0066, -8, 2.7474, 1.0066, -8, 2.7474, 8, -8, 8, 1.0066, -8, 2.7474, 8, -8, 8, 8, -8, 8, -1.0066, -8, 2.7474, 1.0066, -8, 8, 1.0066, -8, 8, -1.0066, -8, 2.7474, -1.0066, -8, 2.7474, 1.0066, -8, 8, -8, -8, 2.7474, -1.0066, -8, 8, -1.0066, -8, 8, -8, -8, 2.7474, -8, -8, 2.7474, -1.0066, -8, 2.7474, -8, -8, 0, -1.0066, -8, 2.7474, -1.0066, -8, 2.7474, -8, -8, 0, -8, -8, 0, -1.0066, -8, 2.7474, -1.0066, -10, 2.7474, 1.0066, -8, 2.7474, 1.0066, -8, 2.7474, -1.0066, -10, 2.7474, -1.0066, -10, 2.7474, 1.0066, -8, 2.7474, 1.0066, -10, 0, 1.0066, -8, 0, 1.0066, -8, 2.7474, 1.0066, -10, 2.7474, 1.0066, -10, 0, 1.0066, -8, 0, -1.0066, -10, 2.7474, -1.0066, -8, 2.7474, -1.0066, -8, 0, -1.0066, -10, 0, -1.0066, -10, 2.7474, -1.0066, -10, 2.7474, -1.0066, -10, 8, 1.0066, -10, 2.7474, 1.0066, -10, 2.7474, 1.0066, -10, 8, 1.0066, -10, 8, 8, -10, 2.7474, 1.0066, -10, 8, 8, -10, 2.7474, 8, -10, 2.7474, 1.0066, -10, 2.7474, 8, -10, 0, 8, -10, 2.7474, 1.0066, -10, 0, 8, -10, 0, 1.0066, -10, 2.7474, -1.0066, -10, 8, -1.0066, -10, 8, 1.0066, -10, 2.7474, -8, -10, 8, -1.0066, -10, 2.7474, -1.0066, -10, 2.7474, -8, -10, 8, -8, -10, 8, -1.0066, -10, 2.7474, -1.0066, -10, 0, -8, -10, 2.7474, -8, -10, 2.7474, -1.0066, -10, 0, -1.0066, -10, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_augu2"]
+data = PackedVector3Array(-8, 2.7474, 1.0066, -8, 0, 8, -8, 2.7474, 8, -8, 2.7474, 1.0066, -8, 0, 1.0066, -8, 0, 8, -8, 8, 1.0066, -8, 2.7474, 1.0066, -8, 2.7474, 8, -8, 8, 1.0066, -8, 2.7474, 8, -8, 8, 8, -8, 8, -1.0066, -8, 2.7474, 1.0066, -8, 8, 1.0066, -8, 8, -1.0066, -8, 2.7474, -1.0066, -8, 2.7474, 1.0066, -8, 8, -8, -8, 2.7474, -1.0066, -8, 8, -1.0066, -8, 8, -8, -8, 2.7474, -8, -8, 2.7474, -1.0066, -8, 2.7474, -8, -8, 0, -1.0066, -8, 2.7474, -1.0066, -8, 2.7474, -8, -8, 0, -8, -8, 0, -1.0066, -8, 2.7474, -1.0066, -10, 2.7474, 1.0066, -8, 2.7474, 1.0066, -8, 2.7474, -1.0066, -10, 2.7474, -1.0066, -10, 2.7474, 1.0066, -8, 2.7474, 1.0066, -10, 0, 1.0066, -8, 0, 1.0066, -8, 2.7474, 1.0066, -10, 2.7474, 1.0066, -10, 0, 1.0066, -8, 0, -1.0066, -10, 2.7474, -1.0066, -8, 2.7474, -1.0066, -8, 0, -1.0066, -10, 0, -1.0066, -10, 2.7474, -1.0066, -10, 2.7474, -1.0066, -10, 8, 1.0066, -10, 2.7474, 1.0066, -10, 2.7474, 1.0066, -10, 8, 1.0066, -10, 8, 8, -10, 2.7474, 1.0066, -10, 8, 8, -10, 2.7474, 8, -10, 2.7474, 1.0066, -10, 2.7474, 8, -10, 0, 8, -10, 2.7474, 1.0066, -10, 0, 8, -10, 0, 1.0066, -10, 2.7474, -1.0066, -10, 8, -1.0066, -10, 8, 1.0066, -10, 2.7474, -8, -10, 8, -1.0066, -10, 2.7474, -1.0066, -10, 2.7474, -8, -10, 8, -8, -10, 8, -1.0066, -10, 2.7474, -1.0066, -10, 0, -8, -10, 2.7474, -8, -10, 2.7474, -1.0066, -10, 0, -1.0066, -10, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_tm6hj"]
+data = PackedVector3Array(-8, 2.7474, 1.0066, -8, 0, 8, -8, 2.7474, 8, -8, 2.7474, 1.0066, -8, 0, 1.0066, -8, 0, 8, -8, 8, 1.0066, -8, 2.7474, 1.0066, -8, 2.7474, 8, -8, 8, 1.0066, -8, 2.7474, 8, -8, 8, 8, -8, 8, -1.0066, -8, 2.7474, 1.0066, -8, 8, 1.0066, -8, 8, -1.0066, -8, 2.7474, -1.0066, -8, 2.7474, 1.0066, -8, 8, -8, -8, 2.7474, -1.0066, -8, 8, -1.0066, -8, 8, -8, -8, 2.7474, -8, -8, 2.7474, -1.0066, -8, 2.7474, -8, -8, 0, -1.0066, -8, 2.7474, -1.0066, -8, 2.7474, -8, -8, 0, -8, -8, 0, -1.0066, -8, 2.7474, -1.0066, -10, 2.7474, 1.0066, -8, 2.7474, 1.0066, -8, 2.7474, -1.0066, -10, 2.7474, -1.0066, -10, 2.7474, 1.0066, -8, 2.7474, 1.0066, -10, 0, 1.0066, -8, 0, 1.0066, -8, 2.7474, 1.0066, -10, 2.7474, 1.0066, -10, 0, 1.0066, -8, 0, -1.0066, -10, 2.7474, -1.0066, -8, 2.7474, -1.0066, -8, 0, -1.0066, -10, 0, -1.0066, -10, 2.7474, -1.0066, -10, 2.7474, -1.0066, -10, 8, 1.0066, -10, 2.7474, 1.0066, -10, 2.7474, 1.0066, -10, 8, 1.0066, -10, 8, 8, -10, 2.7474, 1.0066, -10, 8, 8, -10, 2.7474, 8, -10, 2.7474, 1.0066, -10, 2.7474, 8, -10, 0, 8, -10, 2.7474, 1.0066, -10, 0, 8, -10, 0, 1.0066, -10, 2.7474, -1.0066, -10, 8, -1.0066, -10, 8, 1.0066, -10, 2.7474, -8, -10, 8, -1.0066, -10, 2.7474, -1.0066, -10, 2.7474, -8, -10, 8, -8, -10, 8, -1.0066, -10, 2.7474, -1.0066, -10, 0, -8, -10, 2.7474, -8, -10, 2.7474, -1.0066, -10, 0, -1.0066, -10, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_kf5aa"]
+data = PackedVector3Array(-8, 2.7474, 1.0066, -8, 0, 8, -8, 2.7474, 8, -8, 2.7474, 1.0066, -8, 0, 1.0066, -8, 0, 8, -8, 8, 1.0066, -8, 2.7474, 1.0066, -8, 2.7474, 8, -8, 8, 1.0066, -8, 2.7474, 8, -8, 8, 8, -8, 8, -1.0066, -8, 2.7474, 1.0066, -8, 8, 1.0066, -8, 8, -1.0066, -8, 2.7474, -1.0066, -8, 2.7474, 1.0066, -8, 8, -8, -8, 2.7474, -1.0066, -8, 8, -1.0066, -8, 8, -8, -8, 2.7474, -8, -8, 2.7474, -1.0066, -8, 2.7474, -8, -8, 0, -1.0066, -8, 2.7474, -1.0066, -8, 2.7474, -8, -8, 0, -8, -8, 0, -1.0066, -8, 2.7474, -1.0066, -10, 2.7474, 1.0066, -8, 2.7474, 1.0066, -8, 2.7474, -1.0066, -10, 2.7474, -1.0066, -10, 2.7474, 1.0066, -8, 2.7474, 1.0066, -10, 0, 1.0066, -8, 0, 1.0066, -8, 2.7474, 1.0066, -10, 2.7474, 1.0066, -10, 0, 1.0066, -8, 0, -1.0066, -10, 2.7474, -1.0066, -8, 2.7474, -1.0066, -8, 0, -1.0066, -10, 0, -1.0066, -10, 2.7474, -1.0066, -10, 2.7474, -1.0066, -10, 8, 1.0066, -10, 2.7474, 1.0066, -10, 2.7474, 1.0066, -10, 8, 1.0066, -10, 8, 8, -10, 2.7474, 1.0066, -10, 8, 8, -10, 2.7474, 8, -10, 2.7474, 1.0066, -10, 2.7474, 8, -10, 0, 8, -10, 2.7474, 1.0066, -10, 0, 8, -10, 0, 1.0066, -10, 2.7474, -1.0066, -10, 8, -1.0066, -10, 8, 1.0066, -10, 2.7474, -8, -10, 8, -1.0066, -10, 2.7474, -1.0066, -10, 2.7474, -8, -10, 8, -8, -10, 8, -1.0066, -10, 2.7474, -8, -10, 8, -24, -10, 8, -8, -10, 2.7474, -8, -10, 2.7474, -24, -10, 8, -24, -10, 2.7474, -1.0066, -10, 0, -8, -10, 2.7474, -8, -10, 0, -8, -10, 2.7474, -24, -10, 2.7474, -8, -10, 0, -8, -10, 0, -24, -10, 2.7474, -24, -10, 0, -8, -10, -10, -24, -10, 0, -24, -10, 2.7474, -1.0066, -10, 0, -1.0066, -10, 0, -8, -10, 0, -8, -10, -10, -8, -10, -10, -24, -10, 0, -1.0066, -10, -10, -8, -10, 0, -8, -10, 0, -1.0066, -10, -10, -1.0066, -10, -10, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_t5ykj"]
+data = PackedVector3Array(-8, 2.7474, 1.0066, -8, 0, 8, -8, 2.7474, 8, -8, 2.7474, 1.0066, -8, 0, 1.0066, -8, 0, 8, -8, 8, 1.0066, -8, 2.7474, 1.0066, -8, 2.7474, 8, -8, 8, 1.0066, -8, 2.7474, 8, -8, 8, 8, -8, 8, -1.0066, -8, 2.7474, 1.0066, -8, 8, 1.0066, -8, 8, -1.0066, -8, 2.7474, -1.0066, -8, 2.7474, 1.0066, -8, 8, -8, -8, 2.7474, -1.0066, -8, 8, -1.0066, -8, 8, -8, -8, 2.7474, -8, -8, 2.7474, -1.0066, -8, 2.7474, -8, -8, 0, -1.0066, -8, 2.7474, -1.0066, -8, 8, -8, -8, 2.7474, -24, -8, 2.7474, -8, -8, 8, -8, -8, 8, -24, -8, 2.7474, -24, -8, 2.7474, -8, -8, 2.7474, -24, -8, 0, -24, -8, 2.7474, -8, -8, 0, -8, -8, 0, -1.0066, -8, 2.7474, -8, -8, 0, -24, -8, 0, -8, -8, 0, -8, -8, -10, -1.0066, -8, 0, -1.0066, -8, 0, -8, -8, -10, -8, -8, -10, -1.0066, -8, 0, -24, -8, -10, -8, -8, 0, -8, -8, 0, -24, -8, -10, -24, -8, -10, -8, -8, 2.7474, -1.0066, -10, 2.7474, 1.0066, -8, 2.7474, 1.0066, -8, 2.7474, -1.0066, -10, 2.7474, -1.0066, -10, 2.7474, 1.0066, -8, 2.7474, 1.0066, -10, 0, 1.0066, -8, 0, 1.0066, -8, 2.7474, 1.0066, -10, 2.7474, 1.0066, -10, 0, 1.0066, -8, 0, -1.0066, -10, 2.7474, -1.0066, -8, 2.7474, -1.0066, -8, 0, -1.0066, -10, 0, -1.0066, -10, 2.7474, -1.0066, -10, 2.7474, -1.0066, -10, 8, 1.0066, -10, 2.7474, 1.0066, -10, 2.7474, 1.0066, -10, 8, 1.0066, -10, 8, 8, -10, 2.7474, 1.0066, -10, 8, 8, -10, 2.7474, 8, -10, 2.7474, 1.0066, -10, 2.7474, 8, -10, 0, 8, -10, 2.7474, 1.0066, -10, 0, 8, -10, 0, 1.0066, -10, 2.7474, -1.0066, -10, 8, -1.0066, -10, 8, 1.0066, -10, 2.7474, -8, -10, 8, -1.0066, -10, 2.7474, -1.0066, -10, 2.7474, -8, -10, 8, -8, -10, 8, -1.0066, -10, 2.7474, -1.0066, -10, 0, -8, -10, 2.7474, -8, -10, 2.7474, -1.0066, -10, 0, -1.0066, -10, 0, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_e755i"]
+data = PackedVector3Array(5.8657, 0.93329996, 8, 8, 0, 8, 8, 0.93329996, 8, 5.8657, 0.93329996, 8, 5.8657, 0, 8, 8, 0, 8, 5.8657, 2.6385999, 8, 5.8657, 0.93329996, 8, 8, 0.93329996, 8, 5.8657, 2.6385999, 8, 8, 0.93329996, 8, 8, 2.6385999, 8, -5.8659, 0.93329996, 8, 5.8657, 0, 8, 5.8657, 0.93329996, 8, 5.8657, 8, 8, 5.8657, 2.6385999, 8, 8, 2.6385999, 8, 5.8657, 8, 8, 8, 2.6385999, 8, 8, 8, 8, -5.8659, 8, 8, 5.8657, 2.6385999, 8, 5.8657, 8, 8, -5.8659, 8, 8, -5.8659, 2.6385999, 8, 5.8657, 2.6385999, 8, -8, 8, 8, -5.8659, 2.6385999, 8, -5.8659, 8, 8, -8, 8, 8, -8, 2.6385999, 8, -5.8659, 2.6385999, 8, -8, 2.6385999, 8, -5.8659, 0.93329996, 8, -5.8659, 2.6385999, 8, -8, 2.6385999, 8, -8, 0.93329996, 8, -5.8659, 0.93329996, 8, -5.8659, 0.93329996, 8, -5.8659, 0, 8, 5.8657, 0, 8, -8, 0.93329996, 8, -5.8659, 0, 8, -5.8659, 0.93329996, 8, -8, 0.93329996, 8, -8, 0, 8, -5.8659, 0, 8, -5.8659, 0, 8, 5.8657, -4, 8, 5.8657, 0, 8, -5.8659, 0, 8, -5.8659, -4, 8, 5.8657, -4, 8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_ro3en"]
+data = PackedVector3Array(8, 8, -8, -8, -4, -8, -8, 8, -8, 8, 8, -8, 8, -4, -8, -8, -4, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_od4ux"]
+data = PackedVector3Array(-8.0002, 0, 7.9997997, 8, 0, -8, 8, 0, 7.9997997, -8.0002, 0, 7.9997997, -8.0002, 0, -8, 8, 0, -8, -8.0002, 0, 7.9997997, -10, 0, -8, -8.0002, 0, -8, -8.0002, 0, 7.9997997, -10, 0, 7.9997997, -10, 0, -8, 8, 0, 7.9997997, -8.0002, 0, 24, -8.0002, 0, 7.9997997, -8.0002, 0, 24, -10, 0, 7.9997997, -8.0002, 0, 7.9997997, 8, 0, 7.9997997, 8, 0, 24, -8.0002, 0, 24, -8.0002, 0, 24, -10, 0, 24, -10, 0, 7.9997997)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_xhfw6"]
+data = PackedVector3Array(4.4125, 0, 8, 8, 0, -8, 8, 0, 8, 4.4125, 0, 8, 4.4125, 0, -8, 8, 0, -8, 8, 0, 8, 4.4125, 0, 24, 4.4125, 0, 8, 8, 0, 8, 8, 0, 24, 4.4125, 0, 24, 4.4125, 0, 8, 4.4125, 0, 24, 3.1845999, 0, 24, 4.4125, 0, 8, 3.1845999, 0, 24, 3.1845999, 0, 8, 3.1845999, 0, 8, 3.1845999, 0, 24, -0.44009998, 0, 24, 3.1845999, 0, 8, -0.44009998, 0, 24, -0.44009998, 0, 8, -0.44009998, 0, 8, 3.1845999, 0, -8, 3.1845999, 0, 8, -0.44009998, 0, 8, -0.44009998, 0, -8, 3.1845999, 0, -8, -0.44009998, 0, 8, -0.44009998, 0, 24, -3.4266, 0, 24, -0.44009998, 0, 8, -3.4266, 0, 24, -3.4266, 0, 8, -3.4266, 0, 8, -3.4266, 0, 24, -8, 0, 24, -3.4266, 0, 8, -8, 0, 24, -8, 0, 8, -8, 0, 8, -3.4266, 0, -8, -3.4266, 0, 8, -8, 0, 8, -8, 0, -8, -3.4266, 0, -8, -8, 0, 8, -10, 0, -8, -8, 0, -8, -8, 0, 8, -10, 0, 8, -10, 0, -8, -8, 0, 24, -10, 0, 8, -8, 0, 8, -8, 0, 24, -10, 0, 24, -10, 0, 8, 4.4125, 0, 8, 4.4125, 0.8854, -8, 4.4125, 0, -8, 4.4125, 0, 8, 4.4125, 0.8854, 8, 4.4125, 0.8854, -8, 3.1845999, 0.8854, 8, 4.4125, 0.8854, -8, 4.4125, 0.8854, 8, 3.1845999, 0.8854, 8, 3.1845999, 0.8854, -8, 4.4125, 0.8854, -8, 4.4125, 0, -8, 3.1845999, 0.8854, -8, 3.1845999, 0, -8, 4.4125, 0, -8, 4.4125, 0.8854, -8, 3.1845999, 0.8854, -8, 3.1845999, 0, 8, 4.4125, 0.8854, 8, 4.4125, 0, 8, 3.1845999, 0, 8, 3.1845999, 0.8854, 8, 4.4125, 0.8854, 8, 3.1845999, 0, -8, 3.1845999, 0.8854, 8, 3.1845999, 0, 8, 3.1845999, 0, -8, 3.1845999, 0.8854, -8, 3.1845999, 0.8854, 8, -3.4266, -3.8256, 8, -0.44009998, -3.8256, -8, -0.44009998, -3.8256, 8, -3.4266, -3.8256, 8, -3.4266, -3.8256, -8, -0.44009998, -3.8256, -8, -3.4266, 0, -8, -3.4266, -3.8256, 8, -3.4266, 0, 8, -3.4266, 0, -8, -3.4266, -3.8256, -8, -3.4266, -3.8256, 8, -0.44009998, 0, 8, -0.44009998, -3.8256, -8, -0.44009998, 0, -8, -0.44009998, 0, 8, -0.44009998, -3.8256, 8, -0.44009998, -3.8256, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_1epgm"]
+data = PackedVector3Array(4.8491, 0, 1.3685, 8, 0, -3.0003998, 8, 0, 1.3685, 4.8491, 0, 1.3685, 4.8491, 0, -3.0003998, 8, 0, -3.0003998, 4.8491, 0, 4.8160996, 4.8491, 0, 1.3685, 8, 0, 1.3685, 4.8491, 0, 4.8160996, 8, 0, 1.3685, 8, 0, 4.8160996, 1.6163, 0, 1.3685, 4.8491, 0, -3.0003998, 4.8491, 0, 1.3685, 1.6163, 0, 1.3685, 1.6163, 0, -3.0003998, 4.8491, 0, -3.0003998, 1.6163, 0, 4.8160996, 4.8491, 0, 1.3685, 4.8491, 0, 4.8160996, 1.6163, 0, 4.8160996, 1.6163, 0, 1.3685, 4.8491, 0, 1.3685, 4.8491, 0, 8, 4.8491, 0, 4.8160996, 8, 0, 4.8160996, 4.8491, 0, 8, 8, 0, 4.8160996, 8, 0, 8, 8, 0, 8, 4.8491, 0, 24, 4.8491, 0, 8, 8, 0, 8, 8, 0, 24, 4.8491, 0, 24, 4.8491, 0, 8, 4.8491, 0, 24, 1.6163, 0, 24, 1.6163, 0, 8, 4.8491, 0, 4.8160996, 4.8491, 0, 8, 4.8491, 0, 8, 1.6163, 0, 24, 1.6163, 0, 8, 1.6163, 0, 8, 1.6163, 0, 4.8160996, 4.8491, 0, 4.8160996, 1.6163, 0, 8, 1.6163, 0, 24, -1.6164999, 0, 24, 1.6163, 0, 8, -1.6164999, 0, 24, -1.6164999, 0, 8, -1.6164999, 0, 8, 1.6163, 0, 4.8160996, 1.6163, 0, 8, -1.6164999, 0, 8, -1.6164999, 0, 24, -4.8493, 0, 24, -1.6164999, 0, 8, -1.6164999, 0, 4.8160996, 1.6163, 0, 4.8160996, -1.6164999, 0, 4.8160996, 1.6163, 0, 1.3685, 1.6163, 0, 4.8160996, -1.6164999, 0, 8, -4.8493, 0, 24, -4.8493, 0, 8, -4.8493, 0, 8, -1.6164999, 0, 4.8160996, -1.6164999, 0, 8, -4.8493, 0, 8, -4.8493, 0, 24, -8.0002, 0, 24, -1.6164999, 0, 4.8160996, -1.6164999, 0, 1.3685, 1.6163, 0, 1.3685, -1.6164999, 0, 1.3685, 1.6163, 0, -3.0003998, 1.6163, 0, 1.3685, -1.6164999, 0, 1.3685, -1.6164999, 0, -3.0003998, 1.6163, 0, -3.0003998, -4.8493, 0, 4.8160996, -1.6164999, 0, 1.3685, -1.6164999, 0, 4.8160996, -4.8493, 0, 8, -4.8493, 0, 4.8160996, -1.6164999, 0, 4.8160996, -4.8493, 0, 1.3685, -1.6164999, 0, -3.0003998, -1.6164999, 0, 1.3685, -4.8493, 0, 4.8160996, -4.8493, 0, 1.3685, -1.6164999, 0, 1.3685, -4.8493, 0, 1.3685, -4.8493, 0, -3.0003998, -1.6164999, 0, -3.0003998, -8.0002, 0, 8, -4.8493, 0, 4.8160996, -4.8493, 0, 8, -4.8493, 0, 8, -8.0002, 0, 24, -8.0002, 0, 8, -8.0002, 0, 24, -10, 0, 8, -8.0002, 0, 8, -8.0002, 0, 24, -10, 0, 24, -10, 0, 8, -8.0002, 0, 8, -10, 0, 8, -10, 0, 4.8160996, -8.0002, 0, 8, -8.0002, 0, 4.8160996, -4.8493, 0, 4.8160996, -8.0002, 0, 8, -10, 0, 4.8160996, -8.0002, 0, 4.8160996, -8.0002, 0, 4.8160996, -4.8493, 0, 1.3685, -4.8493, 0, 4.8160996, -8.0002, 0, 4.8160996, -10, 0, 4.8160996, -10, 0, 1.3685, -8.0002, 0, 1.3685, -4.8493, 0, -3.0003998, -4.8493, 0, 1.3685, -8.0002, 0, 4.8160996, -8.0002, 0, 1.3685, -4.8493, 0, 1.3685, -8.0002, 0, 4.8160996, -10, 0, 1.3685, -8.0002, 0, 1.3685, -8.0002, 0, 1.3685, -8.0002, 0, -3.0003998, -4.8493, 0, -3.0003998, -8.0002, 0, 1.3685, -10, 0, 1.3685, -10, 0, -3.0003998, -8.0002, 0, 1.3685, -10, 0, -3.0003998, -8.0002, 0, -3.0003998, -10, 0, -3.0003998, -8.0002, 0, -18.303099, -8.0002, 0, -3.0003998, -10, 0, -3.0003998, -10, 0, -18.303099, -8.0002, 0, -18.303099, -10, 0, -18.303099, -8.0002, 0, -24, -8.0002, 0, -18.303099, -10, 0, -18.303099, -10, 0, -24, -8.0002, 0, -24, -8.0002, 0, -18.303099, -8.0002, 0, -24, -4.8493, 0, -24, -8.0002, 0, -18.303099, -4.8493, 0, -24, -4.8493, 0, -18.303099, -4.8493, 0, -18.303099, -4.8493, 0, -24, -1.6164999, 0, -24, -4.8493, 0, -18.303099, -1.6164999, 0, -24, -1.6164999, 0, -18.303099, -1.6164999, 0, -18.303099, -1.6164999, 0, -24, 1.6163, 0, -24, -1.6164999, 0, -18.303099, 1.6163, 0, -24, 1.6163, 0, -18.303099, 1.6163, 0, -18.303099, 1.6163, 0, -24, 4.8491, 0, -24, 1.6163, 0, -18.303099, 4.8491, 0, -24, 4.8491, 0, -18.303099, 4.8491, 0, -18.303099, 4.8491, 0, -24, 8, 0, -24, 4.8491, 0, -18.303099, 8, 0, -24, 8, 0, -18.303099, -4.8493, 0, -3.0003998, -1.6164999, -10, -3.0003998, -1.6164999, 0, -3.0003998, -1.6164999, 0, -3.0003998, -1.6164999, -10, -3.0003998, 1.6163, -10, -3.0003998, -4.8493, 0, -3.0003998, -4.8493, -10, -3.0003998, -1.6164999, -10, -3.0003998, -8.0002, 0, -3.0003998, -4.8493, -10, -3.0003998, -4.8493, 0, -3.0003998, -8.0002, 0, -3.0003998, -8.0002, -10, -3.0003998, -4.8493, -10, -3.0003998, -1.6164999, 0, -3.0003998, 1.6163, -10, -3.0003998, 1.6163, 0, -3.0003998, 1.6163, 0, -3.0003998, 1.6163, -10, -3.0003998, 4.8491, -10, -3.0003998, 1.6163, 0, -3.0003998, 4.8491, -10, -3.0003998, 4.8491, 0, -3.0003998, 4.8491, 0, -3.0003998, 4.8491, -10, -3.0003998, 8, -10, -3.0003998, 4.8491, 0, -3.0003998, 8, -10, -3.0003998, 8, 0, -3.0003998, 1.6163, 0, -18.303099, -1.6164999, -10, -18.303099, -1.6164999, 0, -18.303099, -1.6164999, 0, -18.303099, -1.6164999, -10, -18.303099, -4.8493, -10, -18.303099, 1.6163, 0, -18.303099, 1.6163, -10, -18.303099, -1.6164999, -10, -18.303099, -1.6164999, 0, -18.303099, -4.8493, -10, -18.303099, -4.8493, 0, -18.303099, -4.8493, 0, -18.303099, -4.8493, -10, -18.303099, -8.0002, -10, -18.303099, -4.8493, 0, -18.303099, -8.0002, -10, -18.303099, -8.0002, 0, -18.303099, 4.8491, 0, -18.303099, 1.6163, -10, -18.303099, 1.6163, 0, -18.303099, 4.8491, 0, -18.303099, 4.8491, -10, -18.303099, 1.6163, -10, -18.303099, 8, 0, -18.303099, 4.8491, -10, -18.303099, 4.8491, 0, -18.303099, 8, 0, -18.303099, 8, -10, -18.303099, 4.8491, -10, -18.303099, 1.6163, -10, -3.0003998, 4.8491, -10, -18.303099, 4.8491, -10, -3.0003998, 4.8491, -10, -3.0003998, 4.8491, -10, -18.303099, 8, -10, -18.303099, 4.8491, -10, -3.0003998, 8, -10, -18.303099, 8, -10, -3.0003998, 1.6163, -10, -3.0003998, 1.6163, -10, -18.303099, 4.8491, -10, -18.303099, -1.6164999, -10, -3.0003998, 1.6163, -10, -18.303099, 1.6163, -10, -3.0003998, -1.6164999, -10, -3.0003998, -1.6164999, -10, -18.303099, 1.6163, -10, -18.303099, -4.8493, -10, -3.0003998, -1.6164999, -10, -18.303099, -1.6164999, -10, -3.0003998, -4.8493, -10, -3.0003998, -4.8493, -10, -18.303099, -1.6164999, -10, -18.303099, -8.0002, -10, -3.0003998, -4.8493, -10, -18.303099, -4.8493, -10, -3.0003998, -8.0002, -10, -3.0003998, -8.0002, -10, -18.303099, -4.8493, -10, -18.303099)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_152kg"]
+data = PackedVector3Array(8, 8, 8, -8, 8, -8, -8, 8, 8, 8, 8, 8, 8, 8, -8, -8, 8, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_r4e17"]
+data = PackedVector3Array(8, 8, 8, -8, 8, -8, -8, 8, 8, 8, 8, 8, 8, 8, -8, -8, 8, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_y57op"]
+data = PackedVector3Array(8, 8, 8, -8, 8, -8, -8, 8, 8, 8, 8, 8, 8, 8, -8, -8, 8, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_mlv25"]
+data = PackedVector3Array(8, 8, 8, -8, 8, -8, -8, 8, 8, 8, 8, 8, 8, 8, -8, -8, 8, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_a82wo"]
+data = PackedVector3Array(8, 8, 8, -8, 8, -8, -8, 8, 8, 8, 8, 8, 8, 8, -8, -8, 8, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_gdvew"]
+data = PackedVector3Array(8, 8, 8, -8, 8, -8, -8, 8, 8, 8, 8, 8, 8, 8, -8, -8, 8, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_kjtvk"]
+data = PackedVector3Array(8, 8, 8, -8, 8, -8, -8, 8, 8, 8, 8, 8, 8, 8, -8, -8, 8, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_xrs0c"]
+data = PackedVector3Array(8, 8, 8, -8, 8, -8, -8, 8, 8, 8, 8, 8, 8, 8, -8, -8, 8, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_xljpf"]
+data = PackedVector3Array(8, 8, 8, -8, 8, -8, -8, 8, 8, 8, 8, 8, 8, 8, -8, -8, 8, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_j4bwh"]
+data = PackedVector3Array(8, 8, 8, -8, 8, -8, -8, 8, 8, 8, 8, 8, 8, 8, -8, -8, 8, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_ksmap"]
+data = PackedVector3Array(8, 8, 8, -8, 8, -8, -8, 8, 8, 8, 8, 8, 8, 8, -8, -8, 8, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_ygd8o"]
+data = PackedVector3Array(8, 8, 8, -8, 8, -8, -8, 8, 8, 8, 8, 8, 8, 8, -8, -8, 8, -8)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_2s0kr"]
+data = PackedVector3Array(-8.0002, 0, 7.9997997, 8, 0, -8, 8, 0, 7.9997997, -8.0002, 0, 7.9997997, -8.0002, 0, -8, 8, 0, -8, -8.0002, 0, 7.9997997, -10, 0, -8, -8.0002, 0, -8, -8.0002, 0, 7.9997997, -10, 0, 7.9997997, -10, 0, -8, 8, 0, 7.9997997, -8.0002, 0, 24, -8.0002, 0, 7.9997997, -8.0002, 0, 24, -10, 0, 7.9997997, -8.0002, 0, 7.9997997, 8, 0, 7.9997997, 8, 0, 24, -8.0002, 0, 24, -8.0002, 0, 24, -10, 0, 24, -10, 0, 7.9997997)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_xaipn"]
+data = PackedVector3Array(-8.0002, 0, 7.9997997, 8, 0, -8, 8, 0, 7.9997997, -8.0002, 0, 7.9997997, -8.0002, 0, -8, 8, 0, -8, -8.0002, 0, 7.9997997, -10, 0, -8, -8.0002, 0, -8, -8.0002, 0, 7.9997997, -10, 0, 7.9997997, -10, 0, -8, 8, 0, 7.9997997, -8.0002, 0, 24, -8.0002, 0, 7.9997997, -8.0002, 0, 24, -10, 0, 7.9997997, -8.0002, 0, 7.9997997, 8, 0, 7.9997997, 8, 0, 24, -8.0002, 0, 24, -8.0002, 0, 24, -10, 0, 24, -10, 0, 7.9997997)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kmb1v"]
+size = Vector3(0.55, 2.8, 2.03)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fuf3a"]
+size = Vector3(1.9, 0.12, 1.9)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dgi5k"]
+size = Vector3(1.9, 0.42, 1.9)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pibwh"]
+size = Vector3(0.55, 2.8, 2.03)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_c6pm6"]
+size = Vector3(0.55, 2.8, 2.03)
+
+[sub_resource type="BoxShape3D" id="FlashbackExitShape"]
+size = Vector3(1.2, 3, 2.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5he1u"]
+size = Vector3(2, 3, 8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5poiv"]
+size = Vector3(2, 3, 8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_2cjbq"]
+size = Vector3(2, 3, 8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_chjal"]
+size = Vector3(2, 3, 8)
+
 [node name="Main" type="Node3D" unique_id=417695300]
 script = ExtResource("4_room_materials")
 
@@ -101,7 +285,7 @@ script = ExtResource("4_room_materials")
 layer = 10
 script = ExtResource("3_main_menu")
 
-[node name="ClickSound" type="AudioStreamPlayer" parent="MainMenu"]
+[node name="ClickSound" type="AudioStreamPlayer" parent="MainMenu" unique_id=1845179996]
 process_mode = 3
 stream = ExtResource("20_menu_click")
 
@@ -193,43 +377,65 @@ transform = Transform3D(-3.6199901e-06, 0, -1, 0, 1, 0, 1, 0, -3.6199901e-06, 0,
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 4, 0)
 shape = SubResource("RoomWallShape")
 
+[node name="ExitSign" type="Label3D" parent="Room" unique_id=762590622]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 3.1, 7.7)
+pixel_size = 0.008
+text = "ВЫХОД"
+font_size = 52
+
+[node name="MemoryDoor" type="MeshInstance3D" parent="Room" unique_id=1559126636]
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, -7.7, 1.35, 4)
+mesh = SubResource("FlashbackDoorMesh")
+
+[node name="MemorySign" type="Label3D" parent="Room" unique_id=390821479]
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, -7.6, 3.1, 4)
+pixel_size = 0.006
+text = "ЗНАКОМАЯ ДВЕРЬ"
+font_size = 40
+
+[node name="MemoryDoorLight" type="OmniLight3D" parent="Room" unique_id=1807659638]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.8, 2.5, 4)
+light_color = Color(1, 0.87, 0.63, 1)
+light_energy = 1.4
+omni_range = 4.0
+
 [node name="Player" type="CharacterBody3D" parent="." unique_id=1140905256]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 4)
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 169, 0.92, 180)
 script = ExtResource("1_player")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=1231908845]
 shape = SubResource("CapsuleShape_player")
 
-[node name="FootstepSound" type="AudioStreamPlayer3D" parent="Player"]
-position = Vector3(0, -0.7, 0)
+[node name="FootstepSound" type="AudioStreamPlayer3D" parent="Player" unique_id=1424943272]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.7, 0)
 stream = ExtResource("21_footstep")
 volume_db = -8.0
 unit_size = 8.0
 
-[node name="JumpSound" type="AudioStreamPlayer3D" parent="Player"]
+[node name="JumpSound" type="AudioStreamPlayer3D" parent="Player" unique_id=1276516457]
 stream = ExtResource("22_jump")
 volume_db = -9.0
 unit_size = 8.0
 
-[node name="PickupSound" type="AudioStreamPlayer3D" parent="Player"]
+[node name="PickupSound" type="AudioStreamPlayer3D" parent="Player" unique_id=1477056118]
 stream = ExtResource("23_pickup")
 unit_size = 8.0
 
-[node name="ItemUseSound" type="AudioStreamPlayer3D" parent="Player"]
+[node name="ItemUseSound" type="AudioStreamPlayer3D" parent="Player" unique_id=1962316822]
 stream = ExtResource("24_item_use")
+unit_size = 8.0
 pitch_scale = 0.92
-unit_size = 8.0
 
-[node name="ThrowSound" type="AudioStreamPlayer3D" parent="Player"]
+[node name="ThrowSound" type="AudioStreamPlayer3D" parent="Player" unique_id=727495101]
 stream = ExtResource("25_throw")
-pitch_scale = 0.85
 unit_size = 8.0
+pitch_scale = 0.85
 
-[node name="PlaceSound" type="AudioStreamPlayer3D" parent="Player"]
+[node name="PlaceSound" type="AudioStreamPlayer3D" parent="Player" unique_id=1243977945]
 stream = ExtResource("26_place")
 unit_size = 8.0
 
-[node name="SwapSound" type="AudioStreamPlayer3D" parent="Player"]
+[node name="SwapSound" type="AudioStreamPlayer3D" parent="Player" unique_id=55369]
 stream = ExtResource("27_swap")
 unit_size = 8.0
 
@@ -247,10 +453,8 @@ environment = ExtResource("43_laboratory_environment")
 target_position = Vector3(0, 0, -15)
 
 [node name="SmallBox" type="RigidBody3D" parent="." unique_id=660320988 groups=["swapAble", "swappable"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.5, 0)
-mass = 1.0
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 167, 0.5, 175)
 script = ExtResource("9_physics_object")
-physics_enabled = true
 
 [node name="Mesh" type="MeshInstance3D" parent="SmallBox" unique_id=1206711177]
 mesh = SubResource("BoxMesh_small")
@@ -259,14 +463,13 @@ surface_material_override/0 = SubResource("TestMaterial_blue")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="SmallBox" unique_id=718676204]
 shape = SubResource("BoxShape_small")
 
-[node name="CollisionSound" type="AudioStreamPlayer3D" parent="SmallBox"]
+[node name="CollisionSound" type="AudioStreamPlayer3D" parent="SmallBox" unique_id=25227260]
 script = ExtResource("28_collision_audio")
 
 [node name="MediumSphere" type="RigidBody3D" parent="." unique_id=547506107 groups=["swapAble", "swappable"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 169, 0.8, 175)
 mass = 4.0
 script = ExtResource("9_physics_object")
-physics_enabled = true
 
 [node name="Mesh" type="MeshInstance3D" parent="MediumSphere" unique_id=1272778855]
 mesh = SubResource("SphereMesh_medium")
@@ -275,14 +478,13 @@ surface_material_override/0 = SubResource("TestMaterial_orange")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MediumSphere" unique_id=121771030]
 shape = SubResource("SphereShape_medium")
 
-[node name="CollisionSound" type="AudioStreamPlayer3D" parent="MediumSphere"]
+[node name="CollisionSound" type="AudioStreamPlayer3D" parent="MediumSphere" unique_id=1802933813]
 script = ExtResource("28_collision_audio")
 
 [node name="LargeCylinder" type="RigidBody3D" parent="." unique_id=1913122171 groups=["swapAble", "swappable"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1.2, -1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 161.04843, 1.2, 182.63205)
 mass = 10.0
 script = ExtResource("9_physics_object")
-physics_enabled = true
 
 [node name="Mesh" type="MeshInstance3D" parent="LargeCylinder" unique_id=1760634152]
 mesh = SubResource("CylinderMesh_large")
@@ -291,7 +493,7 @@ surface_material_override/0 = SubResource("TestMaterial_green")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LargeCylinder" unique_id=1552868974]
 shape = SubResource("CylinderShape_large")
 
-[node name="CollisionSound" type="AudioStreamPlayer3D" parent="LargeCylinder"]
+[node name="CollisionSound" type="AudioStreamPlayer3D" parent="LargeCylinder" unique_id=1499744964]
 script = ExtResource("28_collision_audio")
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=935775243]
@@ -307,10 +509,9 @@ mouse_filter = 2
 script = ExtResource("2_crosshair")
 
 [node name="SwapTestObject" type="RigidBody3D" parent="." unique_id=1694027731 groups=["swapAble", "swappable"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, -4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 127.601, 0.5, 184.47037)
 mass = 2.0
 script = ExtResource("9_physics_object")
-physics_enabled = true
 
 [node name="Mesh" type="MeshInstance3D" parent="SwapTestObject" unique_id=1141367552]
 mesh = SubResource("BoxMesh_small")
@@ -319,62 +520,1104 @@ surface_material_override/0 = SubResource("TestMaterial_blue")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="SwapTestObject" unique_id=1091873219]
 shape = SubResource("BoxShape_small")
 
-[node name="CollisionSound" type="AudioStreamPlayer3D" parent="SwapTestObject"]
+[node name="CollisionSound" type="AudioStreamPlayer3D" parent="SwapTestObject" unique_id=1073945470]
 script = ExtResource("28_collision_audio")
 
-[node name="PickupTestItem" parent="." instance=ExtResource("10_pickup_item")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0.5)
+[node name="PickupTestItem" parent="." unique_id=473309018 instance=ExtResource("10_pickup_item")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 164, 1.2, 180)
 
 [node name="OmniLight3D" type="OmniLight3D" parent="." unique_id=1942661029]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.360796, 0)
-omni_range = 14.586
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 167, 4, 180)
+light_energy = 1.6
+omni_range = 16.0
 
-[node name="CityRoom" parent="." instance=ExtResource("9_city")]
-position = Vector3(40, 0, 0)
+[node name="CityRoom" parent="." unique_id=1406714224 instance=ExtResource("9_city")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 0)
 
-[node name="DeveloperCameraPreview" type="Node" parent="." node_paths=PackedStringArray("player")]
+[node name="DeveloperCameraPreview" type="Node" parent="." unique_id=98376450 node_paths=PackedStringArray("player")]
 script = ExtResource("31_cutscene")
 player = NodePath("../Player")
 
-[node name="DeveloperTools" type="CanvasLayer" parent="." node_paths=PackedStringArray("player", "menu")]
+[node name="DeveloperTools" type="CanvasLayer" parent="." unique_id=1814993821 node_paths=PackedStringArray("player", "menu")]
 script = ExtResource("30_developer")
 player = NodePath("../Player")
 menu = NodePath("../MainMenu")
 
-[node name="Tutorial" type="CanvasLayer" parent="." node_paths=PackedStringArray("player", "menu")]
+[node name="Tutorial" type="CanvasLayer" parent="." unique_id=1012047667 node_paths=PackedStringArray("player", "menu")]
 script = ExtResource("32_tutorial")
 player = NodePath("../Player")
 menu = NodePath("../MainMenu")
 
-[node name="LocationTransition" type="Node" parent="." node_paths=PackedStringArray("city_room", "player", "laboratory_light")]
+[node name="LocationTransition" type="Node" parent="." unique_id=498694772 node_paths=PackedStringArray("city_room", "player", "laboratory_light")]
 script = ExtResource("10_transition")
 city_room = NodePath("../CityRoom")
 player = NodePath("../Player")
 laboratory_light = NodePath("../OmniLight3D")
 
-[node name="LaboratoryExit" type="Area3D" parent="LocationTransition"]
-script = ExtResource("12_marker")
-position = Vector3(0, 1.5, 19)
+[node name="LaboratoryExit" type="Area3D" parent="LocationTransition" unique_id=254978203]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 19)
 collision_layer = 0
-collision_mask = 1
+script = ExtResource("12_marker")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LocationTransition/LaboratoryExit"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LocationTransition/LaboratoryExit" unique_id=921938942]
 shape = SubResource("LocationExitShape")
 
-[node name="LaboratoryArrival" type="Marker3D" parent="LocationTransition"]
-position = Vector3(0, 0.92, 16)
+[node name="LaboratoryArrival" type="Marker3D" parent="LocationTransition" unique_id=662607297]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 16)
 
-[node name="ExitSign" type="Label3D" parent="Room"]
-position = Vector3(0, 3.1, 7.7)
-rotation = Vector3(0, 3.1415927, 0)
-text = "ВЫХОД"
-font_size = 52
-pixel_size = 0.008
+[node name="LabModuleLibrary" parent="." unique_id=1248371813 instance=ExtResource("13_library")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 165.48538, 0, 0)
 
-[node name="FlashbackRoom" parent="." instance=ExtResource("11_flashback")]
-position = Vector3(-40, 0, 0)
+[node name="Wall1x1" parent="LabModuleLibrary/Walls" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 179.19165)
 
-[node name="FlashbackTransition" type="Node" parent="." node_paths=PackedStringArray("city_room", "player", "laboratory_light")]
+[node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x1" index="1" unique_id=1138911755]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWall1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/Wall1x1/labWall1x1Collider" unique_id=367396800]
+shape = SubResource("ConcavePolygonShape3D_qkpxi")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWall1x1"),
+"version": 1
+}
+
+[node name="Wall1x2" parent="LabModuleLibrary/Walls" index="1" unique_id=1040254162 instance=ExtResource("7_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 195.19165)
+
+[node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x2" unique_id=2036596137]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWall1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/Wall1x2/labWall1x1Collider" unique_id=2081300096]
+shape = SubResource("ConcavePolygonShape3D_5q0nq")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWall1x1"),
+"version": 1
+}
+
+[node name="Wall1x3" parent="LabModuleLibrary/Walls" index="2" unique_id=10878639 instance=ExtResource("7_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 195.19165)
+
+[node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x3" unique_id=722115966]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWall1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/Wall1x3/labWall1x1Collider" unique_id=915276670]
+shape = SubResource("ConcavePolygonShape3D_dgi5k")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWall1x1"),
+"version": 1
+}
+
+[node name="Wall1x4" parent="LabModuleLibrary/Walls" index="3" unique_id=1027117491 instance=ExtResource("7_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38, 0, 195.19165)
+
+[node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x4" unique_id=1281045219]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWall1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/Wall1x4/labWall1x1Collider" unique_id=977024467]
+shape = SubResource("ConcavePolygonShape3D_j8jky")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWall1x1"),
+"version": 1
+}
+
+[node name="Wall1x5" parent="LabModuleLibrary/Walls" index="4" unique_id=1484621528 instance=ExtResource("7_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56, 0, 195.19165)
+
+[node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x5" unique_id=2121781845]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWall1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/Wall1x5/labWall1x1Collider" unique_id=2068815597]
+shape = SubResource("ConcavePolygonShape3D_kmb1v")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWall1x1"),
+"version": 1
+}
+
+[node name="Wall1x6" parent="LabModuleLibrary/Walls" index="5" unique_id=1526364419 instance=ExtResource("7_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -74, 0, 195.19165)
+
+[node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x6" unique_id=1834475516]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWall1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/Wall1x6/labWall1x1Collider" unique_id=1168522050]
+shape = SubResource("ConcavePolygonShape3D_fuf3a")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWall1x1"),
+"version": 1
+}
+
+[node name="Wall1x7" parent="LabModuleLibrary/Walls" index="6" unique_id=205257104 instance=ExtResource("7_wall")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -74, 0, 195.19165)
+
+[node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x7" unique_id=993001131]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWall1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/Wall1x7/labWall1x1Collider" unique_id=1680251699]
+shape = SubResource("ConcavePolygonShape3D_pibwh")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWall1x1"),
+"version": 1
+}
+
+[node name="Wall1x8" parent="LabModuleLibrary/Walls" index="7" unique_id=547150268 instance=ExtResource("7_wall")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -56, 0, 195.19165)
+
+[node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x8" unique_id=1975529393]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWall1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/Wall1x8/labWall1x1Collider" unique_id=562881888]
+shape = SubResource("ConcavePolygonShape3D_c6pm6")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWall1x1"),
+"version": 1
+}
+
+[node name="Wall1x9" parent="LabModuleLibrary/Walls" index="8" unique_id=1961737448 instance=ExtResource("7_wall")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -38, 0, 195.19165)
+
+[node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x9" unique_id=29242238]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWall1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/Wall1x9/labWall1x1Collider" unique_id=717286006]
+shape = SubResource("ConcavePolygonShape3D_5he1u")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWall1x1"),
+"version": 1
+}
+
+[node name="Wall1x10" parent="LabModuleLibrary/Walls" index="9" unique_id=575442055 instance=ExtResource("7_wall")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -20, 0, 195.19165)
+
+[node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x10" unique_id=1108538060]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWall1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/Wall1x10/labWall1x1Collider" unique_id=1674030031]
+shape = SubResource("ConcavePolygonShape3D_5poiv")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWall1x1"),
+"version": 1
+}
+
+[node name="Wall1x11" parent="LabModuleLibrary/Walls" index="10" unique_id=1478910042 instance=ExtResource("7_wall")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -2, 0, 195.19165)
+
+[node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x11" unique_id=770064430]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWall1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/Wall1x11/labWall1x1Collider" unique_id=626229305]
+shape = SubResource("ConcavePolygonShape3D_2cjbq")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWall1x1"),
+"version": 1
+}
+
+[node name="Wall1x12" parent="LabModuleLibrary/Walls" index="11" unique_id=593835665 instance=ExtResource("7_wall")]
+transform = Transform3D(1.3113416e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113416e-07, -2, 0, 195.19165)
+
+[node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x12" unique_id=1619268673]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWall1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/Wall1x12/labWall1x1Collider" unique_id=1824309642]
+shape = SubResource("ConcavePolygonShape3D_chjal")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWall1x1"),
+"version": 1
+}
+
+[node name="Wall1x13" parent="LabModuleLibrary/Walls" index="12" unique_id=1004237888 instance=ExtResource("7_wall")]
+transform = Transform3D(1.3113416e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113416e-07, -20, 0, 195.19165)
+
+[node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x13" unique_id=407519965]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWall1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/Wall1x13/labWall1x1Collider" unique_id=1993546886]
+shape = SubResource("ConcavePolygonShape3D_cjqg0")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWall1x1"),
+"version": 1
+}
+
+[node name="Wall1x14" parent="LabModuleLibrary/Walls" index="13" unique_id=857079939 instance=ExtResource("7_wall")]
+transform = Transform3D(1.3113416e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113416e-07, -38, 0, 195.19165)
+
+[node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x14" unique_id=1659439382]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWall1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/Wall1x14/labWall1x1Collider" unique_id=1472441315]
+shape = SubResource("ConcavePolygonShape3D_vchkt")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWall1x1"),
+"version": 1
+}
+
+[node name="Wall1x15" parent="LabModuleLibrary/Walls" index="14" unique_id=2095535126 instance=ExtResource("7_wall")]
+transform = Transform3D(1.3113416e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113416e-07, -56, 0, 195.19165)
+
+[node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x15" unique_id=512676005]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWall1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/Wall1x15/labWall1x1Collider" unique_id=312174537]
+shape = SubResource("ConcavePolygonShape3D_txyw0")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWall1x1"),
+"version": 1
+}
+
+[node name="Wall1x17" parent="LabModuleLibrary/Walls" index="15" unique_id=1400005473 instance=ExtResource("7_wall")]
+transform = Transform3D(-2.1855693e-07, 0, 1, 0, 1, 0, -1, 0, -2.1855693e-07, -56, 0, 179.19165)
+
+[node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x17" unique_id=1265858717]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWall1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/Wall1x17/labWall1x1Collider" unique_id=1833916165]
+shape = SubResource("ConcavePolygonShape3D_vc5cj")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWall1x1"),
+"version": 1
+}
+
+[node name="Wall1x21" parent="LabModuleLibrary/Walls" index="16" unique_id=997348716 instance=ExtResource("7_wall")]
+transform = Transform3D(-2.1855693e-07, 0, 1, 0, 1, 0, -1, 0, -2.1855693e-07, -74, 0, 163.19165)
+
+[node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x21" unique_id=1989769039]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWall1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/Wall1x21/labWall1x1Collider" unique_id=1225118128]
+shape = SubResource("ConcavePolygonShape3D_nvyfr")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWall1x1"),
+"version": 1
+}
+
+[node name="Wall1x18" parent="LabModuleLibrary/Walls" index="17" unique_id=655082417 instance=ExtResource("7_wall")]
+transform = Transform3D(-2.1855693e-07, 0, 1, 0, 1, 0, -1, 0, -2.1855693e-07, -38, 0, 179.19165)
+
+[node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x18" unique_id=592812799]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWall1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/Wall1x18/labWall1x1Collider" unique_id=1992444377]
+shape = SubResource("ConcavePolygonShape3D_ty1g6")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWall1x1"),
+"version": 1
+}
+
+[node name="Wall1x19" parent="LabModuleLibrary/Walls" index="18" unique_id=1668388766 instance=ExtResource("7_wall")]
+transform = Transform3D(-2.1855693e-07, 0, 1, 0, 1, 0, -1, 0, -2.1855693e-07, -20, 0, 179.19165)
+
+[node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x19" unique_id=1405570440]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWall1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/Wall1x19/labWall1x1Collider" unique_id=165837489]
+shape = SubResource("ConcavePolygonShape3D_j2jfr")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWall1x1"),
+"version": 1
+}
+
+[node name="Wall1x20" parent="LabModuleLibrary/Walls" index="19" unique_id=1374623767 instance=ExtResource("7_wall")]
+transform = Transform3D(-2.1855693e-07, 0, 1, 0, 1, 0, -1, 0, -2.1855693e-07, -2, 0, 179.19165)
+
+[node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x20" unique_id=242893602]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWall1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/Wall1x20/labWall1x1Collider" unique_id=1105631537]
+shape = SubResource("ConcavePolygonShape3D_bjg73")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWall1x1"),
+"version": 1
+}
+
+[node name="Wall1x16" parent="LabModuleLibrary/Walls" index="20" unique_id=854193243 instance=ExtResource("7_wall")]
+transform = Transform3D(1.3113416e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113416e-07, -74, 0, 195.19165)
+
+[node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x16" unique_id=2082732338]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWall1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/Wall1x16/labWall1x1Collider" unique_id=789744239]
+shape = SubResource("ConcavePolygonShape3D_bu4jf")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWall1x1"),
+"version": 1
+}
+
+[node name="Wall1x1_Label" parent="LabModuleLibrary/Walls" index="21"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 9, 0)
+
+[node name="WallWindow" parent="LabModuleLibrary/Walls" index="22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 179.19165)
+
+[node name="labWallWindowCollider" type="StaticBody3D" parent="LabModuleLibrary/Walls/WallWindow" index="1" unique_id=1637155116]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWallWindow"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/WallWindow/labWallWindowCollider" unique_id=649220356]
+shape = SubResource("ConcavePolygonShape3D_o7ddy")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWallWindow"),
+"version": 1
+}
+
+[node name="WallWindow3" parent="LabModuleLibrary/Walls" index="23" unique_id=1852991579 instance=ExtResource("14_window")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38, 0, 179.19165)
+
+[node name="labWallWindowCollider" type="StaticBody3D" parent="LabModuleLibrary/Walls/WallWindow3" unique_id=1779063948]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWallWindow"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/WallWindow3/labWallWindowCollider" unique_id=2014822566]
+shape = SubResource("ConcavePolygonShape3D_0loja")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWallWindow"),
+"version": 1
+}
+
+[node name="WallWindow4" parent="LabModuleLibrary/Walls" index="24" unique_id=1320075684 instance=ExtResource("14_window")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56, 0, 179.19165)
+
+[node name="labWallWindowCollider" type="StaticBody3D" parent="LabModuleLibrary/Walls/WallWindow4" unique_id=1818661100]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWallWindow"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/WallWindow4/labWallWindowCollider" unique_id=771390785]
+shape = SubResource("ConcavePolygonShape3D_ids8r")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWallWindow"),
+"version": 1
+}
+
+[node name="WallWindow5" parent="LabModuleLibrary/Walls" index="25" unique_id=1697074538 instance=ExtResource("14_window")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -74, 0, 179.19165)
+
+[node name="labWallWindowCollider" type="StaticBody3D" parent="LabModuleLibrary/Walls/WallWindow5" unique_id=1242946786]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWallWindow"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/WallWindow5/labWallWindowCollider" unique_id=1066687181]
+shape = SubResource("ConcavePolygonShape3D_dnhof")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWallWindow"),
+"version": 1
+}
+
+[node name="WallWindow_Label" parent="LabModuleLibrary/Walls" index="26"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 9, 0)
+
+[node name="WallEntrance" parent="LabModuleLibrary/Walls" index="27"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44, 0, 0)
+
+[node name="WallEntrance" parent="LabModuleLibrary/Walls/WallEntrance" index="1" unique_id=363671641 instance=ExtResource("8_entrance_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46, 0, 179.19165)
+
+[node name="labWallEntrCollider" type="StaticBody3D" parent="LabModuleLibrary/Walls/WallEntrance/WallEntrance" unique_id=997011195]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWallEntr"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/WallEntrance/WallEntrance/labWallEntrCollider" unique_id=1782371675]
+shape = SubResource("ConcavePolygonShape3D_1v6qk")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWallEntr"),
+"version": 1
+}
+
+[node name="WallEntrance2" parent="LabModuleLibrary/Walls/WallEntrance" index="2" unique_id=888546670 instance=ExtResource("8_entrance_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64, 0, 179.19165)
+
+[node name="labWallEntrCollider" type="StaticBody3D" parent="LabModuleLibrary/Walls/WallEntrance/WallEntrance2" unique_id=1330703889]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWallEntr"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/WallEntrance/WallEntrance2/labWallEntrCollider" unique_id=881358711]
+shape = SubResource("ConcavePolygonShape3D_augu2")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWallEntr"),
+"version": 1
+}
+
+[node name="WallEntrance3" parent="LabModuleLibrary/Walls/WallEntrance" index="3" unique_id=880916990 instance=ExtResource("8_entrance_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -82, 0, 179.19165)
+
+[node name="labWallEntrCollider" type="StaticBody3D" parent="LabModuleLibrary/Walls/WallEntrance/WallEntrance3" unique_id=1447294176]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWallEntr"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/WallEntrance/WallEntrance3/labWallEntrCollider" unique_id=1338643543]
+shape = SubResource("ConcavePolygonShape3D_tm6hj")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWallEntr"),
+"version": 1
+}
+
+[node name="WallEntrance_Label" parent="LabModuleLibrary/Walls" index="28"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44, 9, 0)
+
+[node name="WallEntranceLong" parent="LabModuleLibrary/Walls" index="29"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 65.85834, 0, 0.044487)
+
+[node name="WallEntranceLong2" parent="LabModuleLibrary/Walls" index="30" unique_id=418577334 instance=ExtResource("29_qkpxi")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 179.19165)
+
+[node name="labWallEntrLongCollider" type="StaticBody3D" parent="LabModuleLibrary/Walls/WallEntranceLong2" unique_id=36022744]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -54, 0, 0)
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWallEntrLong"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/WallEntranceLong2/labWallEntrLongCollider" unique_id=982865474]
+shape = SubResource("ConcavePolygonShape3D_kf5aa")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWallEntrLong"),
+"version": 1
+}
+
+[node name="WallEntranceLong_Label" parent="LabModuleLibrary/Walls" index="31"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 66, 9, 0)
+
+[node name="WallEntranceLongReversed" parent="LabModuleLibrary/Walls" index="32"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 130.72736, 0, 0)
+
+[node name="WallEntranceLongReversed2" parent="LabModuleLibrary/Walls" index="33" unique_id=600838763 instance=ExtResource("30_5q0nq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 179.19264)
+
+[node name="labWallEntrLongReversedCollider" type="StaticBody3D" parent="LabModuleLibrary/Walls/WallEntranceLongReversed2" unique_id=2084657429]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -72, 0, 0)
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWallEntrLongReversed"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/WallEntranceLongReversed2/labWallEntrLongReversedCollider" unique_id=458693221]
+shape = SubResource("ConcavePolygonShape3D_t5ykj")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWallEntrLongReversed"),
+"version": 1
+}
+
+[node name="WallEntranceLongReversed_Label" parent="LabModuleLibrary/Walls" index="34"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 88, 9, 0)
+
+[node name="WallWindowLong" parent="LabModuleLibrary/Walls" index="35"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 179.19165)
+
+[node name="labWallWindowLongCollider" type="StaticBody3D" parent="LabModuleLibrary/Walls/WallWindowLong" index="1" unique_id=545467323]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, 0)
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWallWindowLong"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/WallWindowLong/labWallWindowLongCollider" unique_id=892868803]
+shape = SubResource("ConcavePolygonShape3D_e755i")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWallWindowLong"),
+"version": 1
+}
+
+[node name="WallWindowLong_Label" parent="LabModuleLibrary/Walls" index="36"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 110, 9, 0)
+
+[node name="WallLong1x1" parent="LabModuleLibrary/Walls" index="37"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 179.19165)
+
+[node name="labWallLong1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/WallLong1x1" index="1" unique_id=468419381]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, 0)
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labWallLong1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/WallLong1x1/labWallLong1x1Collider" unique_id=1471425506]
+shape = SubResource("ConcavePolygonShape3D_ro3en")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labWallLong1x1"),
+"version": 1
+}
+
+[node name="WallLong1x1_Label" parent="LabModuleLibrary/Walls" index="38"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 132, 9, 0)
+
+[node name="Floors" parent="LabModuleLibrary" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 24)
+
+[node name="FloorEntrance" parent="LabModuleLibrary/Floors" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 155.19165)
+
+[node name="labFloor2x1entrCollider" type="StaticBody3D" parent="LabModuleLibrary/Floors/FloorEntrance" index="1" unique_id=764633791]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labFloor2x1entr"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Floors/FloorEntrance/labFloor2x1entrCollider" unique_id=1521422203]
+shape = SubResource("ConcavePolygonShape3D_od4ux")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labFloor2x1entr"),
+"version": 1
+}
+
+[node name="FloorEntrance_Label" parent="LabModuleLibrary/Floors" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+
+[node name="FloorJumpTutor" parent="LabModuleLibrary/Floors" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 155.19165)
+
+[node name="labFloor2x1jumptutorCollider" type="StaticBody3D" parent="LabModuleLibrary/Floors/FloorJumpTutor" index="1" unique_id=1704158658]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, 0)
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labFloor2x1jumptutor"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Floors/FloorJumpTutor/labFloor2x1jumptutorCollider" unique_id=116029101]
+shape = SubResource("ConcavePolygonShape3D_xhfw6")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labFloor2x1jumptutor"),
+"version": 1
+}
+
+[node name="FloorJumpTutor_Label" parent="LabModuleLibrary/Floors" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 5, 0)
+
+[node name="FloorSwapLevel" parent="LabModuleLibrary/Floors" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44, 0, 0)
+
+[node name="FloorSwapLevel2" parent="LabModuleLibrary/Floors" index="5" unique_id=1188840870 instance=ExtResource("31_dgi5k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 155.19165)
+
+[node name="labFloor2x1SwapLevelCollider" type="StaticBody3D" parent="LabModuleLibrary/Floors/FloorSwapLevel2" unique_id=905148248]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -72, 0, 0)
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labFloor2x1SwapLevel"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Floors/FloorSwapLevel2/labFloor2x1SwapLevelCollider" unique_id=335717850]
+shape = SubResource("ConcavePolygonShape3D_1epgm")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labFloor2x1SwapLevel"),
+"version": 1
+}
+
+[node name="FloorSwapLevel_Label" parent="LabModuleLibrary/Floors" index="6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44, 5, 0)
+
+[node name="Ceiling" parent="LabModuleLibrary/Floors" index="7"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 155.19165)
+
+[node name="Ceiling2" parent="LabModuleLibrary/Floors" index="8" unique_id=1870130124 instance=ExtResource("6_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 171.19165)
+
+[node name="labCeiling1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Floors/Ceiling2" unique_id=1300493363]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labCeiling1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Floors/Ceiling2/labCeiling1x1Collider" unique_id=2037452488]
+shape = SubResource("ConcavePolygonShape3D_152kg")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labCeiling1x1"),
+"version": 1
+}
+
+[node name="Ceiling5" parent="LabModuleLibrary/Floors" index="9" unique_id=1493169685 instance=ExtResource("6_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 155.19165)
+
+[node name="labCeiling1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Floors/Ceiling5" unique_id=103330553]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labCeiling1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Floors/Ceiling5/labCeiling1x1Collider" unique_id=869442862]
+shape = SubResource("ConcavePolygonShape3D_r4e17")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labCeiling1x1"),
+"version": 1
+}
+
+[node name="Ceiling6" parent="LabModuleLibrary/Floors" index="10" unique_id=1186107999 instance=ExtResource("6_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 171.19165)
+
+[node name="labCeiling1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Floors/Ceiling6" unique_id=410617742]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labCeiling1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Floors/Ceiling6/labCeiling1x1Collider" unique_id=10559785]
+shape = SubResource("ConcavePolygonShape3D_y57op")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labCeiling1x1"),
+"version": 1
+}
+
+[node name="Ceiling7" parent="LabModuleLibrary/Floors" index="11" unique_id=1412463889 instance=ExtResource("6_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38, 0, 155.19165)
+
+[node name="labCeiling1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Floors/Ceiling7" unique_id=1944518481]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labCeiling1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Floors/Ceiling7/labCeiling1x1Collider" unique_id=993800554]
+shape = SubResource("ConcavePolygonShape3D_mlv25")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labCeiling1x1"),
+"version": 1
+}
+
+[node name="Ceiling8" parent="LabModuleLibrary/Floors" index="12" unique_id=1833977484 instance=ExtResource("6_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38, 0, 171.19165)
+
+[node name="labCeiling1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Floors/Ceiling8" unique_id=2083390307]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labCeiling1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Floors/Ceiling8/labCeiling1x1Collider" unique_id=542272221]
+shape = SubResource("ConcavePolygonShape3D_a82wo")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labCeiling1x1"),
+"version": 1
+}
+
+[node name="Ceiling9" parent="LabModuleLibrary/Floors" index="13" unique_id=1535015308 instance=ExtResource("6_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56, 0, 155.19165)
+
+[node name="labCeiling1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Floors/Ceiling9" unique_id=296041887]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labCeiling1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Floors/Ceiling9/labCeiling1x1Collider" unique_id=930893632]
+shape = SubResource("ConcavePolygonShape3D_gdvew")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labCeiling1x1"),
+"version": 1
+}
+
+[node name="Ceiling10" parent="LabModuleLibrary/Floors" index="14" unique_id=1447263292 instance=ExtResource("6_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56, 0, 171.19165)
+
+[node name="labCeiling1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Floors/Ceiling10" unique_id=1509593702]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labCeiling1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Floors/Ceiling10/labCeiling1x1Collider" unique_id=961738592]
+shape = SubResource("ConcavePolygonShape3D_kjtvk")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labCeiling1x1"),
+"version": 1
+}
+
+[node name="Ceiling11" parent="LabModuleLibrary/Floors" index="15" unique_id=1342769423 instance=ExtResource("6_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -74, 0, 155.19165)
+
+[node name="labCeiling1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Floors/Ceiling11" unique_id=2087095094]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labCeiling1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Floors/Ceiling11/labCeiling1x1Collider" unique_id=2031514160]
+shape = SubResource("ConcavePolygonShape3D_xrs0c")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labCeiling1x1"),
+"version": 1
+}
+
+[node name="Ceiling13" parent="LabModuleLibrary/Floors" index="16" unique_id=1469854128 instance=ExtResource("6_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -74, 0, 139.19165)
+
+[node name="labCeiling1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Floors/Ceiling13" unique_id=78271121]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labCeiling1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Floors/Ceiling13/labCeiling1x1Collider" unique_id=925159072]
+shape = SubResource("ConcavePolygonShape3D_xljpf")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labCeiling1x1"),
+"version": 1
+}
+
+[node name="Ceiling12" parent="LabModuleLibrary/Floors" index="17" unique_id=1033536117 instance=ExtResource("6_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -74, 0, 171.19165)
+
+[node name="labCeiling1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Floors/Ceiling12" unique_id=442863602]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labCeiling1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Floors/Ceiling12/labCeiling1x1Collider" unique_id=861392280]
+shape = SubResource("ConcavePolygonShape3D_j4bwh")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labCeiling1x1"),
+"version": 1
+}
+
+[node name="Ceiling3" parent="LabModuleLibrary/Floors" index="18" unique_id=1428517605 instance=ExtResource("6_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 171.19165)
+
+[node name="labCeiling1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Floors/Ceiling3" unique_id=973298518]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labCeiling1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Floors/Ceiling3/labCeiling1x1Collider" unique_id=1499242610]
+shape = SubResource("ConcavePolygonShape3D_ksmap")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labCeiling1x1"),
+"version": 1
+}
+
+[node name="Ceiling4" parent="LabModuleLibrary/Floors" index="19" unique_id=574719764 instance=ExtResource("6_ceiling")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 155.19165)
+
+[node name="labCeiling1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Floors/Ceiling4" unique_id=1027815916]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labCeiling1x1"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Floors/Ceiling4/labCeiling1x1Collider" unique_id=659651954]
+shape = SubResource("ConcavePolygonShape3D_ygd8o")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labCeiling1x1"),
+"version": 1
+}
+
+[node name="Ceiling_Label" parent="LabModuleLibrary/Floors" index="20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 66, 5, 0)
+
+[node name="FloorEntrance2" parent="LabModuleLibrary/Floors" index="21" unique_id=918637367 instance=ExtResource("5_floor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38, 0, 155.19165)
+
+[node name="labFloor2x1entrCollider" type="StaticBody3D" parent="LabModuleLibrary/Floors/FloorEntrance2" unique_id=944617837]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labFloor2x1entr"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Floors/FloorEntrance2/labFloor2x1entrCollider" unique_id=1462854739]
+shape = SubResource("ConcavePolygonShape3D_2s0kr")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labFloor2x1entr"),
+"version": 1
+}
+
+[node name="FloorEntrance3" parent="LabModuleLibrary/Floors" index="22" unique_id=1158386380 instance=ExtResource("5_floor")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56, 0, 155.19165)
+
+[node name="labFloor2x1entrCollider" type="StaticBody3D" parent="LabModuleLibrary/Floors/FloorEntrance3" unique_id=1092590847]
+metadata/_godot_ai_physics_v1 = {
+"collision": NodePath("CollisionShape3D"),
+"source": NodePath("../labFloor2x1entr"),
+"version": 1,
+"wrapped": false
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Floors/FloorEntrance3/labFloor2x1entrCollider" unique_id=345733086]
+shape = SubResource("ConcavePolygonShape3D_xaipn")
+metadata/_godot_ai_physics_v1 = {
+"body": NodePath(".."),
+"source": NodePath("../../labFloor2x1entr"),
+"version": 1
+}
+
+[node name="Props" parent="LabModuleLibrary" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 48)
+
+[node name="Door" parent="LabModuleLibrary/Props" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.792999, 0, 131.20598)
+
+[node name="DoorCollisionBody" type="AnimatableBody3D" parent="LabModuleLibrary/Props/Door" index="1" unique_id=1730703271]
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Props/Door/DoorCollisionBody" unique_id=791144583]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.38, 0)
+shape = SubResource("BoxShape3D_kmb1v")
+
+[node name="Door_Label" parent="LabModuleLibrary/Props" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
+
+[node name="Button" parent="LabModuleLibrary/Props" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.116356, 0, 125.48718)
+
+[node name="ButtonSensor" type="Area3D" parent="LabModuleLibrary/Props/Button" index="1" unique_id=860879321]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.42, 0)
+collision_layer = 0
+collision_mask = 3
+script = ExtResource("32_dgi5k")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Props/Button/ButtonSensor" unique_id=1385498169]
+shape = SubResource("BoxShape3D_fuf3a")
+
+[node name="ButtonCollisionBody" type="AnimatableBody3D" parent="LabModuleLibrary/Props/Button" index="2" unique_id=1501182605]
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Props/Button/ButtonCollisionBody" unique_id=1615545816]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.196, 0)
+shape = SubResource("BoxShape3D_dgi5k")
+
+[node name="Button_Label" parent="LabModuleLibrary/Props" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 5, 0)
+
+[node name="TutorialDoor2" parent="LabModuleLibrary/Props" index="4" unique_id=335796051 instance=ExtResource("33_j8jky")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28.793, 0, 131.20598)
+
+[node name="DoorCollisionBody" type="AnimatableBody3D" parent="LabModuleLibrary/Props/TutorialDoor2" unique_id=377610058]
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Props/TutorialDoor2/DoorCollisionBody" unique_id=1281225645]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.38, 0)
+shape = SubResource("BoxShape3D_pibwh")
+
+[node name="TutorialDoor3" parent="LabModuleLibrary/Props" index="5" unique_id=353511235 instance=ExtResource("33_j8jky")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46.793, 0, 131.20598)
+
+[node name="DoorCollisionBody" type="AnimatableBody3D" parent="LabModuleLibrary/Props/TutorialDoor3" unique_id=346580228]
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Props/TutorialDoor3/DoorCollisionBody" unique_id=499416984]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.38, 0)
+shape = SubResource("BoxShape3D_c6pm6")
+
+[node name="FlashbackRoom" parent="." unique_id=1227615780 instance=ExtResource("11_flashback")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 0, 0)
+
+[node name="FlashbackTransition" type="Node" parent="." unique_id=1793625866 node_paths=PackedStringArray("city_room", "player", "laboratory_light")]
 script = ExtResource("10_transition")
 city_room = NodePath("../FlashbackRoom")
 destination_environment = ExtResource("40_street_environment")
@@ -384,31 +1627,27 @@ fade_out_duration = 1.6
 black_hold_duration = 0.8
 fade_in_duration = 2.8
 
-[node name="LaboratoryExit" type="Area3D" parent="FlashbackTransition"]
+[node name="LaboratoryExit" type="Area3D" parent="FlashbackTransition" unique_id=688540768]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6, 1.5, 4)
+collision_layer = 0
 script = ExtResource("12_marker")
 transition_style = 1
-position = Vector3(-6.6, 1.5, 4)
-collision_layer = 0
-collision_mask = 1
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="FlashbackTransition/LaboratoryExit"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FlashbackTransition/LaboratoryExit" unique_id=641684177]
 shape = SubResource("FlashbackExitShape")
 
-[node name="LaboratoryArrival" type="Marker3D" parent="FlashbackTransition"]
-position = Vector3(-4.8, 0.92, 4)
-rotation = Vector3(0, -1.5707963, 0)
+[node name="LaboratoryArrival" type="Marker3D" parent="FlashbackTransition" unique_id=1286678093]
+transform = Transform3D(7.54979e-08, 0, -1, 0, 1, 0, 1, 0, 7.54979e-08, -4.8, 0.92, 4)
 
-[node name="MemoryDoor" type="MeshInstance3D" parent="Room"]
-position = Vector3(-7.7, 1.35, 4)
-rotation = Vector3(0, 1.5707963, 0)
-mesh = SubResource("FlashbackDoorMesh")
+[node name="Room1Light" type="OmniLight3D" parent="." unique_id=19622087]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 149, 4, 180)
+light_energy = 1.6
+omni_range = 16.0
 
-[node name="MemorySign" type="Label3D" parent="Room"]
-position = Vector3(-7.6, 3.1, 4)
-rotation = Vector3(0, 1.5707963, 0)
-text = "ЗНАКОМАЯ ДВЕРЬ"
-font_size = 40
-pixel_size = 0.006
+[node name="Room2Light" type="OmniLight3D" parent="." unique_id=250509285]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 131, 4, 180)
+light_energy = 1.6
+omni_range = 16.0
 
 [node name="MemoryDoorLight" type="OmniLight3D" parent="Room"]
 position = Vector3(-6.8, 2.5, 4)
@@ -426,3 +1665,64 @@ position = Vector3(2.8, 0, 5.3)
 rotation_degrees = Vector3(0, 180, 0)
 controller = NodePath("../../StreetWeather")
 visual_layer = 2
+[node name="Room3Light" type="OmniLight3D" parent="." unique_id=1453178613]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 113, 4, 180)
+light_energy = 1.6
+omni_range = 16.0
+
+[node name="Room4Light" type="OmniLight3D" parent="." unique_id=1373599292]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 95, 4, 179)
+light_energy = 1.6
+omni_range = 16.0
+
+[node name="LevelCheckpoints" type="Node3D" parent="." unique_id=540498410]
+
+[node name="Level1Checkpoint" type="Area3D" parent="LevelCheckpoints" unique_id=983535690]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 151, 1.5, 180)
+collision_layer = 0
+script = ExtResource("35_j8jky")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/Level1Checkpoint" unique_id=529709638]
+shape = SubResource("BoxShape3D_5he1u")
+
+[node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/Level1Checkpoint" unique_id=7813662]
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
+
+[node name="Level2Checkpoint" type="Area3D" parent="LevelCheckpoints" unique_id=1259052853]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 133, 1.5, 180)
+collision_layer = 0
+script = ExtResource("35_j8jky")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/Level2Checkpoint" unique_id=1838546307]
+shape = SubResource("BoxShape3D_5poiv")
+
+[node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/Level2Checkpoint" unique_id=807021569]
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
+
+[node name="Level3Checkpoint" type="Area3D" parent="LevelCheckpoints" unique_id=1667449562]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 115, 1.5, 180)
+collision_layer = 0
+script = ExtResource("35_j8jky")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/Level3Checkpoint" unique_id=426440603]
+shape = SubResource("BoxShape3D_2cjbq")
+
+[node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/Level3Checkpoint" unique_id=925194398]
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
+
+[node name="Level4Checkpoint" type="Area3D" parent="LevelCheckpoints" unique_id=1626471330]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 97, 1.5, 179)
+collision_layer = 0
+script = ExtResource("35_j8jky")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/Level4Checkpoint" unique_id=1729734908]
+shape = SubResource("BoxShape3D_chjal")
+
+[node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/Level4Checkpoint" unique_id=600734842]
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
+
+[node name="scientist" parent="." unique_id=2089029073 instance=ExtResource("36_fuf3a")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 161.70422, 0.0017670757, 187.98111)
+script = ExtResource("37_pibwh")
+
+[editable path="LabModuleLibrary"]

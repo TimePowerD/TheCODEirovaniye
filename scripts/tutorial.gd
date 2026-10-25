@@ -2,93 +2,168 @@ extends CanvasLayer
 
 @export var player: CharacterBody3D
 @export var menu: CanvasLayer
-const ACTIONS := [&"walk", &"jump", &"pickup", &"swap"]
-const COMPLETION_DELAY := 1.2
-const TASKS := [
-	"WASD — пройдите один метр",
-	"Пробел — прыгните",
-	"E — возьмите предмет в руку или удерживайте ПКМ — захватите физический объект",
-	"Освободите руки: Q / отпустите ПКМ. ЛКМ — выберите два видимых объекта для обмена",
+
+const DOOR_OPEN_DISTANCE := 3.0
+const DOOR_ANIMATION_DURATION := 0.9
+const DIALOGUES := [
+	"Привет. Теперь ты зомби. Попробуй подвигаться с помощью WASD.",
+	"Хорошо! Впереди препятствия. Перепрыгни их, нажимая пробел.",
+	"Последний урок: удерживай ПКМ, чтобы передвинуть куб на кнопку. Можешь нажать её сам.",
+	"Отлично. Дверь открыта, пока кнопка нажата.",
 ]
+
+@onready var doors: Array[Node3D] = [
+	get_node("../LabModuleLibrary/Props/Door") as Node3D,
+	get_node("../LabModuleLibrary/Props/TutorialDoor2") as Node3D,
+	get_node("../LabModuleLibrary/Props/TutorialDoor3") as Node3D,
+]
+@onready var button_sensor: Area3D = get_node("../LabModuleLibrary/Props/Button/ButtonSensor") as Area3D
+
 var step := 0
-var completed := false
-var progress := 0.0
-var pending_actions: Array[StringName] = []
-var label: Label
+var line_index := 0
+var door_closed_positions: Array[Vector3] = []
+var door_body_closed_positions: Array[Vector3] = []
+var door_bodies: Array[AnimatableBody3D] = []
+var door_tweens: Dictionary = {}
 var panel: PanelContainer
+var speaker_label: Label
+var subtitle_label: Label
 
 func _ready() -> void:
 	layer = 2
-	panel = PanelContainer.new()
-	panel.position = Vector2(16, 62)
-	panel.custom_minimum_size = Vector2(340, 0)
-	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.04, 0.065, 0.075, 0.9)
-	style.set_content_margin_all(14)
-	style.set_corner_radius_all(6)
-	panel.add_theme_stylebox_override("panel", style)
-	add_child(panel)
-	label = Label.new()
-	label.custom_minimum_size.x = 310
-	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	panel.add_child(label)
-	player.gameplay_action.connect(_on_action)
+	_build_subtitles()
+	for door in doors:
+		door_closed_positions.append(door.global_position)
+		var door_body := door.get_node("DoorCollisionBody") as AnimatableBody3D
+		door_bodies.append(door_body)
+		door_body_closed_positions.append(door_body.global_position)
+	player.gameplay_action.connect(_on_gameplay_action)
+	button_sensor.pressed.connect(_on_button_pressed)
+	button_sensor.released.connect(_on_button_released)
 	restart()
 
 func restart() -> void:
 	player.tutorial_walk_distance = 0.0
-	pending_actions.clear()
 	step = 0
-	completed = false
-	progress = 0.0
-	_update_text()
+	line_index = 0
+	_set_door_open(0, false)
+	_set_door_open(1, false)
+	_update_subtitles()
 
 func skip() -> void:
-	pending_actions.clear()
-	completed = false
-	progress = 0.0
-	step = ACTIONS.size()
+	step = 3
+	line_index = 2
+	_set_door_open(0, true)
+	_set_door_open(1, true)
 	panel.hide()
 
-func _on_action(action: StringName) -> void:
-	if step >= ACTIONS.size() or not menu.game_started or get_tree().paused:
+func _on_gameplay_action(action: StringName) -> void:
+	if not _can_progress():
 		return
-	if player.has_meta("developer_tools_open") or player.has_meta("cutscene_active") or player.has_meta("location_transition_active"):
-		return
-	if action == &"grab":
-		action = &"pickup"
-	if completed:
-		var expected_index := step + 1 + pending_actions.size()
-		if expected_index < ACTIONS.size() and action == ACTIONS[expected_index]:
-			pending_actions.append(action)
-		return
-	if action != ACTIONS[step]:
-		return
-	completed = true
-	progress = 0.0
-	_update_text()
+	if step == 0 and action == &"walk":
+		step = 1
+		line_index = 1
+		_set_door_open(0, true)
+		_update_subtitles()
+	elif step == 1 and action == &"jump" and _player_is_in_jump_room():
+		step = 2
+		line_index = 2
+		_set_door_open(1, true)
+		_update_subtitles()
 
-func _process(delta: float) -> void:
-	var visible_task: bool = menu.game_started and not player.has_meta("developer_tools_open") and not player.has_meta("cutscene_active")
-	panel.visible = visible_task and step < ACTIONS.size()
-	if not visible_task:
+func _on_button_pressed() -> void:
+	if step < 2:
 		return
-	if completed:
-		progress += delta
-		while completed and progress >= COMPLETION_DELAY:
-			progress -= COMPLETION_DELAY
-			step += 1
-			completed = false
-			if not pending_actions.is_empty():
-				pending_actions.pop_front()
-				completed = true
-			else:
-				progress = 0.0
-			_update_text()
-	panel.visible = visible_task and step < ACTIONS.size()
+	_set_door_open(2, true)
+	line_index = 3
+	_update_subtitles()
 
-func _update_text() -> void:
-	if step < TASKS.size():
-		label.text = "ОБУЧЕНИЕ · %d / %d\n" % [step + 1, ACTIONS.size()] + ("✓ " if completed else "□ ") + TASKS[step]
+func _on_button_released() -> void:
+	_set_door_open(2, false)
+	if line_index == 3:
+		line_index = 2
+		_update_subtitles()
+
+func _can_progress() -> bool:
+	return menu.game_started and not get_tree().paused \
+		and not player.has_meta("developer_tools_open") \
+		and not player.has_meta("cutscene_active") \
+		and not player.has_meta("location_transition_active")
+
+func _player_is_in_jump_room() -> bool:
+	return player.global_position.x >= 135.4 and player.global_position.x <= 153.5 \
+		and player.global_position.z >= 171.0 and player.global_position.z <= 203.5
+
+func _set_door_open(index: int, should_open: bool) -> void:
+	if index >= doors.size() or not is_instance_valid(doors[index]):
+		return
+	var door := doors[index]
+	var target_position := door_closed_positions[index]
+	var target_body_position := door_body_closed_positions[index]
+	if should_open:
+		target_position.z += DOOR_OPEN_DISTANCE
+		target_body_position.z += DOOR_OPEN_DISTANCE
+	var current_tween: Tween = door_tweens.get(index)
+	if current_tween != null and current_tween.is_running():
+		current_tween.kill()
+	var tween := create_tween()
+	door_tweens[index] = tween
+	var visual_tweener := tween.tween_property(door, "global_position", target_position, DOOR_ANIMATION_DURATION)
+	visual_tweener.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	var collision_tweener := tween.parallel().tween_property(
+		door_bodies[index], "global_position", target_body_position, DOOR_ANIMATION_DURATION
+	)
+	collision_tweener.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+func _process(_delta: float) -> void:
+	if not is_instance_valid(panel):
+		return
+	var tutorial_visible: bool = menu.game_started and step < 3
+	var button_feedback_visible: bool = menu.game_started and line_index == 3 and button_sensor.is_pressed
+	panel.visible = tutorial_visible or button_feedback_visible
+	if player.has_meta("developer_tools_open") or player.has_meta("cutscene_active"):
+		panel.hide()
+
+func _build_subtitles() -> void:
+	panel = PanelContainer.new()
+	panel.anchor_left = 0.5
+	panel.anchor_right = 0.5
+	panel.anchor_top = 1.0
+	panel.anchor_bottom = 1.0
+	panel.offset_left = -430.0
+	panel.offset_right = 430.0
+	panel.offset_top = -120.0
+	panel.offset_bottom = -24.0
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.025, 0.04, 0.05, 0.88)
+	style.set_content_margin_all(16)
+	style.set_corner_radius_all(8)
+	panel.add_theme_stylebox_override("panel", style)
+	add_child(panel)
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 6)
+	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	panel.add_child(column)
+	speaker_label = Label.new()
+	speaker_label.text = "РАССКАЗЧИК"
+	speaker_label.add_theme_font_size_override("font_size", 13)
+	speaker_label.add_theme_color_override("font_color", Color(0.52, 0.86, 0.82, 1.0))
+	speaker_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	speaker_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_child(speaker_label)
+	subtitle_label = Label.new()
+	subtitle_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	subtitle_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	subtitle_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	subtitle_label.add_theme_font_size_override("font_size", 20)
+	subtitle_label.add_theme_color_override("font_color", Color(0.94, 0.97, 0.96, 1.0))
+	subtitle_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_child(subtitle_label)
+
+func _update_subtitles() -> void:
+	if not is_instance_valid(subtitle_label):
+		return
+	subtitle_label.text = DIALOGUES[line_index]
+	panel.show()
+

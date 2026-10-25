@@ -1,0 +1,142 @@
+[gd_scene load_steps=14 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/labWall1x1.glb" id="1_wall"]
+[ext_resource type="PackedScene" path="res://assets/models/labWallWindow.glb" id="2_window"]
+[ext_resource type="PackedScene" path="res://assets/models/labWallEntr.glb" id="3_entrance"]
+[ext_resource type="PackedScene" path="res://assets/models/labWallEntrLong.glb" id="4_long"]
+[ext_resource type="PackedScene" path="res://assets/models/labWallEntrLongReversed.glb" id="5_long_reversed"]
+[ext_resource type="PackedScene" path="res://assets/models/labFloor2x1entr.glb" id="6_floor_entrance"]
+[ext_resource type="PackedScene" path="res://assets/models/labFloor2x1jumptutor.glb" id="7_floor_jump"]
+[ext_resource type="PackedScene" path="res://assets/models/labFloor2x1SwapLevel.glb" id="8_floor_swap"]
+[ext_resource type="PackedScene" path="res://assets/models/labCeiling1x1.glb" id="9_ceiling"]
+[ext_resource type="PackedScene" path="res://assets/models/labDoor.glb" id="10_door"]
+[ext_resource type="PackedScene" path="res://assets/models/labButton.glb" id="11_button"]
+[ext_resource type="PackedScene" path="res://assets/models/labWallWindowLong.glb" id="12_window_long"]
+[ext_resource type="PackedScene" path="res://assets/models/labWallLong1x1.glb" id="13_wall_long"]
+
+[node name="LabModuleLibrary" type="Node3D"]
+
+[node name="Walls" type="Node3D" parent="."]
+
+[node name="Wall1x1" parent="Walls" instance=ExtResource("1_wall")]
+position = Vector3(0, 0, 0)
+
+[node name="Wall1x1_Label" type="Label3D" parent="Walls"]
+position = Vector3(0, 9, 0)
+text = "СТЕНА · 1×1"
+font_size = 48
+pixel_size = 0.01
+
+[node name="WallWindow" parent="Walls" instance=ExtResource("2_window")]
+position = Vector3(22, 0, 0)
+
+[node name="WallWindow_Label" type="Label3D" parent="Walls"]
+position = Vector3(22, 9, 0)
+text = "СТЕНА · ОКНО"
+font_size = 48
+pixel_size = 0.01
+
+[node name="WallEntrance" parent="Walls" instance=ExtResource("3_entrance")]
+position = Vector3(44, 0, 0)
+
+[node name="WallEntrance_Label" type="Label3D" parent="Walls"]
+position = Vector3(44, 9, 0)
+text = "СТЕНА · ПРОЁМ"
+font_size = 48
+pixel_size = 0.01
+
+[node name="WallEntranceLong" parent="Walls" instance=ExtResource("4_long")]
+position = Vector3(66, 0, 0)
+
+[node name="WallEntranceLong_Label" type="Label3D" parent="Walls"]
+position = Vector3(66, 9, 0)
+text = "СТЕНА · ДЛИННЫЙ ПРОЁМ"
+font_size = 40
+pixel_size = 0.01
+
+[node name="WallEntranceLongReversed" parent="Walls" instance=ExtResource("5_long_reversed")]
+position = Vector3(88, 0, 0)
+
+[node name="WallEntranceLongReversed_Label" type="Label3D" parent="Walls"]
+position = Vector3(88, 9, 0)
+text = "СТЕНА · ДЛИННЫЙ ПРОЁМ (ОБР.)"
+font_size = 36
+pixel_size = 0.01
+
+[node name="WallWindowLong" parent="Walls" instance=ExtResource("12_window_long")]
+position = Vector3(110, 0, 0)
+
+[node name="WallWindowLong_Label" type="Label3D" parent="Walls"]
+position = Vector3(110, 9, 0)
+text = "labWallWindowLong"
+font_size = 48
+pixel_size = 0.01
+
+[node name="WallLong1x1" parent="Walls" instance=ExtResource("13_wall_long")]
+position = Vector3(132, 0, 0)
+
+[node name="WallLong1x1_Label" type="Label3D" parent="Walls"]
+position = Vector3(132, 9, 0)
+text = "labWallLong1x1"
+font_size = 48
+pixel_size = 0.01
+
+[node name="Floors" type="Node3D" parent="."]
+position = Vector3(0, 0, 24)
+
+[node name="FloorEntrance" parent="Floors" instance=ExtResource("6_floor_entrance")]
+
+[node name="FloorEntrance_Label" type="Label3D" parent="Floors"]
+position = Vector3(0, 5, 0)
+text = "ПОЛ · ВХОД"
+font_size = 48
+pixel_size = 0.01
+
+[node name="FloorJumpTutor" parent="Floors" instance=ExtResource("7_floor_jump")]
+position = Vector3(22, 0, 0)
+
+[node name="FloorJumpTutor_Label" type="Label3D" parent="Floors"]
+position = Vector3(22, 5, 0)
+text = "ПОЛ · ОБУЧЕНИЕ ПРЫЖКУ"
+font_size = 40
+pixel_size = 0.01
+
+[node name="FloorSwapLevel" parent="Floors" instance=ExtResource("8_floor_swap")]
+position = Vector3(44, 0, 0)
+
+[node name="FloorSwapLevel_Label" type="Label3D" parent="Floors"]
+position = Vector3(44, 5, 0)
+text = "ПОЛ · ОБМЕН"
+font_size = 48
+pixel_size = 0.01
+
+[node name="Ceiling" parent="Floors" instance=ExtResource("9_ceiling")]
+position = Vector3(66, 0, 0)
+
+[node name="Ceiling_Label" type="Label3D" parent="Floors"]
+position = Vector3(66, 5, 0)
+text = "ПОТОЛОК"
+font_size = 48
+pixel_size = 0.01
+
+[node name="Props" type="Node3D" parent="."]
+position = Vector3(0, 0, 48)
+
+[node name="Door" parent="Props" instance=ExtResource("10_door")]
+position = Vector3(0, 0, 0)
+
+[node name="Door_Label" type="Label3D" parent="Props"]
+position = Vector3(0, 5, 0)
+text = "ДВЕРЬ"
+font_size = 48
+pixel_size = 0.01
+
+[node name="Button" parent="Props" instance=ExtResource("11_button")]
+position = Vector3(10, 0, 0)
+
+[node name="Button_Label" type="Label3D" parent="Props"]
+position = Vector3(10, 5, 0)
+text = "КНОПКА"
+font_size = 48
+pixel_size = 0.01
+
