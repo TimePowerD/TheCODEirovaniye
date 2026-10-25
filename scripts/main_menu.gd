@@ -81,7 +81,7 @@ func _configure_audio_buses() -> void:
 	var footstep_bus_index := AudioServer.get_bus_index(FOOTSTEP_AUDIO_BUS)
 	var jump_bus_index := AudioServer.get_bus_index(JUMP_AUDIO_BUS)
 	_configure_low_pass_bus(click_bus_index, 3200.0)
-	_configure_low_pass_bus(footstep_bus_index, 4800.0)
+	_configure_low_pass_bus(footstep_bus_index, 3000.0)
 	_configure_low_pass_bus(jump_bus_index, 4500.0)
 
 func _ensure_audio_bus(bus_name: String, send_to: String) -> int:
