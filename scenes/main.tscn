@@ -13,10 +13,6 @@
 [ext_resource type="PackedScene" path="res://scenes/items/pickup_test_item.tscn" id="10_pickup_item"]
 [ext_resource type="Script" uid="uid://cbnc2cyce4krl" path="res://scripts/location_transition.gd" id="10_transition"]
 [ext_resource type="PackedScene" path="res://scenes/flashback_room.tscn" id="11_flashback"]
-[ext_resource type="Environment" path="res://assets/environments/memory_street.tres" id="40_street_environment"]
-[ext_resource type="Environment" path="res://assets/environments/laboratory.tres" id="43_laboratory_environment"]
-[ext_resource type="Script" path="res://scripts/street_weather.gd" id="41_weather"]
-[ext_resource type="PackedScene" path="res://scenes/weather_panel.tscn" id="42_weather_panel"]
 [ext_resource type="Script" uid="uid://c8ydo0fkcb1sg" path="res://scripts/transition_marker.gd" id="12_marker"]
 [ext_resource type="PackedScene" path="res://scenes/lab_module_library.tscn" id="13_library"]
 [ext_resource type="PackedScene" uid="uid://blfie3cwpkog7" path="res://assets/models/labWallWindow.glb" id="14_window"]
@@ -41,6 +37,10 @@
 [ext_resource type="Script" uid="uid://djsilhiyv7a0x" path="res://scripts/level_checkpoint.gd" id="35_j8jky"]
 [ext_resource type="PackedScene" uid="uid://cf4gnrq2fm0mr" path="res://assets/materials/animations/scientist.glb" id="36_fuf3a"]
 [ext_resource type="Script" uid="uid://h1h8wrp8phm8" path="res://scripts/scientist.gd" id="37_pibwh"]
+[ext_resource type="Environment" path="res://assets/environments/memory_street.tres" id="40_street_environment"]
+[ext_resource type="Script" uid="uid://cqfisoiwav4sl" path="res://scripts/street_weather.gd" id="41_weather"]
+[ext_resource type="PackedScene" path="res://scenes/weather_panel.tscn" id="42_weather_panel"]
+[ext_resource type="Environment" path="res://assets/environments/laboratory.tres" id="43_laboratory_environment"]
 
 [sub_resource type="BoxShape3D" id="RoomFloorShape"]
 size = Vector3(18, 0.2, 32)
@@ -399,6 +399,12 @@ light_color = Color(1, 0.87, 0.63, 1)
 light_energy = 1.4
 omni_range = 4.0
 
+[node name="MemoryDoorLight2" type="OmniLight3D" parent="Room" unique_id=735441287]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.8, 2.5, 4)
+light_color = Color(1, 0.87, 0.63, 1)
+light_energy = 1.4
+omni_range = 4.0
+
 [node name="Player" type="CharacterBody3D" parent="." unique_id=1140905256]
 transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 169, 0.92, 180)
 script = ExtResource("1_player")
@@ -446,8 +452,8 @@ transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0.12
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72, -0.1)
 
 [node name="Camera3D" type="Camera3D" parent="Player/CameraPivot" unique_id=2142744184]
-current = true
 environment = ExtResource("43_laboratory_environment")
+current = true
 
 [node name="CenterRay" type="RayCast3D" parent="Player/CameraPivot/Camera3D" unique_id=1126347710]
 target_position = Vector3(0, 0, -15)
@@ -1617,12 +1623,17 @@ shape = SubResource("BoxShape3D_c6pm6")
 [node name="FlashbackRoom" parent="." unique_id=1227615780 instance=ExtResource("11_flashback")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 0, 0)
 
+[node name="StreetWeatherPanel" parent="FlashbackRoom" unique_id=1674759684 node_paths=PackedStringArray("controller") instance=ExtResource("42_weather_panel")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 2.8, 0, 5.3)
+controller = NodePath("../../StreetWeather")
+visual_layer = 2
+
 [node name="FlashbackTransition" type="Node" parent="." unique_id=1793625866 node_paths=PackedStringArray("city_room", "player", "laboratory_light")]
 script = ExtResource("10_transition")
 city_room = NodePath("../FlashbackRoom")
-destination_environment = ExtResource("40_street_environment")
 player = NodePath("../Player")
 laboratory_light = NodePath("../OmniLight3D")
+destination_environment = ExtResource("40_street_environment")
 fade_out_duration = 1.6
 black_hold_duration = 0.8
 fade_in_duration = 2.8
@@ -1649,22 +1660,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 131, 4, 180)
 light_energy = 1.6
 omni_range = 16.0
 
-[node name="MemoryDoorLight" type="OmniLight3D" parent="Room"]
-position = Vector3(-6.8, 2.5, 4)
-light_color = Color(1, 0.87, 0.63, 1)
-light_energy = 1.4
-omni_range = 4.0
-
-[node name="StreetWeather" type="Node" parent="." node_paths=PackedStringArray("street", "transition")]
+[node name="StreetWeather" type="Node" parent="." unique_id=2128198629 node_paths=PackedStringArray("street", "transition")]
 script = ExtResource("41_weather")
 street = NodePath("../FlashbackRoom")
 transition = NodePath("../FlashbackTransition")
 
-[node name="StreetWeatherPanel" parent="FlashbackRoom" node_paths=PackedStringArray("controller") instance=ExtResource("42_weather_panel")]
-position = Vector3(2.8, 0, 5.3)
-rotation_degrees = Vector3(0, 180, 0)
-controller = NodePath("../../StreetWeather")
-visual_layer = 2
 [node name="Room3Light" type="OmniLight3D" parent="." unique_id=1453178613]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 113, 4, 180)
 light_energy = 1.6
