@@ -41,7 +41,9 @@ func _ready() -> void:
 	_build_audio()
 	_build_lightning()
 	_apply_preset(PRESETS[0], false)
-	set_in_street(false)
+	if transition.in_city:
+		player_camera().environment = environment
+	set_in_street(transition.in_city)
 	# Physics needs one completed frame before roof exclusion queries are reliable.
 	await get_tree().physics_frame
 	await get_tree().physics_frame
@@ -74,6 +76,9 @@ func set_in_street(active: bool) -> void:
 		rain.visible = active
 		rain.emitting = active and rain_strength > 0.001
 	_update_audio()
+
+func player_camera() -> Camera3D:
+	return transition.player.get_node("CameraPivot/Camera3D") as Camera3D
 
 func _apply_preset(preset: Resource, animate: bool) -> void:
 	if blend != null:

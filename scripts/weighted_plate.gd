@@ -14,12 +14,19 @@ signal weight_changed(current_weight: float, required_weight: float)
 var is_active := false
 var is_weight_plate := true
 var bodies_inside: Array[Node3D] = []
+var initial_visual_position := Vector3.ZERO
 
 func _ready() -> void:
 	add_to_group("interactable")
+	initial_visual_position = plate_visual.position
 	occupants.body_entered.connect(_on_body_entered)
 	occupants.body_exited.connect(_on_body_exited)
 	_recalculate_weight()
+
+func reset_state() -> void:
+	bodies_inside.clear()
+	is_active = false
+	plate_visual.position = initial_visual_position
 
 func _on_body_entered(body: Node3D) -> void:
 	if not bodies_inside.has(body):

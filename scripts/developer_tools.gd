@@ -12,8 +12,12 @@ var opened := false
 var saved_physics := true
 var saved_input := true
 var trigger_picker: OptionButton
+var object_picker: OptionButton
+var route_picker: OptionButton
 var cutscene_picker: OptionButton
 var markers: Array[Area3D] = []
+var routes: Array[Node] = []
+var route_destinations: Array[bool] = []
 var cutscenes: Array[Node] = []
 var debug_meshes: Array[Node] = []
 var selected_object: Node3D
@@ -53,8 +57,23 @@ func _ready() -> void:
 	_label(content, "РАЗРАБОТКА · F1 / Esc — закрыть")
 	_label(content, "WASD / Shift / Пробел — движение\nПКМ вне панели — обзор; ЛКМ — выбор")
 	_label(content, "Объекты перед камерой")
-	_button(content, "Создать куб для обмена", spawn_object.bind(false))
-	_button(content, "Создать предмет для подбора", spawn_object.bind(true))
+	object_picker = OptionButton.new()
+	object_picker.fit_to_longest_item = false
+	object_picker.add_item("Куб для обмена")
+	object_picker.set_item_metadata(0, "swap_cube")
+	object_picker.add_item("Сфера для обмена")
+	object_picker.set_item_metadata(1, "swap_sphere")
+	object_picker.add_item("Предмет для подбора")
+	object_picker.set_item_metadata(2, "pickup_item")
+	object_picker.add_item("Рычаг")
+	object_picker.set_item_metadata(3, "lever")
+	object_picker.add_item("Плита давления")
+	object_picker.set_item_metadata(4, "weighted_plate")
+	object_picker.add_item("Кнопка E")
+	object_picker.set_item_metadata(5, "toggle_button")
+	object_picker.select(0)
+	content.add_child(object_picker)
+	_button(content, "Создать объект", spawn_selected_object)
 	selection_label = _label(content, "ЛКМ по созданному предмету — выбрать")
 	selection_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	selection_label.custom_minimum_size.x = 320
@@ -65,6 +84,10 @@ func _ready() -> void:
 	_button(content, "Городская комната — затемнение", run_transition.bind("LocationTransition"))
 	_button(content, "Солнечная улица — флэшбэк", run_transition.bind("FlashbackTransition"))
 	_button(content, "Вернуться в лабораторию", return_to_lab)
+	route_picker = OptionButton.new()
+	route_picker.fit_to_longest_item = false
+	content.add_child(route_picker)
+	_button(content, "Перейти", run_selected_transition)
 	_label(content, "Проверка зон входа")
 	trigger_picker = OptionButton.new()
 	trigger_picker.fit_to_longest_item = false
@@ -215,6 +238,7 @@ func toggle() -> void:
 		player._refresh_outlines()
 		player.set_process_unhandled_input(false)
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		refresh()
 		panel.show()
 
 func close() -> void:
@@ -232,6 +256,23 @@ func close() -> void:
 func refresh() -> void:
 	markers.clear()
 	trigger_picker.clear()
+	route_picker.clear()
+	routes.clear()
+	route_destinations.clear()
+	for route in get_tree().current_scene.find_children("*", "Node", true, false):
+		if route.get_script() != preload("res://scripts/location_transition.gd"):
+			continue
+		if route.in_city:
+			routes.append(route)
+			route_destinations.append(false)
+			route_picker.add_item("%s → %s" % [_location_label(route.destination_location_id), _location_label(route.source_location_id)])
+		else:
+			if get_node("/root/SaveManager").current_location_id != route.source_location_id:
+				continue
+			routes.append(route)
+			route_destinations.append(true)
+			route_picker.add_item("%s → %s" % [_location_label(route.source_location_id), _location_label(route.destination_location_id)])
+	route_picker.disabled = routes.is_empty()
 	for area in get_tree().current_scene.find_children("*", "Area3D", true, false):
 		if area.get_script() == preload("res://scripts/transition_marker.gd"):
 			markers.append(area)
@@ -244,7 +285,36 @@ func refresh() -> void:
 			cutscene_picker.add_item(str(scene.name))
 	cutscene_picker.disabled = cutscenes.is_empty()
 
+func _location_label(location_id: String) -> String:
+	match location_id:
+		"laboratory":
+			return "лаборатория"
+		"city":
+			return "город"
+		"flashback":
+			return "комната воспоминания"
+		_:
+			return location_id
+
+func run_selected_transition() -> void:
+	if routes.is_empty() or route_picker.selected < 0 or route_picker.selected >= routes.size():
+		status.text = "Нет доступных переходов из текущей комнаты."
+		return
+	var route: Node = routes[route_picker.selected]
+	var to_destination: bool = route_destinations[route_picker.selected]
+	close()
+	if not route.request_transition(to_destination):
+		status.text = "Переход занят или уже выполняется."
+
+func spawn_selected_object() -> void:
+	if object_picker.selected < 0:
+		return
+	spawn_object_template(str(object_picker.get_item_metadata(object_picker.selected)))
+
 func spawn_object(pickup: bool) -> Node3D:
+	return spawn_object_template("pickup_item" if pickup else "swap_cube")
+
+func spawn_object_template(template_id: String) -> Node3D:
 	objects = objects.filter(func(node): return is_instance_valid(node))
 	if objects.size() >= 50:
 		status.text = "Лимит 50 объектов. Удалите созданные объекты."
@@ -254,38 +324,69 @@ func spawn_object(pickup: bool) -> Node3D:
 	var ray := PhysicsRayQueryParameters3D.create(camera.global_position, target, 3, [player.get_rid()])
 	var hit := player.get_world_3d().direct_space_state.intersect_ray(ray)
 	if not hit.is_empty():
-		target = hit.position + hit.normal * 0.65
+		target = hit.position + hit.normal * 0.8
+	var object: Node3D
+	var shape: Shape3D
+	match template_id:
+		"pickup_item":
+			object = preload("res://scenes/items/pickup_test_item.tscn").instantiate() as Node3D
+			var pickup_shape := BoxShape3D.new()
+			pickup_shape.size = Vector3(0.7, 0.7, 0.7)
+			shape = pickup_shape
+		"lever":
+			object = preload("res://scenes/lever.tscn").instantiate() as Node3D
+			var lever_shape := BoxShape3D.new()
+			lever_shape.size = Vector3(0.9, 1.0, 0.6)
+			shape = lever_shape
+		"weighted_plate":
+			object = preload("res://scenes/weighted_plate.tscn").instantiate() as Node3D
+			var plate_shape := BoxShape3D.new()
+			plate_shape.size = Vector3(1.2, 0.3, 1.2)
+			shape = plate_shape
+		"toggle_button":
+			object = preload("res://scenes/e_toggle_button.tscn").instantiate() as Node3D
+			var button_shape := BoxShape3D.new()
+			button_shape.size = Vector3(0.8, 0.4, 0.8)
+			shape = button_shape
+		_:
+			object = RigidBody3D.new()
+			object.set_script(preload("res://scripts/physics_object.gd"))
+			object.add_to_group("swappable")
+			object.add_to_group("swapAble")
+			var mesh := MeshInstance3D.new()
+			if template_id == "swap_sphere":
+				var sphere_mesh := SphereMesh.new()
+				sphere_mesh.radius = 0.5
+				sphere_mesh.height = 1.0
+				mesh.mesh = sphere_mesh
+				var sphere_shape := SphereShape3D.new()
+				sphere_shape.radius = 0.5
+				shape = sphere_shape
+			else:
+				mesh.mesh = BoxMesh.new()
+				var box_shape := BoxShape3D.new()
+				box_shape.size = Vector3.ONE
+				shape = box_shape
+			var material := StandardMaterial3D.new()
+			material.albedo_color = Color(0.25, 0.7, 0.85)
+			mesh.material_override = material
+			object.add_child(mesh)
+			var collision := CollisionShape3D.new()
+			collision.shape = shape
+			object.add_child(collision)
 	var query := PhysicsShapeQueryParameters3D.new()
-	var shape := BoxShape3D.new()
-	shape.size = Vector3.ONE
 	query.shape = shape
 	query.transform = Transform3D(Basis.IDENTITY, target)
 	query.collision_mask = 3
 	if not player.get_world_3d().direct_space_state.intersect_shape(query, 1).is_empty():
 		status.text = "Недостаточно места. Посмотрите на свободный участок."
+		object.free()
 		return null
-	var object: RigidBody3D
-	if pickup:
-		object = preload("res://scenes/items/pickup_test_item.tscn").instantiate()
-	else:
-		object = RigidBody3D.new()
-		object.set_script(preload("res://scripts/physics_object.gd"))
-		object.add_to_group("swappable")
-		object.add_to_group("swapAble")
-		var mesh := MeshInstance3D.new()
-		mesh.mesh = BoxMesh.new()
-		var material := StandardMaterial3D.new()
-		material.albedo_color = Color(0.25, 0.7, 0.85)
-		mesh.material_override = material
-		object.add_child(mesh)
-		var collision := CollisionShape3D.new()
-		collision.shape = shape
-		object.add_child(collision)
-	object.name = "DeveloperObject"
+	object.name = "DeveloperObject_%d" % (objects.size() + 1)
 	get_tree().current_scene.add_child(object)
 	object.global_position = target
 	objects.append(object)
-	status.text = "Объект создан. Всего: %d" % objects.size()
+	status.text = "%s создан. Всего: %d" % [object.name, objects.size()]
 	return object
 
 func clear_objects() -> void:
