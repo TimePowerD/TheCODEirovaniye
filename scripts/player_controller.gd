@@ -18,10 +18,6 @@ var swap_visual_states: Array[Dictionary] = []
 @export var walk_speed: float = 5.0
 @export var sprint_multiplier: float = 1.4
 @export var jump_velocity: float = 4.5
-@export var crouch_speed: float = 2.2
-@export_range(1.0, 1.5, 0.05) var crouch_sprint_multiplier: float = 1.15
-@export_range(0.8, 1.6, 0.05) var crouch_height: float = 1.0
-@export_range(1.0, 10.0, 0.25) var crouch_transition_speed: float = 4.0
 @export var mouse_sensitivity: float = 0.002
 @export var has_swap_technology: bool = true
 @export var swap_duration: float = 1.0
@@ -42,7 +38,6 @@ var swap_visual_states: Array[Dictionary] = []
 @export var animation_blend_time: float = 0.18
 
 @onready var camera_pivot: Node3D = $CameraPivot
-@onready var player_collision: CollisionShape3D = $CollisionShape3D
 @onready var aim_ray: RayCast3D = $CameraPivot/Camera3D/CenterRay
 @onready var footstep_sound: AudioStreamPlayer3D = $FootstepSound
 @onready var jump_sound: AudioStreamPlayer3D = $JumpSound
@@ -91,11 +86,6 @@ var e_hold_elapsed: float = 0.0
 var item_use_tween: Tween
 var checkpoint_transform: Transform3D
 var checkpoint_camera_rotation := Vector3.ZERO
-var standing_capsule: CapsuleShape3D
-var active_capsule: CapsuleShape3D
-var standing_collision_position := Vector3.ZERO
-var standing_camera_height := 0.0
-var is_crouching := false
 var rotation_gizmo: Node3D
 var rotation_axis_materials: Array[StandardMaterial3D] = []
 var rotation_ring_points: Array[PackedVector3Array] = []
@@ -114,11 +104,6 @@ const JUMP_ANIMATION: StringName = &"jumpAnim_001"
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	add_to_group("player")
-	standing_capsule = (player_collision.shape as CapsuleShape3D).duplicate() as CapsuleShape3D
-	active_capsule = standing_capsule.duplicate() as CapsuleShape3D
-	player_collision.shape = active_capsule
-	standing_collision_position = player_collision.position
-	standing_camera_height = camera_pivot.position.y
 	checkpoint_transform = global_transform
 	SaveManager.capture_scene_start(self)
 	if not SaveManager.restore_player(self):
@@ -200,32 +185,8 @@ func apply_look(relative: Vector2) -> void:
 		tutorial_look_distance = 0.0
 		gameplay_action.emit(&"look")
 
-func _update_crouch(delta: float) -> void:
-	var target_height := maxf(crouch_height, active_capsule.radius * 2.0)
-	var wants_crouch := Input.is_key_pressed(KEY_CTRL)
-	if not wants_crouch and active_capsule.height < standing_capsule.height and not _can_stand():
-		wants_crouch = true
-	var height_goal := target_height if wants_crouch else standing_capsule.height
-	active_capsule.height = move_toward(active_capsule.height, height_goal, crouch_transition_speed * delta)
-	var height_difference := standing_capsule.height - active_capsule.height
-	player_collision.position = standing_collision_position - Vector3.UP * height_difference * 0.5
-	camera_pivot.position.y = standing_camera_height - height_difference * 0.5
-	is_crouching = height_difference > 0.01
-
-func _can_stand() -> bool:
-	var query := PhysicsShapeQueryParameters3D.new()
-	query.shape = standing_capsule
-	query.transform = global_transform * Transform3D(player_collision.transform.basis, standing_collision_position)
-	query.collision_mask = collision_mask
-	query.exclude = [get_rid()]
-	query.collide_with_areas = false
-	query.collide_with_bodies = true
-	query.margin = 0.0
-	return get_world_3d().direct_space_state.intersect_shape(query, 1).is_empty()
-
 func _physics_process(delta: float) -> void:
 	swap_error_remaining = maxf(0.0, swap_error_remaining - delta)
-	_update_crouch(delta)
 	if e_hold_pending and is_instance_valid(held_item) and Input.is_key_pressed(KEY_E):
 		e_hold_elapsed += delta
 		if e_hold_elapsed >= place_hold_duration and not placement_mode:
@@ -235,7 +196,7 @@ func _physics_process(delta: float) -> void:
 
 	if not is_on_floor():
 		velocity.y -= gravity * delta
-	elif Input.is_key_pressed(KEY_SPACE) and (not has_meta("tutorial_skip_hold") or has_meta("tutorial_jump_step")) and not is_crouching:
+	elif Input.is_key_pressed(KEY_SPACE) and (not has_meta("tutorial_skip_hold") or has_meta("tutorial_jump_step")):
 		velocity.y = jump_velocity
 		jump_sound.play()
 		gameplay_action.emit(&"jump")
@@ -250,10 +211,6 @@ func _physics_process(delta: float) -> void:
 	var move_direction := (transform.basis * Vector3(input_2d.x, 0.0, input_2d.y)).normalized()
 	var is_sprinting := Input.is_key_pressed(KEY_SHIFT)
 	var speed := walk_speed * (sprint_multiplier if is_sprinting else 1.0)
-	if is_crouching:
-		var crouch_walk_speed := minf(crouch_speed, walk_speed * 0.55)
-		var crouch_run_speed := minf(walk_speed * crouch_sprint_multiplier, walk_speed * sprint_multiplier * 0.95)
-		speed = crouch_run_speed if is_sprinting else crouch_walk_speed
 	var target_horizontal_velocity := move_direction * speed
 	var horizontal_velocity := Vector3(velocity.x, 0.0, velocity.z)
 	var momentum_time := 0.2
