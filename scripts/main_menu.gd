@@ -314,7 +314,7 @@ func _show_main_menu() -> void:
 	_add_spacer(12)
 	_add_button("Новая игра", _on_new_game_pressed, true)
 	var continue_button := _add_button("Продолжить", _on_continue_pressed)
-	continue_button.disabled = not SaveManager.has_valid_checkpoint()
+	continue_button.disabled = not get_node("/root/SaveManager").has_valid_checkpoint()
 	if continue_button.disabled:
 		continue_button.modulate = Color(0.55, 0.58, 0.55, 0.62)
 	_add_button("Настройки", _show_settings)
@@ -433,15 +433,15 @@ func _on_new_game_pressed() -> void:
 		return
 	var player := get_tree().current_scene.find_child("Player", true, false) as CharacterBody3D
 	if player != null:
-		SaveManager.start_new_game(player)
+		get_node("/root/SaveManager").start_new_game(player)
 	start_with_cutscene = true
 	_begin_game_start()
 
 func _on_continue_pressed() -> void:
-	if starting_game or not SaveManager.has_valid_checkpoint():
+	if starting_game or not get_node("/root/SaveManager").has_valid_checkpoint():
 		return
 	var player := get_tree().current_scene.find_child("Player", true, false) as CharacterBody3D
-	if player == null or not SaveManager.restore_player(player):
+	if player == null or not get_node("/root/SaveManager").restore_player(player):
 		return
 	start_with_cutscene = false
 	_begin_game_start()

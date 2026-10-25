@@ -264,7 +264,7 @@ func refresh() -> void:
 			route_destinations.append(false)
 			route_picker.add_item("%s → %s" % [_location_label(route.destination_location_id), _location_label(route.source_location_id)])
 		else:
-			if SaveManager.current_location_id != route.source_location_id:
+			if get_node("/root/SaveManager").current_location_id != route.source_location_id:
 				continue
 			routes.append(route)
 			route_destinations.append(true)
