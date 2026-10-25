@@ -99,6 +99,7 @@ var current_player_animation: StringName = &""
 const IDLE_ANIMATION: StringName = &"idleAnim"
 const WALK_ANIMATION: StringName = &"walkAnim"
 const JUMP_ANIMATION: StringName = &"jumpAnim_001"
+const FALL_RESPAWN_Y := -3.0
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -214,6 +215,9 @@ func _physics_process(delta: float) -> void:
 	velocity.z = horizontal_velocity.z
 	var previous_position := global_position
 	move_and_slide()
+	if global_position.y < FALL_RESPAWN_Y:
+		return_to_checkpoint()
+		return
 	if input_2d.length_squared() > 0.0:
 		var traveled := Vector2(global_position.x - previous_position.x, global_position.z - previous_position.z).length()
 		tutorial_walk_distance += traveled
