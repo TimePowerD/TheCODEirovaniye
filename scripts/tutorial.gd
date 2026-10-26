@@ -23,6 +23,10 @@ const DIALOGUES := [
 	"Последний урок: удерживай ПКМ, чтобы передвинуть куб на кнопку. Можешь нажать её сам.",
 	"Теперь пройди испытания.",
 ]
+const POST_FLASHBACK_DIALOGUES := [
+	"У тебя есть новая технология, которая позволяет менять местами объекты.",
+	"Маленький кубик не может активировать кнопку. Попробуй большой. Нажми ЛКМ на первый кубик, а затем подтверди действие на втором.",
+]
 const TASKS := [
 	"WASD — подвигайся, чтобы открыть первую дверь.",
 	"Пробел — перепрыгни препятствия, чтобы открыть вторую дверь.",
@@ -42,8 +46,9 @@ const TASKS := [
 @onready var next_level_button_sensor: Area3D = get_node_or_null("../LabModuleLibrary/Props/Button2/ButtonSensor") as Area3D
 @onready var button3_sensor: Area3D = get_node_or_null("../LabModuleLibrary/Props/Button3/ButtonSensor") as Area3D
 @onready var button4_sensor: Area3D = get_node_or_null("../LabModuleLibrary/Props/Button4/ButtonSensor") as Area3D
-@onready var second_room_checkpoint: Area3D = get_node_or_null("../LevelCheckpoints/Level1Checkpoint") as Area3D
-@onready var third_room_checkpoint: Area3D = get_node_or_null("../LevelCheckpoints/Level2Checkpoint") as Area3D
+@onready var second_room_progress_area: Area3D = get_node_or_null("../RoomProgressTriggers/Room1Progress") as Area3D
+@onready var third_room_progress_area: Area3D = get_node_or_null("../RoomProgressTriggers/Room2Progress") as Area3D
+@onready var next_room_after_flashback_area: Area3D = get_node_or_null("../RoomProgressTriggers/Room4Progress") as Area3D
 
 var step := 0
 var line_index := 0
@@ -60,6 +65,7 @@ var tutorial_panel: PanelContainer
 var tutorial_label: Label
 var tutorial_heading: Label
 var flashback_objective := ""
+var flashback_objective_dialogue_active := false
 var flashback_subtitles_hidden := false
 var subtitle_panel: PanelContainer
 var speaker_label: Label
@@ -74,6 +80,9 @@ var pending_subtitle_lines: Array[int] = []
 var tutorial_ui_reveal_scheduled := false
 var tutorial_ui_ready := false
 var tutorial_ui_fade_started := false
+var post_flashback_dialogue_active := false
+var post_flashback_dialogue_started := false
+var post_flashback_second_line_shown := false
 
 func _ready() -> void:
 	layer = 2
@@ -120,10 +129,12 @@ func _ready() -> void:
 	if button4_sensor != null:
 		button4_sensor.pressed.connect(_on_button4_pressed)
 		button4_sensor.released.connect(_on_button4_released)
-	if second_room_checkpoint != null:
-		second_room_checkpoint.body_entered.connect(_on_second_room_entered)
-	if third_room_checkpoint != null:
-		third_room_checkpoint.body_entered.connect(_on_third_room_entered)
+	if second_room_progress_area != null:
+		second_room_progress_area.body_entered.connect(_on_second_room_entered)
+	if third_room_progress_area != null:
+		third_room_progress_area.body_entered.connect(_on_third_room_entered)
+	if next_room_after_flashback_area != null:
+		next_room_after_flashback_area.body_entered.connect(_on_next_room_after_flashback_entered)
 	_update_tutorial_panel()
 	_update_subtitles()
 
@@ -158,6 +169,7 @@ func complete() -> void:
 func _on_gameplay_action(action: StringName) -> void:
 	if action == &"flashback_return":
 		_set_door_open(3, true)
+		_begin_post_flashback_dialogue()
 		return
 	if not _can_progress() or training_finished:
 		return
@@ -189,6 +201,31 @@ func _on_third_room_entered(body: Node3D) -> void:
 	line_index = 4
 	_update_tutorial_panel()
 	_update_subtitles()
+
+func _on_next_room_after_flashback_entered(body: Node3D) -> void:
+	if body != player or not post_flashback_dialogue_started or post_flashback_second_line_shown:
+		return
+	post_flashback_second_line_shown = true
+	line_index = DIALOGUES.size() + 1
+	_update_subtitles()
+
+func _begin_post_flashback_dialogue() -> void:
+	if post_flashback_dialogue_started:
+		return
+	post_flashback_dialogue_started = true
+	post_flashback_dialogue_active = true
+	pending_subtitle_lines.clear()
+	subtitle_transition_timer.stop()
+	line_index = DIALOGUES.size()
+	_update_subtitles()
+	if not tutorial_ui_ready:
+		tutorial_ui_ready = true
+	if bool(menu.get("game_started")) and not tutorial_ui_fade_started:
+		_fade_in_tutorial_ui(true)
+	subtitle_panel.show()
+
+func resume_after_forest_flashback() -> void:
+	_begin_post_flashback_dialogue()
 
 func _on_button_pressed() -> void:
 	if training_finished:
@@ -264,27 +301,27 @@ func _set_door_open(index: int, should_open: bool) -> void:
 		door_bodies[index], "global_position", target_body_position, DOOR_ANIMATION_DURATION
 	)
 	collision_tweener.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	tween.finished.connect(_save_world_door_state)
-
-func _save_world_door_state() -> void:
-	var save_manager := get_node_or_null("/root/SaveManager")
-	if save_manager != null:
-		save_manager.save_current_world_state()
-
 func _process(delta: float) -> void:
 	if not tutorial_ui_ready and not tutorial_ui_reveal_scheduled \
 		and bool(menu.get("game_started")) and not bool(menu.get("start_with_cutscene")):
 		_schedule_tutorial_ui_reveal()
-	var can_show_ui := bool(menu.get("game_started")) \
+	var game_ui_allowed := bool(menu.get("game_started")) \
 		and not player.has_meta("developer_tools_open") \
-		and not player.has_meta("cutscene_active") \
-		and tutorial_ui_ready
+		and not player.has_meta("cutscene_active")
+	var can_show_ui := game_ui_allowed and tutorial_ui_ready \
+		and not _is_outdoor_flashback()
+	var can_show_dialogue := game_ui_allowed \
+		and (tutorial_ui_ready or post_flashback_dialogue_active or flashback_objective_dialogue_active) \
+		and not _is_outdoor_flashback()
 	if can_show_ui and not tutorial_ui_fade_started:
 		_fade_in_tutorial_ui(can_show_ui)
 	if can_show_ui and final_subtitle_remaining > 0.0:
 		final_subtitle_remaining = maxf(final_subtitle_remaining - delta, 0.0)
-	tutorial_panel.visible = can_show_ui and (step < TASKS.size() or show_completion_task)
-	subtitle_panel.visible = not flashback_subtitles_hidden and can_show_ui and (step < TASKS.size() or final_subtitle_remaining > 0.0)
+	tutorial_panel.visible = can_show_ui and not flashback_objective_dialogue_active \
+		and (step < TASKS.size() or show_completion_task)
+	subtitle_panel.visible = can_show_dialogue and (flashback_objective_dialogue_active \
+		or (not flashback_subtitles_hidden \
+		and (step < TASKS.size() or final_subtitle_remaining > 0.0 or post_flashback_dialogue_active)))
 	if not subtitle_panel.visible:
 		subtitle_typing_timer.stop()
 	elif subtitle_character_index == 0 and subtitle_label.text.is_empty():
@@ -307,16 +344,24 @@ func _reveal_tutorial_ui() -> void:
 	tutorial_ui_ready = true
 	var can_show_ui := bool(menu.get("game_started")) \
 		and not player.has_meta("developer_tools_open") \
-		and not player.has_meta("cutscene_active")
+		and not player.has_meta("cutscene_active") \
+		and not _is_outdoor_flashback()
 	if can_show_ui:
 		_fade_in_tutorial_ui(can_show_ui)
+
+func _is_outdoor_flashback() -> bool:
+	var location_state := get_node_or_null("/root/LocationState")
+	return location_state != null and location_state.current_location_id == "flashback"
 
 func _fade_in_tutorial_ui(can_show_ui: bool) -> void:
 	if tutorial_ui_fade_started:
 		return
 	tutorial_ui_fade_started = true
-	tutorial_panel.visible = can_show_ui and (step < TASKS.size() or show_completion_task)
-	subtitle_panel.visible = not flashback_subtitles_hidden and can_show_ui and (step < TASKS.size() or final_subtitle_remaining > 0.0)
+	tutorial_panel.visible = can_show_ui and not flashback_objective_dialogue_active \
+		and (step < TASKS.size() or show_completion_task)
+	subtitle_panel.visible = can_show_ui and (flashback_objective_dialogue_active \
+		or (not flashback_subtitles_hidden \
+		and (step < TASKS.size() or final_subtitle_remaining > 0.0 or post_flashback_dialogue_active)))
 	var fade := create_tween()
 	fade.set_parallel(true)
 	fade.tween_property(tutorial_panel, "modulate:a", 1.0, TUTORIAL_UI_FADE_DURATION).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
@@ -373,11 +418,25 @@ func _update_tutorial_panel() -> void:
 
 func set_flashback_objective(objective: String) -> void:
 	flashback_objective = objective
-	_update_tutorial_panel()
+	flashback_objective_dialogue_active = not objective.is_empty()
+	if flashback_objective_dialogue_active:
+		if not tutorial_ui_ready:
+			tutorial_ui_ready = true
+		if bool(menu.get("game_started")) and not tutorial_ui_fade_started:
+			_fade_in_tutorial_ui(true)
+		tutorial_panel.hide()
+		subtitle_panel.show()
+		speaker_label.text = ""
+		subtitle_full_text = objective
+		subtitle_character_index = objective.length()
+		subtitle_typing_timer.stop()
+		subtitle_label.text = objective
+	else:
+		speaker_label.text = "Доктор"
 
 func set_flashback_subtitles_hidden(hidden: bool) -> void:
 	flashback_subtitles_hidden = hidden
-	if hidden:
+	if hidden and not flashback_objective_dialogue_active:
 		if is_instance_valid(subtitle_panel):
 			subtitle_panel.hide()
 		if is_instance_valid(subtitle_typing_timer):
@@ -443,7 +502,10 @@ func _update_subtitles() -> void:
 		return
 	subtitle_typing_timer.stop()
 	subtitle_label.text = ""
-	subtitle_full_text = DIALOGUES[line_index]
+	if line_index < DIALOGUES.size():
+		subtitle_full_text = DIALOGUES[line_index]
+	else:
+		subtitle_full_text = POST_FLASHBACK_DIALOGUES[line_index - DIALOGUES.size()]
 	subtitle_character_index = 0
 	subtitle_typing_timer.wait_time = SUBTITLE_CHARACTER_INTERVAL
 
@@ -456,6 +518,7 @@ func _start_subtitle_typing() -> void:
 func _reveal_next_subtitle_character() -> void:
 	if subtitle_character_index >= subtitle_full_text.length():
 		subtitle_typing_timer.stop()
+		_finish_post_flashback_dialogue_line()
 		_schedule_next_subtitle_line()
 		return
 	var character := subtitle_full_text.substr(subtitle_character_index, 1)
@@ -465,9 +528,16 @@ func _reveal_next_subtitle_character() -> void:
 	subtitle_character_index += 1
 	if subtitle_character_index >= subtitle_full_text.length():
 		subtitle_typing_timer.stop()
+		_finish_post_flashback_dialogue_line()
 		_schedule_next_subtitle_line()
 	else:
 		subtitle_typing_timer.wait_time = SUBTITLE_PERIOD_PAUSE if character == "." else SUBTITLE_CHARACTER_INTERVAL
+
+func _finish_post_flashback_dialogue_line() -> void:
+	if post_flashback_dialogue_active \
+		and line_index == DIALOGUES.size() + POST_FLASHBACK_DIALOGUES.size() - 1:
+		post_flashback_dialogue_active = false
+		final_subtitle_remaining = FINAL_SUBTITLE_DURATION
 
 func _queue_subtitle_line(next_line: int) -> void:
 	if next_line == line_index or pending_subtitle_lines.has(next_line):

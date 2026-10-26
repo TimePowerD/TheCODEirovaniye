@@ -29,6 +29,9 @@ size = Vector3(128, 0.4, 164)
 [sub_resource type="BoxShape3D" id="BoxShape3D_qsg72"]
 size = Vector3(128, 0.4, 164)
 
+[sub_resource type="BoxShape3D" id="StreetGuideWallShape"]
+size = Vector3(0.4, 4.5, 132)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2d73w"]
 resource_name = "asphalt"
 shading_mode = 1
@@ -8844,6 +8847,18 @@ shape = SubResource("BoxShape3D_ro0py")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 20)
 shape = SubResource("BoxShape3D_rci7t")
 
+[node name="StreetGuideWalls" type="StaticBody3D" parent="."]
+collision_layer = 4
+collision_mask = 1
+
+[node name="StreetGuideWallLeft" type="CollisionShape3D" parent="StreetGuideWalls"]
+position = Vector3(-5.5, 2.25, -62)
+shape = SubResource("StreetGuideWallShape")
+
+[node name="StreetGuideWallRight" type="CollisionShape3D" parent="StreetGuideWalls"]
+position = Vector3(5.5, 2.25, -62)
+shape = SubResource("StreetGuideWallShape")
+
 [node name="Traffic" type="Node3D" parent="." unique_id=84668972]
 
 [node name="InnerLane" type="Path3D" parent="Traffic" unique_id=1709353508]
@@ -8855,6 +8870,7 @@ script = ExtResource("17_1o7iu")
 cruise_speed = 4.5
 
 [node name="Body" type="AnimatableBody3D" parent="Traffic/InnerLane/Car0" unique_id=304209384]
+rotation_degrees = Vector3(0, 180, 0)
 scale = Vector3(1.3, 1.3, 1.3)
 collision_layer = 2
 collision_mask = 3
@@ -8907,6 +8923,7 @@ script = ExtResource("17_1o7iu")
 cruise_speed = 4.9
 
 [node name="Body" type="AnimatableBody3D" parent="Traffic/InnerLane/Car1" unique_id=501657628]
+rotation_degrees = Vector3(0, 180, 0)
 scale = Vector3(1.3, 1.3, 1.3)
 collision_layer = 2
 collision_mask = 3
@@ -8959,6 +8976,7 @@ script = ExtResource("17_1o7iu")
 cruise_speed = 5.3
 
 [node name="Body" type="AnimatableBody3D" parent="Traffic/InnerLane/Car2" unique_id=2030675730]
+rotation_degrees = Vector3(0, 180, 0)
 scale = Vector3(1.3, 1.3, 1.3)
 collision_layer = 2
 collision_mask = 3
@@ -9015,6 +9033,7 @@ script = ExtResource("17_1o7iu")
 cruise_speed = 4.5
 
 [node name="Body" type="AnimatableBody3D" parent="Traffic/OuterLane/Car0" unique_id=911866405]
+rotation_degrees = Vector3(0, 180, 0)
 scale = Vector3(1.3, 1.3, 1.3)
 collision_layer = 2
 collision_mask = 3
@@ -9067,6 +9086,7 @@ script = ExtResource("17_1o7iu")
 cruise_speed = 4.9
 
 [node name="Body" type="AnimatableBody3D" parent="Traffic/OuterLane/Car1" unique_id=61344708]
+rotation_degrees = Vector3(0, 180, 0)
 scale = Vector3(1.3, 1.3, 1.3)
 collision_layer = 2
 collision_mask = 3
@@ -9119,6 +9139,7 @@ script = ExtResource("17_1o7iu")
 cruise_speed = 5.3
 
 [node name="Body" type="AnimatableBody3D" parent="Traffic/OuterLane/Car2" unique_id=499258912]
+rotation_degrees = Vector3(0, 180, 0)
 scale = Vector3(1.3, 1.3, 1.3)
 collision_layer = 2
 collision_mask = 3

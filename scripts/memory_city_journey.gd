@@ -8,25 +8,27 @@ extends Node
 var active := false
 
 func _ready() -> void:
-	get_node("/root/SaveManager").checkpoint_restored.connect(_on_location_changed)
-	player.gameplay_action.connect(_on_gameplay_action)
+	get_node("/root/LocationState").location_changed.connect(_on_location_changed)
+	_hide_street_labels()
 	# Weather and the other location controllers finish _ready first.
 	call_deferred("_sync_location")
 
+func _hide_street_labels() -> void:
+	var city := get_node_or_null("../FlashbackRoom")
+	if city == null:
+		return
+	for label in city.find_children("*", "Label3D", true, false):
+		label.hide()
+
 func _sync_location() -> void:
-	_on_location_changed(get_node("/root/SaveManager").current_location_id)
+	_on_location_changed(get_node("/root/LocationState").current_location_id)
 
 func _on_location_changed(location_id: String) -> void:
 	active = location_id == "flashback"
 	weather.set_story_storm(active)
 	light_path.set_active(active, active)
 	if location_id == "kitchen":
-		# An indoor checkpoint must not retain the outdoor screen distortion.
+		# An indoor location must not retain the outdoor screen distortion.
 		var effect := get_node_or_null("../FlashbackDerealization")
 		if effect != null:
 			effect.stop_flashback_effect(0.0)
-
-func _on_gameplay_action(action: StringName) -> void:
-	if active and action == &"checkpoint":
-		# The city checkpoint is its entrance; restore all lights for another walk.
-		light_path.set_active(true, true)

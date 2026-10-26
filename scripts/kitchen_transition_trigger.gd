@@ -11,59 +11,17 @@ const PERIOD_PAUSE := 0.3
 const END_CREDITS_JOKE := "И помните: сколько зомби ни корми, всё равно съест жинку."
 
 var kate_cutscene_played := false
-var cutscene_storm_active := false
-var storm_flash_remaining := 0.0
-var storm_flash_light: OmniLight3D
-var storm_flash_tween: Tween
-var storm_rng := RandomNumberGenerator.new()
 var kitchen_warm_light: AreaLight3D
 var kitchen_warm_energy := 0.0
-var restored_cutscene_pending := false
 
 
 func _ready() -> void:
 	super._ready()
-	storm_rng.randomize()
 	# Do not leave the kitchen arrival blurred for the laboratory's long default reveal.
 	blur_clear_duration = minf(blur_clear_duration, 0.65)
 	var kate := get_tree().current_scene.find_child("Kate", true, false) as Node3D
 	if kate != null:
 		kate.set_visible(false)
-	var save_manager := get_node("/root/SaveManager")
-	save_manager.checkpoint_restored.connect(_on_final_checkpoint_restored)
-	if save_manager.current_location_id == "kitchen":
-		call_deferred("_on_final_checkpoint_restored", "kitchen")
-
-
-func _on_final_checkpoint_restored(location_id: String) -> void:
-	# Normal door entry runs the scene after its fade. Loading its saved checkpoint
-	# has no such coroutine, so resume it once the main menu releases the game.
-	if location_id != "kitchen" or transitioning or kate_cutscene_played or restored_cutscene_pending:
-		return
-	restored_cutscene_pending = true
-	call_deferred("_resume_final_cutscene")
-
-
-func _resume_final_cutscene() -> void:
-	var save_manager := get_node("/root/SaveManager")
-	var menu := get_tree().current_scene.get_node("MainMenu")
-	while get_tree().paused or not bool(menu.get("game_started")):
-		await get_tree().process_frame
-		if save_manager.current_location_id != "kitchen":
-			restored_cutscene_pending = false
-			return
-	restored_cutscene_pending = false
-	if save_manager.current_location_id != "kitchen" or transitioning or kate_cutscene_played:
-		return
-	var player := get_tree().current_scene.get_node("Player") as CharacterBody3D
-	var was_physics_processing := player.is_physics_processing()
-	var was_input_processing := player.is_processing_unhandled_input()
-	player.set_physics_process(false)
-	player.set_process_unhandled_input(false)
-	player.velocity = Vector3.ZERO
-	await _after_visual_transition_reveal(player)
-	player.set_physics_process(was_physics_processing)
-	player.set_process_unhandled_input(was_input_processing)
 
 
 func _after_visual_transition_reveal(player: CharacterBody3D) -> void:
@@ -92,17 +50,9 @@ func _after_visual_transition_reveal(player: CharacterBody3D) -> void:
 	subtitle.queue_free()
 
 	await _flash_and_dismiss_kate(kate)
-	_stop_cutscene_lightning()
+	_restore_cutscene_lighting()
 	get_tree().create_timer(END_CREDITS_DELAY).timeout.connect(_show_end_credits)
 	player.remove_meta("cutscene_active")
-
-
-func _process(delta: float) -> void:
-	if not cutscene_storm_active:
-		return
-	storm_flash_remaining -= delta
-	if storm_flash_remaining <= 0.0:
-		_flash_lightning()
 
 
 func _start_cutscene_storm() -> void:
@@ -116,37 +66,9 @@ func _start_cutscene_storm() -> void:
 	if kitchen_warm_light != null:
 		kitchen_warm_energy = kitchen_warm_light.light_energy
 		create_tween().tween_property(kitchen_warm_light, "light_energy", kitchen_warm_energy * 0.35, 0.8)
-	storm_flash_light = kitchen.get_node_or_null("CutsceneStormLightning") as OmniLight3D
-	if storm_flash_light == null:
-		storm_flash_light = OmniLight3D.new()
-		storm_flash_light.name = "CutsceneStormLightning"
-		storm_flash_light.position = Vector3(0.0, 2.4, 0.0)
-		storm_flash_light.light_color = Color(0.68, 0.8, 1.0)
-		storm_flash_light.light_energy = 0.0
-		storm_flash_light.omni_range = 16.0
-		storm_flash_light.omni_attenuation = 0.7
-		kitchen.add_child(storm_flash_light)
-	cutscene_storm_active = true
-	storm_flash_remaining = 0.35
 
 
-func _flash_lightning() -> void:
-	if not is_instance_valid(storm_flash_light):
-		return
-	if storm_flash_tween != null:
-		storm_flash_tween.kill()
-	storm_flash_light.light_energy = storm_rng.randf_range(3.5, 5.5)
-	storm_flash_tween = create_tween()
-	storm_flash_tween.tween_property(storm_flash_light, "light_energy", 0.0, 0.16)
-	storm_flash_remaining = storm_rng.randf_range(2.2, 5.5)
-
-
-func _stop_cutscene_lightning() -> void:
-	cutscene_storm_active = false
-	if storm_flash_tween != null:
-		storm_flash_tween.kill()
-	if is_instance_valid(storm_flash_light):
-		storm_flash_light.light_energy = 0.0
+func _restore_cutscene_lighting() -> void:
 	if is_instance_valid(kitchen_warm_light):
 		create_tween().tween_property(kitchen_warm_light, "light_energy", kitchen_warm_energy, 0.8)
 
