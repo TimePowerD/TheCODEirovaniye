@@ -59,6 +59,7 @@
 [ext_resource type="Script" path="res://scripts/location_teleport_trigger.gd" id="51_city_entrance"]
 [ext_resource type="Script" path="res://scripts/memory_city_journey.gd" id="52_memory_journey"]
 [ext_resource type="PackedScene" path="res://scenes/memory_city_path.tscn" id="53_memory_path"]
+[ext_resource type="Script" path="res://scripts/pit_fall_teleporter.gd" id="54_pit_teleporter"]
 
 [sub_resource type="BoxShape3D" id="RoomFloorShape"]
 size = Vector3(18, 0.2, 32)
@@ -433,6 +434,9 @@ size = Vector3(18, 3, 16)
 
 [sub_resource type="BoxShape3D" id="Room6ProgressShape"]
 size = Vector3(2, 3, 8)
+
+[sub_resource type="BoxShape3D" id="SecondRoomPitReturnShape"]
+size = Vector3(5.5, 0.3, 4.0)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ids8r"]
 size = Vector3(13.470791, 0.37890625, 1.0517578)
@@ -3138,6 +3142,19 @@ collision_layer = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RoomProgressTriggers/Room6Progress"]
 shape = SubResource("Room6ProgressShape")
+
+[node name="PitSafePosition" type="Marker3D" parent="."]
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 151.5, 0.92, 179.19)
+
+[node name="SecondRoomPitReturn" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 143.55, -3.15, 179.19165)
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("54_pit_teleporter")
+safe_position = NodePath("../PitSafePosition")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SecondRoomPitReturn"]
+shape = SubResource("SecondRoomPitReturnShape")
 
 [node name="scientist" parent="." unique_id=2089029073 instance=ExtResource("36_fuf3a")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 161.70422, 0.0017670757, 187.98111)
