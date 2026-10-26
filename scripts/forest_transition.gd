@@ -7,6 +7,7 @@ const PRELUDE_SPEED_MULTIPLIER := 0.16
 const FLASHBACK_SPEED_MULTIPLIER := 0.5
 const HEARTBEAT_STREAM: AudioStream = preload("res://assets/audio/final sounds/heartbeat.mp3_.mp3")
 const FOREST_AMBIENCE_STREAM: AudioStreamOggVorbis = preload("res://assets/audio/final sounds/forest_birds.ogg")
+const WEATHER_AUDIO = preload("res://scripts/weather_audio.gd")
 
 @onready var forest_sun: DirectionalLight3D = city_room.get_node("ForestSun") as DirectionalLight3D
 @onready var forest_return_area: Area3D = city_room.get_node("ReturnArea") as Area3D
@@ -18,6 +19,7 @@ var flashback_completed := false
 var rain_particles: GPUParticles3D
 var heartbeat_player: AudioStreamPlayer
 var forest_ambience: AudioStreamPlayer
+var forest_rain_sound: AudioStreamPlayer
 
 func _ready() -> void:
 	destination_environment = _make_night_environment(destination_environment)
@@ -30,6 +32,11 @@ func _ready() -> void:
 	forest_ambience.stream = loop_stream
 	forest_ambience.volume_db = -16.0
 	add_child(forest_ambience)
+	forest_rain_sound = AudioStreamPlayer.new()
+	forest_rain_sound.name = "ForestRainSound"
+	forest_rain_sound.stream = WEATHER_AUDIO.synthesize_sound(true)
+	forest_rain_sound.volume_db = linear_to_db(0.35 / 3.0)
+	add_child(forest_rain_sound)
 	_build_rain()
 	_build_heartbeat_player()
 	_set_forest_active(in_city)
@@ -128,8 +135,11 @@ func _set_forest_active(active: bool) -> void:
 	if active:
 		if not forest_ambience.playing:
 			forest_ambience.play()
+		if not forest_rain_sound.playing:
+			forest_rain_sound.play()
 	else:
 		forest_ambience.stop()
+		forest_rain_sound.stop()
 	if active:
 		var menu := get_node_or_null("../MainMenu")
 		if menu != null and menu.has_method("begin_flashback_music"):
@@ -199,8 +209,8 @@ func _make_night_environment(source: Environment) -> Environment:
 	night.ambient_light_energy = 0.8
 	night.fog_enabled = true
 	night.fog_light_color = Color(0.025, 0.04, 0.07)
-	night.fog_density = 0.004
-	night.fog_height_density = 0.006
+	night.fog_density = 0.055
+	night.fog_height_density = 0.09
 	var sky := Sky.new()
 	var sky_material := ProceduralSkyMaterial.new()
 	sky_material.sky_top_color = Color(0.008, 0.016, 0.06)
