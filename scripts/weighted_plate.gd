@@ -6,7 +6,6 @@ signal weight_changed(current_weight: float, required_weight: float)
 
 @export_range(0.1, 1000.0, 0.1) var minimum_weight: float = 2.0
 @export_range(0.1, 500.0, 0.1) var player_weight: float = 75.0
-@export_range(0.1, 1000.0, 0.1) var default_object_weight: float = 1.0
 
 @onready var occupants: Area3D = $WeightArea
 @onready var plate_visual: Node3D = $LabButton
@@ -53,11 +52,8 @@ func _recalculate_weight() -> void:
 			continue
 		if body.is_in_group("player"):
 			current_weight += player_weight
-		elif body is PhysicsBody3D and not body.is_in_group("carryable"):
-			if body is RigidBody3D:
-				current_weight += (body as RigidBody3D).mass
-			else:
-				current_weight += default_object_weight
+		elif body is RigidBody3D and not body.is_in_group("carryable"):
+			current_weight += (body as RigidBody3D).mass
 	var should_be_active := current_weight >= minimum_weight
 	weight_changed.emit(current_weight, minimum_weight)
 	if should_be_active == is_active:

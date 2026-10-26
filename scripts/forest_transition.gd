@@ -6,6 +6,7 @@ const PRELUDE_DURATION := 2.0
 const PRELUDE_SPEED_MULTIPLIER := 0.16
 const FLASHBACK_SPEED_MULTIPLIER := 0.5
 const HEARTBEAT_STREAM: AudioStream = preload("res://assets/audio/final sounds/heartbeat.mp3_.mp3")
+const FOREST_AMBIENCE_STREAM: AudioStreamOggVorbis = preload("res://assets/audio/final sounds/forest_birds.ogg")
 
 @onready var forest_sun: DirectionalLight3D = city_room.get_node("ForestSun") as DirectionalLight3D
 @onready var forest_return_area: Area3D = city_room.get_node("ReturnArea") as Area3D
@@ -16,11 +17,19 @@ var flashback_sequence_active := false
 var flashback_completed := false
 var rain_particles: GPUParticles3D
 var heartbeat_player: AudioStreamPlayer
+var forest_ambience: AudioStreamPlayer
 
 func _ready() -> void:
 	destination_environment = _make_night_environment(destination_environment)
 	super._ready()
 	location_changed.connect(_set_forest_active)
+	var loop_stream := FOREST_AMBIENCE_STREAM.duplicate() as AudioStreamOggVorbis
+	loop_stream.loop = true
+	forest_ambience = AudioStreamPlayer.new()
+	forest_ambience.name = "ForestBirdAmbience"
+	forest_ambience.stream = loop_stream
+	forest_ambience.volume_db = -16.0
+	add_child(forest_ambience)
 	_build_rain()
 	_build_heartbeat_player()
 	_set_forest_active(in_city)
@@ -116,6 +125,11 @@ func _enter_flashback_state() -> void:
 func _set_forest_active(active: bool) -> void:
 	city_room.visible = active
 	forest_sun.visible = active
+	if active:
+		if not forest_ambience.playing:
+			forest_ambience.play()
+	else:
+		forest_ambience.stop()
 	if active:
 		var menu := get_node_or_null("../MainMenu")
 		if menu != null and menu.has_method("begin_flashback_music"):

@@ -82,6 +82,9 @@ size = Vector3(8, 0.78, 0.08)
 
 [node name="KitchenRoom" type="Node3D" unique_id=430127921]
 
+[node name="Arrival" type="Marker3D" parent="."]
+position = Vector3(0, 0.92, 3)
+
 [node name="Floor" type="StaticBody3D" parent="." unique_id=448543692]
 
 [node name="FloorVisual" type="MeshInstance3D" parent="Floor" unique_id=1566492244]
