@@ -8,6 +8,13 @@ extends Area3D
 		if is_node_ready():
 			_update_preview()
 
+@export var flashback_title := "Флэшбэк":
+	set(value):
+		flashback_title = value
+		if is_node_ready():
+			_update_preview()
+@export var light_tint := Color(1.0, 0.95, 0.83)
+
 var preview: MeshInstance3D
 var caption: Label3D
 
@@ -57,5 +64,5 @@ func _update_preview() -> void:
 		material.cull_mode = BaseMaterial3D.CULL_DISABLED
 		preview.material_override = material
 	material.albedo_color = color
-	caption.text = "Флэшбэк\nБелый экран" if transition_style == 1 else "Переход в локацию\nЗатемнение экрана"
+	caption.text = "%s\nБелый экран" % flashback_title if transition_style == 1 else "Переход в локацию\nЗатемнение экрана"
 	caption.position = preview.position + Vector3(0, box_size.y * 0.5 + 0.4, 0)

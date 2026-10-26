@@ -62,7 +62,9 @@ func _ready() -> void:
 	layer.add_child(veil)
 	veil.hide()
 	$LaboratoryExit.body_entered.connect(_on_exit.bind(true))
-	city_room.get_node("ReturnArea").body_entered.connect(_on_exit.bind(false))
+	var return_area := city_room.get_node_or_null("ReturnArea") as Area3D
+	if return_area != null:
+		return_area.body_entered.connect(_on_exit.bind(false))
 	# Both routes use one continuous ambience, rather than stacking two hums.
 	ambience = player.get_node_or_null("TransitionAmbience") as AudioStreamPlayer
 	transition_sound = AudioStreamPlayer.new()
@@ -111,8 +113,8 @@ func _physics_process(_delta: float) -> void:
 	# Retry an occupied entrance after a swap or another transition finishes.
 	if transitioning or player.swap_in_progress or player.has_meta("location_transition_active"):
 		return
-	var area: Area3D = city_room.get_node("ReturnArea") if in_city else $LaboratoryExit
-	if area.overlaps_body(player):
+	var area: Area3D = city_room.get_node_or_null("ReturnArea") if in_city else $LaboratoryExit
+	if area != null and area.overlaps_body(player):
 		_on_exit(player, not in_city)
 
 func _on_exit(body: Node3D, to_city: bool) -> void:
@@ -124,7 +126,9 @@ func _on_exit(body: Node3D, to_city: bool) -> void:
 		return
 	if player.has_meta("location_transition_active"):
 		return
-	var entrance: Area3D = $LaboratoryExit if to_city else city_room.get_node("ReturnArea")
+	var entrance: Area3D = $LaboratoryExit if to_city else city_room.get_node_or_null("ReturnArea")
+	if entrance == null:
+		entrance = $LaboratoryExit
 	transition_style = entrance.transition_style
 	if transition_style == 1 and not to_city:
 		# Fade the effect out while the player is still in the flashback.
@@ -133,6 +137,7 @@ func _on_exit(body: Node3D, to_city: bool) -> void:
 	fade_material.set_shader_parameter("darkness", 0.0)
 	if transition_style == 1:
 		fade_material.set_shader_parameter("blur_amount", 0.0)
+		fade_material.set_shader_parameter("light_tint", entrance.light_tint)
 	player.set_meta("location_transition_active", true)
 	transitioning = true
 	if transition_style == 0 and to_city:

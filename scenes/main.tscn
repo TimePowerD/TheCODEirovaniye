@@ -73,7 +73,7 @@ material = SubResource("FlashbackDoorMaterial")
 size = Vector3(1.8, 2.7, 0.12)
 
 [sub_resource type="StandardMaterial3D" id="ForestFlashbackDoorMaterial"]
-albedo_color = Color(0.23, 0.38, 0.26, 1)
+albedo_color = Color(0.62, 0.41, 0.19, 1)
 roughness = 0.82
 
 [sub_resource type="BoxMesh" id="ForestFlashbackDoorMesh"]
@@ -427,11 +427,11 @@ mesh = SubResource("ForestFlashbackDoorMesh")
 [node name="ForestMemorySign" type="Label3D" parent="Room" unique_id=635863139]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.6, 3.1, 4)
 pixel_size = 0.006
-text = "ЛЕСНОЕ ВОСПОМИНАНИЕ"
+text = "ХОРОШЕЕ ВОСПОМИНАНИЕ"
 
 [node name="ForestMemoryDoorLight" type="OmniLight3D" parent="Room" unique_id=1955201526]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.8, 2.5, 4)
-light_color = Color(0.67, 0.9, 0.67, 1)
+light_color = Color(1, 0.78, 0.48, 1)
 light_energy = 1.3
 omni_range = 4.0
 
@@ -2022,6 +2022,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 116.424126, 1.5, 179.16624)
 collision_layer = 0
 script = ExtResource("12_marker")
 transition_style = 1
+flashback_title = "Хорошее воспоминание — лес"
+light_tint = Color(1, 0.86, 0.65, 1)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="ForestTransition/LaboratoryExit" unique_id=633696367]
 shape = SubResource("ForestExitShape")

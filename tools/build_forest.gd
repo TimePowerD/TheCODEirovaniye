@@ -49,7 +49,7 @@ func _build() -> void:
 	_trees()
 	_shrubs()
 	_rocks()
-	_gate()
+	_arrival()
 	_boundaries()
 	forest.set_meta("tree_count", tree_positions.size())
 	var packed := PackedScene.new()
@@ -260,43 +260,12 @@ func _rocks() -> void:
 	visual.multimesh = mesh
 	visual.layers = 4
 
-func _gate() -> void:
+func _arrival() -> void:
 	var arrival := _attach(forest, Marker3D.new(), "Arrival") as Marker3D
-	arrival.position = Vector3(0, 0.92, 2)
-	var gate := _group("ReturnGate")
-	gate.position = Vector3(0, 0, 11)
-	var wood := _material(Color(0.25, 0.18, 0.11))
-	for side in [-1.0, 1.0]:
-		var post := BoxMesh.new()
-		post.size = Vector3(0.32, 3.2, 0.32)
-		post.material = wood
-		var visual := _attach(gate, MeshInstance3D.new(), "Post") as MeshInstance3D
-		visual.mesh = post
-		visual.position = Vector3(side * 2.2, 1.6, 0)
-		visual.layers = 4
-	var beam := BoxMesh.new()
-	beam.size = Vector3(4.8, 0.36, 0.36)
-	beam.material = wood
-	var top := _attach(gate, MeshInstance3D.new(), "TopBeam") as MeshInstance3D
-	top.mesh = beam
-	top.position = Vector3(0, 3.0, 0)
-	top.layers = 4
-	var label := _attach(gate, Label3D.new(), "ReturnLabel") as Label3D
-	label.text = "ВЕРНУТЬСЯ В ЛАБОРАТОРИЮ"
-	label.font_size = 36
-	label.pixel_size = 0.005
-	label.position = Vector3(0, 3.45, -0.15)
-	label.rotation.y = PI
-	label.layers = 4
-	var area := _attach(forest, Area3D.new(), "ReturnArea") as Area3D
-	area.set_script(load("res://scripts/transition_marker.gd"))
-	area.set("transition_style", 1)
-	area.position = Vector3(0, 1.5, 11)
-	area.collision_layer = 0
-	var collision := _attach(area, CollisionShape3D.new(), "Collision") as CollisionShape3D
-	var shape := BoxShape3D.new()
-	shape.size = Vector3(4.0, 3.0, 2.0)
-	collision.shape = shape
+	# Place the player well inside the forest, centered on the winding trail.
+	arrival.position = trail.sample_baked(43.0) + Vector3.UP * 0.92
+	var forward := trail.sample_baked(48.0) - trail.sample_baked(43.0)
+	arrival.basis = Basis.looking_at(forward.normalized(), Vector3.UP)
 	var finish := _attach(forest, Marker3D.new(), "TrailEnd") as Marker3D
 	finish.position = Vector3(2, 0, -171)
 

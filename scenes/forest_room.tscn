@@ -9641,7 +9641,7 @@ layers = 4
 multimesh = SubResource("MultiMesh_8crad")
 
 [node name="Arrival" type="Marker3D" parent="." unique_id=635187881]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, -1.5)
+transform = Transform3D(0.90555656, 0, 0.42422566, 0, 1, 0, -0.42422566, 0, 0.90555656, -8.942031, 0.92, -30.844849)
 
 [node name="InvisibleEntryBarrier" type="StaticBody3D" parent="." unique_id=1061150072]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 1.5)
