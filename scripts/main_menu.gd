@@ -380,8 +380,8 @@ func start_test_session() -> void:
 
 func _show_main_menu() -> void:
 	_clear_content()
-	_add_eyebrow("ПРОЕКТ «ЗАКОДИРОВАННЫЕ»")
-	_add_title("ПОСЛЕДНИЙ\nПЕРЕЗАПУСК")
+	_add_eyebrow("ПРОЕКТ")
+	_add_title("SUBJECTIVE")
 	_add_label("Похоже, этот мир снова нуждается в паре правок.", MUTED_COLOR, 15)
 	_add_spacer(12)
 	_add_button("Новая игра", _on_new_game_pressed, true)
@@ -399,15 +399,6 @@ func _show_settings() -> void:
 	_clear_content()
 	_add_eyebrow("ПАРАМЕТРЫ")
 	_add_title("Настройки")
-	_add_label("Язык интерфейса", MUTED_COLOR, 14)
-	var language_row := HBoxContainer.new()
-	language_row.add_theme_constant_override("separation", 10)
-	content.add_child(language_row)
-	var russian := _make_button("Русский", func(): _set_language("Русский"), true)
-	var english := _make_button("English", func(): _set_language("English"))
-	language_row.add_child(russian)
-	language_row.add_child(english)
-	status_label = _add_label("Выбор языка пока демонстрационный.", MUTED_COLOR, 12)
 	_add_label("Громкость музыки", MUTED_COLOR, 14)
 	var music_slider := HSlider.new()
 	music_slider.min_value = 0.0
@@ -547,10 +538,6 @@ func _start_wake_cutscene() -> void:
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()
-
-func _set_language(language: String) -> void:
-	if status_label != null:
-		status_label.text = "Язык: %s (пока заглушка)" % language
 
 func _clear_content() -> void:
 	for child in content.get_children():

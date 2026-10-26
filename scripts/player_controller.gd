@@ -908,6 +908,26 @@ func _cycle_swap_selection() -> void:
 	_update_interaction_hint()
 
 func _room_anchor_for_position(position: Vector3) -> Node3D:
+	# Checkpoint centers are not always room centers.  In particular, a checkpoint
+	# near a doorway can be closer to an object in the previous room and split a
+	# valid swap pair in two.  Prefer an explicit box volume when the position is
+	# inside one, then retain the nearest-anchor fallback for older rooms.
+	for anchor in get_tree().get_nodes_in_group("swap_room_anchor"):
+		if not anchor is Area3D or not is_instance_valid(anchor):
+			continue
+		for child in anchor.get_children():
+			if not child is CollisionShape3D or child.disabled:
+				continue
+			var box := child.shape as BoxShape3D
+			if box == null:
+				continue
+			var local_position: Vector3 = child.global_transform.affine_inverse() * position
+			var half_size: Vector3 = box.size * 0.5
+			# Room membership is horizontal: objects on shelves and platforms still
+			# belong to the same room as objects standing on its floor.
+			if absf(local_position.x) <= half_size.x \
+				and absf(local_position.z) <= half_size.z:
+				return anchor
 	var closest: Node3D
 	var closest_distance := INF
 	for anchor in get_tree().get_nodes_in_group("swap_room_anchor"):
