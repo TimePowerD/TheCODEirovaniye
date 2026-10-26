@@ -37,7 +37,7 @@ func _check() -> void:
 	assert(not forest.visible and not forest.get_node("ForestSun").visible)
 	assert(not city.visible and not weather.in_street)
 	developer_tools.refresh()
-	assert(forest_route in developer_tools.routes, "Forest flashback is missing from developer tools")
+	assert(developer_tools.locations.any(func(location: Dictionary) -> bool: return location.location_id == "forest"), "Forest is missing from developer tools")
 	var lab_access: Dictionary = game.get_world_3d().direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(Vector3(4.2, 1.5, 4), Vector3(7.1, 1.5, 4), 1))
 	assert(lab_access.is_empty(), "A collision blocks the forest memory door")
 	var trees := forest.get_node("Trees")
@@ -62,16 +62,32 @@ func _check() -> void:
 		var faces: PackedVector3Array = mesh.mesh.get_faces()
 		assert(faces.size() > 100 and (faces[1] - faces[0]).cross(faces[2] - faces[0]).y < 0, "The forest trail is hidden from above")
 	assert(game.get_node("Room/ForestMemoryDoor").global_position.distance_to(forest_route.get_node("LaboratoryExit").global_position) < 2.0)
-	assert(forest_route.get_node("LaboratoryExit").transition_style == 1)
-	assert(forest.get_node("ReturnArea").transition_style == 1)
-	assert(forest.get_node("Arrival").global_position.distance_to(forest.get_node("ReturnArea").global_position) > 5.0)
+	var good_memory_trigger := forest_route.get_node("LaboratoryExit") as Area3D
+	assert(good_memory_trigger.transition_style == 1)
+	assert(good_memory_trigger.flashback_title == "Хорошее воспоминание — лес")
+	assert(game.get_node("Room/ForestMemorySign").text == "ХОРОШЕЕ ВОСПОМИНАНИЕ")
+	assert(forest.get_node_or_null("ReturnArea") == null)
+	assert(forest.get_node_or_null("ReturnGate") == null)
+	assert(forest.find_child("ReturnLabel", true, false) == null)
+	var arrival_position: Vector3 = forest.get_node("Arrival").position
+	assert(arrival_position.z < -25.0 and arrival_position.z > -70.0, "Forest arrival is too close to the map edge")
+	var closest_trail_point := INF
+	for point in controls:
+		closest_trail_point = minf(closest_trail_point, Vector2(arrival_position.x, arrival_position.z).distance_to(Vector2(point.x, point.z)))
+	assert(closest_trail_point < 13.0, "Forest arrival is away from the path")
 	for route in [city_route, forest_route]:
 		route.fade_out_duration = 0.05
 		route.black_hold_duration = 0.01
 		route.fade_in_duration = 0.05
 		route.blur_clear_duration = 0.05
 	assert(not forest_route.request_transition(false))
-	assert(forest_route.request_transition(true))
+	player.global_position = Vector3(good_memory_trigger.global_position.x, 0.92, good_memory_trigger.global_position.z)
+	await physics_frame
+	await physics_frame
+	await create_timer(0.1).timeout
+	assert(forest_route.transitioning, "The good-memory trigger did not start the flashback")
+	assert(forest_route.fade_material.get_shader_parameter("light_tint") == good_memory_trigger.light_tint)
+	assert(forest_route.transition_sound.stream == forest_route.TRANSITION_STREAM)
 	await create_timer(0.35).timeout
 	player.set_physics_process(false)
 	assert(forest_route.in_city and not city_route.in_city and forest_route.transition_style == 1)
@@ -81,8 +97,10 @@ func _check() -> void:
 	assert(camera.environment == forest_route.destination_environment)
 	assert(root.get_node("SaveManager").current_location_id == "forest")
 	developer_tools.refresh()
-	assert(forest_route in developer_tools.routes)
+	assert(developer_tools.locations.any(func(location: Dictionary) -> bool: return location.location_id == "forest"))
 	assert(player.global_position.distance_to(forest.get_node("Arrival").global_position) < 0.1)
+	await physics_frame
+	assert(forest_route.in_city and root.get_node("SaveManager").current_location_id == "forest", "Forest entry triggered an automatic return")
 	assert(forest_route.request_transition(false))
 	await create_timer(0.35).timeout
 	player.set_physics_process(false)
@@ -117,7 +135,7 @@ func _check() -> void:
 	player.global_transform = forest_route.get_node("LaboratoryArrival").global_transform
 	root.get_node("SaveManager").checkpoint_restored.emit("laboratory")
 	assert(not city.visible and not forest.visible and camera.environment == laboratory_environment)
-	print("PASS: dense forest, winding trail, white flashback, laboratory return and city isolation")
+	print("PASS: good-memory trigger, warm forest flashback, no return teleporter and city isolation")
 	if OS.get_cmdline_user_args().has("--visual-forest"):
 		assert(forest_route.request_transition(true))
 		await create_timer(0.35).timeout
