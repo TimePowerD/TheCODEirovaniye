@@ -36,10 +36,12 @@ const TASKS := [
 	get_node("../LabModuleLibrary/Props/TutorialDoor4") as Node3D,
 	get_node("../LabModuleLibrary/Props/TutorialDoor5") as Node3D,
 	get_node("../LabModuleLibrary/Props/TutorialDoor6") as Node3D,
+	get_node("../LabModuleLibrary/Props/TutorialDoor7") as Node3D,
 ]
 @onready var button_sensor: Area3D = get_node("../LabModuleLibrary/Props/Button/ButtonSensor") as Area3D
 @onready var next_level_button_sensor: Area3D = get_node_or_null("../LabModuleLibrary/Props/Button2/ButtonSensor") as Area3D
 @onready var button3_sensor: Area3D = get_node_or_null("../LabModuleLibrary/Props/Button3/ButtonSensor") as Area3D
+@onready var button4_sensor: Area3D = get_node_or_null("../LabModuleLibrary/Props/Button4/ButtonSensor") as Area3D
 @onready var second_room_checkpoint: Area3D = get_node_or_null("../LevelCheckpoints/Level1Checkpoint") as Area3D
 @onready var third_room_checkpoint: Area3D = get_node_or_null("../LevelCheckpoints/Level2Checkpoint") as Area3D
 
@@ -115,6 +117,9 @@ func _ready() -> void:
 		next_level_button_sensor.released.connect(_on_next_level_button_released)
 	if button3_sensor != null:
 		button3_sensor.pressed.connect(_on_button3_pressed)
+	if button4_sensor != null:
+		button4_sensor.pressed.connect(_on_button4_pressed)
+		button4_sensor.released.connect(_on_button4_released)
 	if second_room_checkpoint != null:
 		second_room_checkpoint.body_entered.connect(_on_second_room_entered)
 	if third_room_checkpoint != null:
@@ -138,6 +143,7 @@ func restart() -> void:
 	_set_door_open(3, false)
 	_set_door_open(4, false)
 	_set_door_open(5, false)
+	_set_door_open(6, false)
 	_update_tutorial_panel()
 	_update_subtitles()
 
@@ -208,6 +214,12 @@ func _on_next_level_button_released() -> void:
 
 func _on_button3_pressed() -> void:
 	_set_door_open(5, true)
+
+func _on_button4_pressed() -> void:
+	_set_door_open(6, true)
+
+func _on_button4_released() -> void:
+	_set_door_open(6, false)
 
 func _on_button_released() -> void:
 	_set_door_open(2, false)

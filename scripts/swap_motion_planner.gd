@@ -140,6 +140,8 @@ func _bottom(body: PhysicsBody3D, pose: Transform3D) -> float:
 func _destination(moving: PhysicsBody3D, recipient: PhysicsBody3D) -> Transform3D:
 	var destination: Transform3D = originals[moving]
 	destination.origin = originals[recipient].origin
+	if moving.is_in_group("swap_rotate_y_90"):
+		destination.basis = Basis(Vector3.UP, deg_to_rad(90.0)) * destination.basis
 	var bottom := _bottom(recipient, originals[recipient])
 	var position: Vector3 = originals[recipient].origin
 	var query := PhysicsRayQueryParameters3D.create(Vector3(position.x, bottom + 0.04, position.z), Vector3(position.x, bottom - 0.15, position.z), 0xffffffff)
