@@ -314,6 +314,7 @@ func _refresh_location_list() -> void:
 		["Level3Checkpoint", "Лаборатория — комната 3"],
 		["Level4Checkpoint", "Лаборатория — комната 4"],
 		["PuzzleRoomCheckpoint", "Лаборатория — комната с плитой"],
+		["Level6Checkpoint", "Лаборатория — комната 6"],
 	]
 	for checkpoint_info in checkpoint_names:
 		var checkpoint := scene.find_child(str(checkpoint_info[0]), true, false)

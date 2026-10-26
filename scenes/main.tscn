@@ -29,7 +29,6 @@
 [ext_resource type="Script" uid="uid://d1lj3xt12lqsc" path="res://scripts/collision_audio.gd" id="28_collision_audio"]
 [ext_resource type="PackedScene" uid="uid://c14m7c4nfo0ea" path="res://assets/models/labWallEntrLong.glb" id="29_qkpxi"]
 [ext_resource type="PackedScene" uid="uid://msqjnndbxeo0" path="res://assets/models/labWallEntrLongReversed.glb" id="30_5q0nq"]
-[ext_resource type="Script" uid="uid://jres68cawvro" path="res://scripts/developer_tools.gd" id="30_developer"]
 [ext_resource type="Script" uid="uid://d3tec84dagtpc" path="res://scripts/developer_cutscene.gd" id="31_cutscene"]
 [ext_resource type="PackedScene" uid="uid://bvja2mj08ypks" path="res://assets/models/labFloor2x1SwapLevel.glb" id="31_dgi5k"]
 [ext_resource type="Script" uid="uid://cvud1ammrw4gc" path="res://scripts/tutorial_button.gd" id="32_dgi5k"]
@@ -42,14 +41,12 @@
 [ext_resource type="PackedScene" uid="uid://21oi0om8u5ys" path="res://assets/models/slideLevelStructure.glb" id="39_0loja"]
 [ext_resource type="PackedScene" uid="uid://ciy60gm56q6bq" path="res://assets/models/labBridgeFloorLevel.glb" id="40_ids8r"]
 [ext_resource type="Environment" uid="uid://qaejoxlcqb1k" path="res://assets/environments/memory_street.tres" id="40_street_environment"]
-[ext_resource type="PackedScene" uid="uid://br0r3kfb7vuuf" path="res://assets/models/ladderProp.glb" id="41_tm6hj"]
 [ext_resource type="Script" uid="uid://cqfisoiwav4sl" path="res://scripts/street_weather.gd" id="41_weather"]
 [ext_resource type="PackedScene" uid="uid://dv44r0vbonhw6" path="res://assets/models/labButton.glb" id="42_ids8r"]
 [ext_resource type="PackedScene" uid="uid://udvihqsuujdp" path="res://assets/models/labWallFinalLevel.glb" id="42_kf5aa"]
 [ext_resource type="PackedScene" path="res://scenes/weather_panel.tscn" id="42_weather_panel"]
 [ext_resource type="PackedScene" uid="uid://cqf48e1e6c5hy" path="res://assets/models/obstanowkadoma/Models/GLTF format/bedSingle.glb" id="43_chjal"]
 [ext_resource type="Environment" uid="uid://bfaxfhrkat7ox" path="res://assets/environments/laboratory.tres" id="43_laboratory_environment"]
-[ext_resource type="PackedScene" uid="uid://rsf31uy0pkiv" path="res://assets/models/ventObject.glb" id="43_t5ykj"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen_transition_trigger.tscn" id="44_e755i"]
 [ext_resource type="PackedScene" path="res://scenes/forest_room.tscn" id="44_forest"]
 [ext_resource type="PackedScene" path="res://scenes/weight_puzzle_wall.tscn" id="44_weight_puzzle"]
@@ -59,9 +56,23 @@
 [ext_resource type="PackedScene" uid="uid://b1cooquq3rtjg" path="res://scenes/kitchen_room.tscn" id="47_kitchen"]
 [ext_resource type="Script" uid="uid://beqcc0uio57oj" path="res://scripts/flashback_derealization.gd" id="48_derealization"]
 [ext_resource type="PackedScene" path="res://scenes/swap_glass.tscn" id="49_swap_glass"]
+[ext_resource type="Material" uid="uid://xyf6xeuboj4p" path="res://assets/materials/lab_floor.tres" id="50_lab_floor"]
+[ext_resource type="Script" path="res://scripts/location_teleport_trigger.gd" id="51_city_entrance"]
+[ext_resource type="Script" path="res://scripts/memory_city_journey.gd" id="52_memory_journey"]
+[ext_resource type="PackedScene" path="res://scenes/memory_city_path.tscn" id="53_memory_path"]
 
 [sub_resource type="BoxShape3D" id="RoomFloorShape"]
 size = Vector3(18, 0.2, 32)
+
+[sub_resource type="BoxShape3D" id="MemoryCityEntranceShape"]
+size = Vector3(2, 2.5, 1)
+
+[sub_resource type="BoxMesh" id="LaboratoryDoorThresholdMesh"]
+material = ExtResource("50_lab_floor")
+size = Vector3(2.4, 0.08, 3)
+
+[sub_resource type="BoxShape3D" id="LaboratoryDoorThresholdShape"]
+size = Vector3(2.4, 0.08, 3)
 
 [sub_resource type="BoxShape3D" id="RoomWallShape"]
 size = Vector3(0.25, 8, 16)
@@ -420,6 +431,9 @@ size = Vector3(2, 3, 8)
 
 [sub_resource type="BoxShape3D" id="PuzzleRoomCheckpointShape"]
 size = Vector3(18, 3, 16)
+
+[sub_resource type="BoxShape3D" id="Room6CheckpointShape"]
+size = Vector3(2, 3, 8)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ids8r"]
 size = Vector3(13.470791, 0.37890625, 1.0517578)
@@ -833,12 +847,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 0, 0)
 script = ExtResource("31_cutscene")
 player = NodePath("../Player")
 
-[node name="DeveloperTools" type="CanvasLayer" parent="." unique_id=1814993821 node_paths=PackedStringArray("player", "menu")]
-layer = 6
-script = ExtResource("30_developer")
-player = NodePath("../Player")
-menu = NodePath("../MainMenu")
-
 [node name="Tutorial" type="CanvasLayer" parent="." unique_id=1012047667 node_paths=PackedStringArray("player", "menu")]
 layer = 6
 script = ExtResource("32_tutorial")
@@ -868,6 +876,80 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 16)
 
 [node name="LabModuleLibrary" parent="." unique_id=1248371813 instance=ExtResource("13_library")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 165.48538, 0, 0)
+
+[node name="LaboratoryDoorThresholds" type="Node3D" parent="."]
+
+[node name="Threshold1" type="StaticBody3D" parent="LaboratoryDoorThresholds" groups=["swap_support_surface"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 154.69238, -0.04, 179.20598)
+
+[node name="Mesh" type="MeshInstance3D" parent="LaboratoryDoorThresholds/Threshold1"]
+mesh = SubResource("LaboratoryDoorThresholdMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LaboratoryDoorThresholds/Threshold1"]
+shape = SubResource("LaboratoryDoorThresholdShape")
+
+[node name="Threshold2" type="StaticBody3D" parent="LaboratoryDoorThresholds" groups=["swap_support_surface"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 136.69238, -0.04, 179.20598)
+
+[node name="Mesh" type="MeshInstance3D" parent="LaboratoryDoorThresholds/Threshold2"]
+mesh = SubResource("LaboratoryDoorThresholdMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LaboratoryDoorThresholds/Threshold2"]
+shape = SubResource("LaboratoryDoorThresholdShape")
+
+[node name="Threshold3" type="StaticBody3D" parent="LaboratoryDoorThresholds" groups=["swap_support_surface"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 118.69238, -0.04, 179.20598)
+
+[node name="Mesh" type="MeshInstance3D" parent="LaboratoryDoorThresholds/Threshold3"]
+mesh = SubResource("LaboratoryDoorThresholdMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LaboratoryDoorThresholds/Threshold3"]
+shape = SubResource("LaboratoryDoorThresholdShape")
+
+[node name="Threshold4" type="StaticBody3D" parent="LaboratoryDoorThresholds" groups=["swap_support_surface"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100.69238, -0.04, 179.22119)
+
+[node name="Mesh" type="MeshInstance3D" parent="LaboratoryDoorThresholds/Threshold4"]
+mesh = SubResource("LaboratoryDoorThresholdMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LaboratoryDoorThresholds/Threshold4"]
+shape = SubResource("LaboratoryDoorThresholdShape")
+
+[node name="Threshold5" type="StaticBody3D" parent="LaboratoryDoorThresholds" groups=["swap_support_surface"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 82.69238, -0.04, 179.20598)
+
+[node name="Mesh" type="MeshInstance3D" parent="LaboratoryDoorThresholds/Threshold5"]
+mesh = SubResource("LaboratoryDoorThresholdMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LaboratoryDoorThresholds/Threshold5"]
+shape = SubResource("LaboratoryDoorThresholdShape")
+
+[node name="Threshold6" type="StaticBody3D" parent="LaboratoryDoorThresholds" groups=["swap_support_surface"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64.69238, -0.04, 179.20598)
+
+[node name="Mesh" type="MeshInstance3D" parent="LaboratoryDoorThresholds/Threshold6"]
+mesh = SubResource("LaboratoryDoorThresholdMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LaboratoryDoorThresholds/Threshold6"]
+shape = SubResource("LaboratoryDoorThresholdShape")
+
+[node name="Threshold7" type="StaticBody3D" parent="LaboratoryDoorThresholds" groups=["swap_support_surface"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.67492, -0.04, 179.20598)
+
+[node name="Mesh" type="MeshInstance3D" parent="LaboratoryDoorThresholds/Threshold7"]
+mesh = SubResource("LaboratoryDoorThresholdMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LaboratoryDoorThresholds/Threshold7"]
+shape = SubResource("LaboratoryDoorThresholdShape")
+
+[node name="Threshold8" type="StaticBody3D" parent="LaboratoryDoorThresholds" groups=["swap_support_surface"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.67492, -0.04, 179.20598)
+
+[node name="Mesh" type="MeshInstance3D" parent="LaboratoryDoorThresholds/Threshold8"]
+mesh = SubResource("LaboratoryDoorThresholdMesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LaboratoryDoorThresholds/Threshold8"]
+shape = SubResource("LaboratoryDoorThresholdShape")
 
 [node name="Wall1x1" parent="LabModuleLibrary/Walls" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 179.19165)
@@ -2045,11 +2127,8 @@ metadata/_godot_ai_physics_v1 = {
 "version": 1
 }
 
-[node name="ladderProp2" parent="LabModuleLibrary/Walls" index="63" unique_id=1361996908 instance=ExtResource("41_tm6hj")]
+[node name="ladderProp2" type="Node3D" parent="LabModuleLibrary/Walls" index="63" unique_id=1361996908]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -146.01324, 0.017906785, 195.82379)
-
-[node name="ladderProp" parent="LabModuleLibrary/Walls/ladderProp2" index="0"]
-visible = false
 
 [node name="ladderPropCollider" type="RigidBody3D" parent="LabModuleLibrary/Walls/ladderProp2" unique_id=1081385344 groups=["swapAble", "swappable"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2775463, 1.436896, 0)
@@ -2122,11 +2201,8 @@ metadata/_godot_ai_physics_v1 = {
 "version": 1
 }
 
-[node name="ventObject2" parent="LabModuleLibrary/Walls" index="65" unique_id=122645983 instance=ExtResource("43_t5ykj")]
+[node name="ventObject2" type="Node3D" parent="LabModuleLibrary/Walls" index="65" unique_id=122645983]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -142.03056, 5.600767, 171.33887)
-
-[node name="ventObject" parent="LabModuleLibrary/Walls/ventObject2" index="0"]
-visible = false
 
 [node name="ventObjectCollider" type="RigidBody3D" parent="LabModuleLibrary/Walls/ventObject2" unique_id=14775498 groups=["activate_physics_after_swap", "swapAble", "swappable"]]
 script = ExtResource("9_physics_object")
@@ -2155,13 +2231,19 @@ metadata/_godot_ai_physics_v1 = {
 "wrapped": true
 }
 
-[node name="KitchenFlashbackTrigger" parent="LabModuleLibrary/Walls" index="66" unique_id=1702849754 instance=ExtResource("44_e755i")]
+[node name="CityMemoryTrigger" type="Area3D" parent="LabModuleLibrary/Walls" index="66" unique_id=1702849754]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -141.6846, 5.825889, 169.34856)
+script = ExtResource("51_city_entrance")
+destination_location_id = "flashback"
 use_visual_transition = true
+show_debug_visual = false
 transition_style = 1
 fade_out_duration = 1.6
 hold_duration = 0.8
 fade_in_duration = 2.8
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/CityMemoryTrigger"]
+shape = SubResource("MemoryCityEntranceShape")
 
 [node name="Floors" parent="LabModuleLibrary" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 24)
@@ -2934,6 +3016,17 @@ shape = SubResource("BoxShape3D_c6pm6")
 [node name="FlashbackRoom" parent="." unique_id=1227615780 groups=["swap_room_anchor"] instance=ExtResource("11_flashback")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -319.846, 0.19960308, -319.24637)
 
+[node name="MemoryLightPath" parent="FlashbackRoom" instance=ExtResource("53_memory_path")]
+
+[node name="FinalHouseDoor" parent="FlashbackRoom" instance=ExtResource("44_e755i")]
+position = Vector3(-2, 1.5, -126.9)
+use_visual_transition = true
+show_debug_visual = false
+transition_style = 0
+fade_out_duration = 1.2
+hold_duration = 0.65
+fade_in_duration = 2.0
+
 [node name="StreetWeatherPanel" parent="FlashbackRoom" unique_id=1674759684 node_paths=PackedStringArray("controller") instance=ExtResource("42_weather_panel")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 2.8, 0, 5.3)
 controller = NodePath("../../StreetWeather")
@@ -3050,11 +3143,21 @@ collision_layer = 0
 script = ExtResource("35_j8jky")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/PuzzleRoomCheckpoint" unique_id=316490265]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -105.37373, 0, 0)
 shape = SubResource("PuzzleRoomCheckpointShape")
 
 [node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/PuzzleRoomCheckpoint" unique_id=7206880]
-transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, -104.37373, -0.58, 0)
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
+
+[node name="Level6Checkpoint" type="Area3D" parent="LevelCheckpoints" groups=["swap_room_anchor"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 62, 1.5, 180)
+collision_layer = 0
+script = ExtResource("35_j8jky")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/Level6Checkpoint"]
+shape = SubResource("Room6CheckpointShape")
+
+[node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/Level6Checkpoint"]
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
 
 [node name="scientist" parent="." unique_id=2089029073 instance=ExtResource("36_fuf3a")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 161.70422, 0.0017670757, 187.98111)
@@ -3300,6 +3403,94 @@ area_range = 10.5
 area_attenuation = 1.5
 area_size = Vector2(5, 3)
 
+[node name="Room1LightCenter" type="AreaLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 145.4, 4.5, 179.3)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room2LightCenter" type="AreaLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 127.5, 4.5, 179.0)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room3LightCenter" type="AreaLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 109.7, 4.5, 179.0)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room4LightCenter" type="AreaLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 91.0, 4.5, 174.0)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room5LightCenter" type="AreaLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 72.5, 6.763082, 178.5)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room6ExtraLight1" type="AreaLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 42.66171, 7.398009, 179.4359)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room6ExtraLight2" type="AreaLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 51.069477, 7.398009, 174.72795)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room6ExtraLight3" type="AreaLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 51.069477, 7.398009, 182.88142)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room6ExtraLight4" type="AreaLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 36.039516, 7.398009, 174.12785)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room6ExtraLight5" type="AreaLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 36.039516, 7.398009, 184.93044)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room6ExtraLight6" type="AreaLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 59.901775, 7.398009, 178.5)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
 [node name="DoctorAreaLight" type="AreaLight3D" parent="." unique_id=322545759]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 163.50743, 3.4584212, 188.22372)
 light_color = Color(1, 0.88235295, 0.7411765, 1)
@@ -3356,5 +3547,11 @@ shape = SubResource("BoxShape3D_ids8r")
 
 [node name="BridgeVisual" type="MeshInstance3D" parent="bridgeSwap" unique_id=1023163599]
 mesh = SubResource("BoxMesh_dnhof")
+
+[node name="MemoryCityJourney" type="Node" parent="." node_paths=PackedStringArray("player", "weather", "light_path")]
+script = ExtResource("52_memory_journey")
+player = NodePath("../Player")
+weather = NodePath("../StreetWeather")
+light_path = NodePath("../FlashbackRoom/MemoryLightPath")
 
 [editable path="LabModuleLibrary"]

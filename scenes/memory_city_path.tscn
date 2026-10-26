@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/memory_city_path.gd" id="1_path"]
+
+[node name="MemoryCityPath" type="Node3D"]
+visible = false
+script = ExtResource("1_path")

@@ -101,7 +101,11 @@ func _on_checkpoint_restored(location_id: String) -> void:
 	if transition_style == 1 and location_id in [source_location_id, destination_location_id]:
 		_set_flashback_effect_enabled(in_city)
 	var camera := player.get_node("CameraPivot/Camera3D") as Camera3D
-	if in_city and destination_environment != null:
+	if location_id == source_location_id and laboratory_environment != null:
+		# Laboratory checkpoints must always restore the original laboratory
+		# environment, regardless of which outdoor weather was active before them.
+		camera.environment = laboratory_environment
+	elif in_city and destination_environment != null:
 		camera.environment = destination_environment
 	elif camera.environment == destination_environment and destination_environment != null:
 		camera.environment = laboratory_environment

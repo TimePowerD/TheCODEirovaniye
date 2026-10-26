@@ -31,6 +31,7 @@ var thunder_remaining := -1.0
 var rng := RandomNumberGenerator.new()
 var rain_points := PackedVector3Array()
 var last_rain_center := Vector2(INF, INF)
+var story_storm_active := false
 
 func _ready() -> void:
 	rng.randomize()
@@ -59,6 +60,8 @@ func _ready() -> void:
 	_build_rain()
 
 func set_weather(next_mode: int) -> bool:
+	if story_storm_active and next_mode != Weather.STORM:
+		return false
 	if next_mode < 0 or next_mode >= PRESETS.size():
 		return false
 	if next_mode == mode:
@@ -78,6 +81,8 @@ func set_weather(next_mode: int) -> bool:
 	return true
 
 func set_time_of_day(next_period: int) -> bool:
+	if story_storm_active:
+		return false
 	if next_period < TimeOfDay.DAY or next_period > TimeOfDay.NIGHT:
 		return false
 	if next_period == time_of_day:
@@ -92,6 +97,14 @@ func set_time_of_day(next_period: int) -> bool:
 
 func _current_preset() -> Resource:
 	var preset: Resource = PRESETS[mode].duplicate()
+	if story_storm_active:
+		# The last memory has a short view distance; the fading trail guides the way.
+		preset.fog_density = 0.095
+		preset.fog_height = 4.0
+		preset.fog_height_density = 0.11
+		preset.sun_energy = 0.045
+		preset.ambient_energy = 0.35
+		return preset
 	var keys := ["top_color", "horizon_color", "cloud_color", "sun_color", "sun_energy", "sun_rotation", "ambient_color", "ambient_energy", "fog_color"]
 	if time_of_day == TimeOfDay.NIGHT:
 		for key in keys:
@@ -100,6 +113,18 @@ func _current_preset() -> Resource:
 		for key in keys:
 			preset.set(key, PRESETS[Weather.EVENING].get(key))
 	return preset
+
+func set_story_storm(active: bool) -> void:
+	story_storm_active = active
+	if active:
+		mode = Weather.STORM
+		time_of_day = TimeOfDay.DAY
+	_cancel_storm()
+	# Called beneath the transition veil, so the city is already rainy on reveal.
+	_apply_preset(_current_preset(), false)
+	weather_changed.emit(mode)
+	time_of_day_changed.emit(time_of_day)
+	_update_audio()
 
 func set_in_street(active: bool) -> void:
 	in_street = active
@@ -112,6 +137,7 @@ func set_in_street(active: bool) -> void:
 	if street.has_method("set_city_active"):
 		street.call("set_city_active", active)
 	if not active:
+		story_storm_active = false
 		mode = Weather.SUNNY
 		time_of_day = TimeOfDay.DAY
 		_apply_preset(_current_preset(), false)
@@ -132,6 +158,8 @@ func _apply_preset(preset: Resource, animate: bool) -> void:
 	var duration := BLEND_DURATION if animate else 0.0
 	var night_amount := 1.0 if time_of_day == TimeOfDay.NIGHT else 0.0
 	var lamps := 1.0 if time_of_day == TimeOfDay.NIGHT or mode == Weather.STORM else (0.65 if time_of_day == TimeOfDay.EVENING else 0.0)
+	if story_storm_active:
+		lamps = 0.25
 	blend.tween_property(sky_material, "shader_parameter/night_amount", night_amount, duration)
 	blend.tween_property(self, "artificial_light_strength", lamps, duration)
 	for key in ["top_color", "horizon_color", "cloud_color", "cloud_cover", "sun_color"]:
