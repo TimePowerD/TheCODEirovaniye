@@ -153,10 +153,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			else:
 				_release_object()
 	elif event is InputEventKey:
-		if event.keycode == KEY_TAB and event.pressed and not event.echo:
-			_cycle_swap_selection()
-			get_viewport().set_input_as_handled()
-		elif event.keycode == KEY_BACKSPACE and event.pressed and not event.echo and selected_target != null:
+		if event.keycode == KEY_BACKSPACE and event.pressed and not event.echo and selected_target != null:
 			selected_target = null
 			swap_cycle_index = 0
 			_refresh_outlines()
@@ -524,9 +521,7 @@ func _update_interaction_hint() -> void:
 				else:
 					hint_text = "ПКМ — перемещать\nR — вращать"
 	if selected_target != null:
-		hint_text += "\nTab — обменять с ближайшим объектом комнаты · Backspace — отменить"
-	elif has_swap_technology:
-		hint_text += "\nTab — выбрать объект для обмена"
+		hint_text += "\nЛКМ — обменять с объектом под прицелом · Backspace — отменить"
 	interaction_hint.text = hint_text
 	interaction_hint.visible = not hint_text.is_empty()
 

@@ -126,7 +126,11 @@ func _on_third_room_entered(body: Node3D) -> void:
 	_update_subtitles()
 
 func _on_button_pressed() -> void:
-	if step != 2 or not _can_progress() or training_finished:
+	if training_finished:
+		if _can_progress():
+			_set_door_open(2, true)
+		return
+	if step != 2 or not _can_progress():
 		return
 	_set_door_open(2, true)
 	_finish_training()
