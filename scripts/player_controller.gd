@@ -40,6 +40,7 @@ var swap_visual_states: Array[Dictionary] = []
 
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var aim_ray: RayCast3D = $CameraPivot/Camera3D/CenterRay
+@onready var interaction_ray: RayCast3D = $CameraPivot/Camera3D/InteractionRay
 @onready var crosshair: Control = get_node_or_null("../HUD/Crosshair") as Control
 @onready var footstep_sound: AudioStreamPlayer3D = $FootstepSound
 @onready var jump_sound: AudioStreamPlayer3D = $JumpSound
@@ -118,6 +119,11 @@ func _ready() -> void:
 	platform_on_leave = CharacterBody3D.PLATFORM_ON_LEAVE_DO_NOTHING
 	aim_ray.collision_mask = 3
 	aim_ray.add_exception(self)
+	interaction_ray.collision_mask = 3
+	interaction_ray.add_exception(self)
+	for glass in get_tree().get_nodes_in_group("swap_glass"):
+		if glass is CollisionObject3D:
+			aim_ray.add_exception(glass)
 	animation_player.get_animation(IDLE_ANIMATION).loop_mode = Animation.LOOP_LINEAR
 	animation_player.get_animation(WALK_ANIMATION).loop_mode = Animation.LOOP_LINEAR
 	_play_player_animation(IDLE_ANIMATION)
@@ -292,9 +298,10 @@ func _update_footstep_sound(delta: float, is_moving_on_floor: bool) -> void:
 		footstep_timer = 0.36 if is_running else 0.5
 
 func _try_grab_object() -> void:
-	if swap_in_progress or held_object != null or held_item != null or not aim_ray.is_colliding():
+	interaction_ray.force_raycast_update()
+	if swap_in_progress or held_object != null or held_item != null or not interaction_ray.is_colliding():
 		return
-	var collider := aim_ray.get_collider()
+	var collider := interaction_ray.get_collider()
 	if not collider is RigidBody3D:
 		return
 	var target := collider as RigidBody3D
@@ -319,9 +326,10 @@ func _release_object() -> void:
 		gameplay_action.emit(&"release_grab")
 
 func _try_pickup_item() -> void:
-	if swap_in_progress or held_object != null or held_item != null or not aim_ray.is_colliding():
+	interaction_ray.force_raycast_update()
+	if swap_in_progress or held_object != null or held_item != null or not interaction_ray.is_colliding():
 		return
-	var collider := aim_ray.get_collider()
+	var collider := interaction_ray.get_collider()
 	if not collider is RigidBody3D:
 		return
 	var item := collider as RigidBody3D
@@ -334,9 +342,10 @@ func _try_pickup_item() -> void:
 	_pick_up_item(item)
 
 func _try_interact() -> bool:
-	if not aim_ray.is_colliding():
+	interaction_ray.force_raycast_update()
+	if not interaction_ray.is_colliding():
 		return false
-	var target := aim_ray.get_collider() as Node
+	var target := interaction_ray.get_collider() as Node
 	if target == null or not target.is_in_group("interactable") or not target.has_method("interact"):
 		return false
 	target.call("interact", self)
@@ -503,8 +512,14 @@ func _update_interaction_hint() -> void:
 		hint_text = "E — использовать\nУдерживайте E — выбрать место\nОтпустите E — разместить\nQ — бросить\nR + мышь — вращать\n1/2/3 — выбрать ось"
 	elif held_object != null:
 		hint_text = "Удерживайте ПКМ — перемещать\nR — вращение по кольцам\n1/2/3 — ось X/Y/Z\nОтпустите ПКМ — бросить"
-	elif aim_ray.is_colliding():
-		var collider := aim_ray.get_collider()
+	elif aim_ray.is_colliding() and interaction_ray.is_colliding() \
+		and interaction_ray.get_collider() is Node3D \
+		and (interaction_ray.get_collider() as Node3D).is_in_group("swap_glass"):
+		var selected_by_los := aim_ray.get_collider() as Node3D
+		if selected_by_los != null and selected_by_los.is_in_group("swappable"):
+			hint_text = "ЛКМ — выбрать предмет за стеклом для свапа"
+	elif interaction_ray.is_colliding():
+		var collider := interaction_ray.get_collider()
 		if collider is Node3D:
 			var target := collider as Node3D
 			if target.is_in_group("interactable"):
@@ -539,16 +554,16 @@ func _update_placement_preview() -> void:
 	placement_preview.hide()
 	if not is_instance_valid(held_item):
 		return
-	aim_ray.force_raycast_update()
-	if not aim_ray.is_colliding():
+	interaction_ray.force_raycast_update()
+	if not interaction_ray.is_colliding():
 		placement_hint = "Наведите на свободную поверхность"
 		return
 	var camera: Camera3D = camera_pivot.get_node("Camera3D")
-	var surface_point := aim_ray.get_collision_point()
+	var surface_point := interaction_ray.get_collision_point()
 	if camera.global_position.distance_to(surface_point) > placement_distance:
 		placement_hint = "Слишком далеко: размещение не дальше %.1f м" % placement_distance
 		return
-	placement_normal = aim_ray.get_collision_normal().normalized()
+	placement_normal = interaction_ray.get_collision_normal().normalized()
 	if placement_normal.length_squared() < 0.9:
 		placement_hint = "Недопустимая поверхность"
 		return
@@ -625,6 +640,9 @@ func _update_held_object() -> void:
 	if not Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
 		_release_object()
 		return
+	if not _has_unobstructed_hold_path():
+		_release_object()
+		return
 	var camera := camera_pivot.get_node("Camera3D") as Camera3D
 	var hold_point := camera.global_position - camera.global_basis.z * hold_distance + Vector3.UP * hold_lift
 	var mass_factor := 1.0 / sqrt(maxf(held_object.mass, 0.1))
@@ -632,6 +650,16 @@ func _update_held_object() -> void:
 	var damping := hold_damping * mass_factor
 	var acceleration := (hold_point - held_object.global_position) * stiffness - held_object.linear_velocity * damping
 	held_object.apply_central_force(acceleration * held_object.mass)
+
+func _has_unobstructed_hold_path() -> bool:
+	var camera := camera_pivot.get_node("Camera3D") as Camera3D
+	var query := PhysicsRayQueryParameters3D.create(
+		camera.global_position,
+		held_object.global_position,
+		interaction_ray.collision_mask,
+	)
+	query.exclude = [get_rid(), held_object.get_rid()]
+	return get_world_3d().direct_space_state.intersect_ray(query).is_empty()
 
 func _update_held_rotation(delta: float) -> void:
 	if swap_in_progress:
@@ -1062,8 +1090,8 @@ func _update_interaction_cursor() -> void:
 		return
 	var can_pick_up := false
 	if not has_meta("developer_tools_open") and not swap_in_progress and not placement_mode \
-		and held_object == null and held_item == null and aim_ray.is_colliding():
-		var target := aim_ray.get_collider() as Node3D
+		and held_object == null and held_item == null and interaction_ray.is_colliding():
+		var target := interaction_ray.get_collider() as Node3D
 		if target is RigidBody3D and not target.has_meta("object_swap_locked"):
 			var distance := global_position.distance_to(target.global_position)
 			if target.is_in_group("carryable"):

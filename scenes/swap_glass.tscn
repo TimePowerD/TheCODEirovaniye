@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Material" path="res://assets/materials/swap_glass.tres" id="1_glass"]
+
+[sub_resource type="BoxMesh" id="SwapGlassMesh"]
+material = ExtResource("1_glass")
+size = Vector3(1.25, 1.55, 0.025)
+
+[sub_resource type="BoxShape3D" id="SwapGlassCollision"]
+size = Vector3(1.25, 1.55, 0.08)
+
+[node name="SwapGlass" type="StaticBody3D" groups=["swap_glass"]]
+
+[node name="GlassPane" type="MeshInstance3D" parent="."]
+mesh = SubResource("SwapGlassMesh")
+cast_shadow = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SwapGlassCollision")

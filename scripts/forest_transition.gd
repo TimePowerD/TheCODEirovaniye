@@ -144,7 +144,7 @@ func _set_forest_active(active: bool) -> void:
 			rain_particles.global_position = player.global_position + Vector3(0.0, 10.0, 0.0)
 	if active:
 		forest_sun.light_color = Color(0.32, 0.4, 0.62)
-		forest_sun.light_energy = 0.12
+		forest_sun.light_energy = 1.0
 
 func _build_heartbeat_player() -> void:
 	heartbeat_player = AudioStreamPlayer.new()
@@ -195,12 +195,12 @@ func _make_night_environment(source: Environment) -> Environment:
 	var night := source.duplicate(true) as Environment
 	night.background_mode = Environment.BG_SKY
 	night.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	night.ambient_light_color = Color(0.16, 0.2, 0.31)
-	night.ambient_light_energy = 0.3
+	night.ambient_light_color = Color(0.27, 0.32, 0.45)
+	night.ambient_light_energy = 0.8
 	night.fog_enabled = true
-	night.fog_light_color = Color(0.09, 0.12, 0.18)
-	night.fog_density = 0.095
-	night.fog_height_density = 0.09
+	night.fog_light_color = Color(0.025, 0.04, 0.07)
+	night.fog_density = 0.004
+	night.fog_height_density = 0.006
 	var sky := Sky.new()
 	var sky_material := ProceduralSkyMaterial.new()
 	sky_material.sky_top_color = Color(0.008, 0.016, 0.06)

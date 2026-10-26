@@ -57,14 +57,14 @@ void fragment() {
 	color = mix(color, vec3(luminance), desaturation_strength * intensity);
 	vec3 cold_tint = vec3(0.78, 0.96, 1.04) * (0.97 + 0.03 * sin(time_value * 0.24));
 	color *= mix(vec3(1.0), cold_tint, intensity);
-	color = mix(vec3(0.5), color, 1.0 - 0.08 * intensity);
+	// Preserve the source scene's black levels; this effect must not add a gray floor.
 
 	float vignette = 1.0 - smoothstep(0.28, 1.12, length((uv - vec2(0.5)) * 2.0));
 	float vignette_pulse = 1.0 + 0.14 * sin(time_value * 0.29 + 0.8);
 	color *= 1.0 - (1.0 - vignette) * vignette_strength * intensity * vignette_pulse;
 	float noise_pulse = 0.7 + 0.3 * (0.5 + 0.5 * sin(time_value * 0.67 + 2.8));
 	float noise = (screen_noise(floor(uv / SCREEN_PIXEL_SIZE), time_value) - 0.5) * noise_strength * intensity * noise_pulse;
-	color += noise;
+	color += noise * color;
 	COLOR = vec4(clamp(color, vec3(0.0), vec3(1.0)), original.a);
 	}
 }

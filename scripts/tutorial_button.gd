@@ -5,7 +5,7 @@ signal released
 
 const PRESS_SOUND: AudioStream = preload("res://assets/audio/final sounds/menu_click.mp3")
 const PLAYER_GROUP: StringName = &"player"
-const ACTIVATING_CUBE: StringName = &"SmallBox"
+const MINIMUM_ACTIVATOR_MASS := 1.0
 const PRESS_DURATION := 0.18
 const HITBOX_LOWER_DISTANCE := 0.045
 
@@ -57,9 +57,9 @@ func _on_body_exited(body: Node3D) -> void:
 	_update_pressed_state()
 
 func _is_activator(body: Node3D) -> bool:
-	if body.is_in_group(PLAYER_GROUP) or body.name == ACTIVATING_CUBE:
+	if body.is_in_group(PLAYER_GROUP):
 		return true
-	if not body is RigidBody3D:
+	if not body is RigidBody3D or (body as RigidBody3D).mass < MINIMUM_ACTIVATOR_MASS:
 		return false
 	for child in body.get_children():
 		if child is CollisionShape3D and child.shape is BoxShape3D:

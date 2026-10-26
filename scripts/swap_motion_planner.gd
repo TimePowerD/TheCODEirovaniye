@@ -85,7 +85,7 @@ func _restore(snapshot: Dictionary) -> void:
 func _shapes(body: PhysicsBody3D, pose: Transform3D) -> Array[Dictionary]:
 	return Geometry._shapes_for_transform(body, pose)
 
-func _overlaps(body: PhysicsBody3D, pose: Transform3D) -> Array[PhysicsBody3D]:
+func _overlaps(body: PhysicsBody3D, pose: Transform3D, allow_support_surface_contact := false) -> Array[PhysicsBody3D]:
 	var result: Array[PhysicsBody3D] = []
 	var shapes := _shapes(body, pose)
 	for entry in shapes:
@@ -100,6 +100,8 @@ func _overlaps(body: PhysicsBody3D, pose: Transform3D) -> Array[PhysicsBody3D]:
 			operations = MAX_OPERATIONS
 		for hit in hits:
 			var other: PhysicsBody3D = owners[hit.rid]
+			if allow_support_surface_contact and other.is_in_group("swap_support_surface"):
+				continue
 			if other in result:
 				continue
 			var excluded: Array[RID] = []
@@ -155,7 +157,7 @@ func _solve(first: PhysicsBody3D, second: PhysicsBody3D) -> Dictionary:
 	_set_pose(first, first_destination)
 	_set_pose(second, second_destination)
 	for target in fixed:
-		for neighbor in _overlaps(target, poses[target]):
+		for neighbor in _overlaps(target, poses[target], true):
 			if not _movable(neighbor):
 				return {"ok": false, "reason": "неподвижное препятствие: %s" % neighbor.name}
 			if not _push_out(neighbor, target):

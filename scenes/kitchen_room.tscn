@@ -252,9 +252,11 @@ transform = Transform3D(-3.0454965, 0, 5.070362e-06, 0, 2.604653, 0, -7.720887e-
 [node name="CeilingLamp" parent="." unique_id=1054077451 instance=ExtResource("22_lamp")]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 2.94, -0.3)
 
-[node name="WarmLight" type="OmniLight3D" parent="." unique_id=2116937028]
+[node name="WarmLight" type="AreaLight3D" parent="." unique_id=2116937028]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10068272, 2.65, -0.3)
+rotation = Vector3(-1.5707963, 0, 0)
 light_color = Color(1, 0.83, 0.62, 1)
-light_energy = 1.6
-omni_range = 12.0
-omni_attenuation = 1.4
+light_energy = 1.8
+area_size = Vector2(4, 3)
+area_range = 8.0
+area_attenuation = 1.5

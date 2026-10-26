@@ -1,8 +1,7 @@
 [gd_resource type="Environment" format=3]
 
 [resource]
-# Match the laboratory's existing viewport fallback: project clear color and
-# no environment lighting. A concrete resource prevents the street override
-# from leaving an ambiguous null camera override on return.
+# Keep the laboratory's unlit areas black. Source 0 follows the background
+# clear color and adds ambient fill; use the explicit disabled mode instead.
 background_mode = 0
-ambient_light_source = 0
+ambient_light_source = 1

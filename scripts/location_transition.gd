@@ -7,7 +7,7 @@ const TRANSITION_STREAM: AudioStream = preload("res://assets/audio/final sounds/
 ## A slow blackout links the laboratory to an apparently remembered city room.
 @export var city_room: Node3D
 @export var player: CharacterBody3D
-@export var laboratory_light: OmniLight3D
+@export var laboratory_light: Light3D
 @export var destination_environment: Environment
 @export var source_location_id := "laboratory"
 @export var destination_location_id := "city"

@@ -32,7 +32,7 @@ size = Vector3(128, 0.4, 164)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2d73w"]
 resource_name = "asphalt"
-shading_mode = 0
+shading_mode = 1
 albedo_texture = ExtResource("2_xeude")
 metadata/_gltf_primary_texture_coord = 0
 
@@ -97,7 +97,7 @@ radius = 0.18
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wcugl"]
 resource_name = "metal"
-shading_mode = 0
+shading_mode = 1
 albedo_texture = ExtResource("4_yifvk")
 metadata/_gltf_primary_texture_coord = 0
 
@@ -3184,19 +3184,19 @@ _surfaces = [{
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rruy2"]
 resource_name = "treeA"
 transparency = 4
-shading_mode = 0
+shading_mode = 1
 albedo_texture = ExtResource("12_fp42o")
 metadata/_gltf_primary_texture_coord = 0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sufhu"]
 resource_name = "concreteSmooth"
-shading_mode = 0
+shading_mode = 1
 albedo_texture = ExtResource("3_g3pgh")
 metadata/_gltf_primary_texture_coord = 0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hvtmv"]
 resource_name = "dirt"
-shading_mode = 0
+shading_mode = 1
 albedo_texture = ExtResource("13_hvr12")
 metadata/_gltf_primary_texture_coord = 0
 
@@ -3439,19 +3439,19 @@ radius = 2.0
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nv2a8"]
 resource_name = "treeB"
 transparency = 4
-shading_mode = 0
+shading_mode = 1
 albedo_texture = ExtResource("14_iok36")
 metadata/_gltf_primary_texture_coord = 0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kwosn"]
 resource_name = "concreteSmooth"
-shading_mode = 0
+shading_mode = 1
 albedo_texture = ExtResource("3_g3pgh")
 metadata/_gltf_primary_texture_coord = 0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2ofjq"]
 resource_name = "dirt"
-shading_mode = 0
+shading_mode = 1
 albedo_texture = ExtResource("13_hvr12")
 metadata/_gltf_primary_texture_coord = 0
 
@@ -3706,13 +3706,13 @@ _surfaces = [{
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1wanu"]
 resource_name = "metal"
-shading_mode = 0
+shading_mode = 1
 albedo_texture = ExtResource("4_yifvk")
 metadata/_gltf_primary_texture_coord = 0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xwlox"]
 resource_name = "planks"
-shading_mode = 0
+shading_mode = 1
 albedo_texture = ExtResource("15_2werv")
 metadata/_gltf_primary_texture_coord = 0
 
@@ -3844,7 +3844,7 @@ point_count = 37
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ydf2r"]
 resource_name = "truck"
-shading_mode = 0
+shading_mode = 1
 albedo_texture = ExtResource("18_jidm5")
 metadata/_gltf_primary_texture_coord = 0
 
@@ -3908,7 +3908,7 @@ size = Vector3(0.25, 0.15, 0.07)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_s0rhy"]
 resource_name = "truck_alien"
-shading_mode = 0
+shading_mode = 1
 albedo_texture = ExtResource("19_7lcce")
 metadata/_gltf_primary_texture_coord = 0
 
@@ -3972,13 +3972,13 @@ size = Vector3(0.25, 0.15, 0.07)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_th5hu"]
 resource_name = "truck"
-shading_mode = 0
+shading_mode = 1
 albedo_texture = ExtResource("18_jidm5")
 metadata/_gltf_primary_texture_coord = 0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dpm5t"]
 resource_name = "metal"
-shading_mode = 0
+shading_mode = 1
 albedo_texture = ExtResource("4_yifvk")
 metadata/_gltf_primary_texture_coord = 0
 

@@ -3457,7 +3457,7 @@ radius = 0.38
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8umxj"]
 resource_name = "treeB"
 transparency = 4
-shading_mode = 0
+shading_mode = 1
 albedo_texture = ExtResource("3_s54ea")
 metadata/_gltf_primary_texture_coord = 0
 
@@ -3505,7 +3505,7 @@ buffer = PackedFloat32Array(-5.1576824, 0, 5.6110053, -38.794983, 0, 7.621356, 0
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_50wen"]
 resource_name = "treeA"
 transparency = 4
-shading_mode = 0
+shading_mode = 1
 albedo_texture = ExtResource("4_jtqgr")
 metadata/_gltf_primary_texture_coord = 0
 
@@ -3553,7 +3553,7 @@ buffer = PackedFloat32Array(-3.723908, 0, 5.788095, -58.24962, 0, 6.882553, 0, 0
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bfv38"]
 resource_name = "treeA"
 transparency = 4
-shading_mode = 0
+shading_mode = 1
 albedo_texture = ExtResource("4_jtqgr")
 metadata/_gltf_primary_texture_coord = 0
 

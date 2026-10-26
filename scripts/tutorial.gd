@@ -33,8 +33,13 @@ const TASKS := [
 	get_node("../LabModuleLibrary/Props/Door") as Node3D,
 	get_node("../LabModuleLibrary/Props/TutorialDoor2") as Node3D,
 	get_node("../LabModuleLibrary/Props/TutorialDoor3") as Node3D,
+	get_node("../LabModuleLibrary/Props/TutorialDoor4") as Node3D,
+	get_node("../LabModuleLibrary/Props/TutorialDoor5") as Node3D,
+	get_node("../LabModuleLibrary/Props/TutorialDoor6") as Node3D,
 ]
 @onready var button_sensor: Area3D = get_node("../LabModuleLibrary/Props/Button/ButtonSensor") as Area3D
+@onready var next_level_button_sensor: Area3D = get_node_or_null("../LabModuleLibrary/Props/Button2/ButtonSensor") as Area3D
+@onready var button3_sensor: Area3D = get_node_or_null("../LabModuleLibrary/Props/Button3/ButtonSensor") as Area3D
 @onready var second_room_checkpoint: Area3D = get_node_or_null("../LevelCheckpoints/Level1Checkpoint") as Area3D
 @onready var third_room_checkpoint: Area3D = get_node_or_null("../LevelCheckpoints/Level2Checkpoint") as Area3D
 
@@ -105,6 +110,11 @@ func _ready() -> void:
 	player.gameplay_action.connect(_on_gameplay_action)
 	button_sensor.pressed.connect(_on_button_pressed)
 	button_sensor.released.connect(_on_button_released)
+	if next_level_button_sensor != null:
+		next_level_button_sensor.pressed.connect(_on_next_level_button_pressed)
+		next_level_button_sensor.released.connect(_on_next_level_button_released)
+	if button3_sensor != null:
+		button3_sensor.pressed.connect(_on_button3_pressed)
 	if second_room_checkpoint != null:
 		second_room_checkpoint.body_entered.connect(_on_second_room_entered)
 	if third_room_checkpoint != null:
@@ -124,6 +134,10 @@ func restart() -> void:
 	final_subtitle_remaining = 0.0
 	_set_door_open(0, false)
 	_set_door_open(1, false)
+	_set_door_open(2, false)
+	_set_door_open(3, false)
+	_set_door_open(4, false)
+	_set_door_open(5, false)
 	_update_tutorial_panel()
 	_update_subtitles()
 
@@ -136,6 +150,9 @@ func complete() -> void:
 	subtitle_panel.hide()
 
 func _on_gameplay_action(action: StringName) -> void:
+	if action == &"flashback_return":
+		_set_door_open(3, true)
+		return
 	if not _can_progress() or training_finished:
 		return
 	if step == 0 and task_override.is_empty() and action == &"walk":
@@ -182,6 +199,15 @@ func _on_button_pressed() -> void:
 	final_subtitle_remaining = FINAL_SUBTITLE_DURATION
 	_update_tutorial_panel()
 	_queue_subtitle_line(5)
+
+func _on_next_level_button_pressed() -> void:
+	_set_door_open(4, true)
+
+func _on_next_level_button_released() -> void:
+	_set_door_open(4, false)
+
+func _on_button3_pressed() -> void:
+	_set_door_open(5, true)
 
 func _on_button_released() -> void:
 	_set_door_open(2, false)
