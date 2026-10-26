@@ -6,6 +6,9 @@ func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 
 func _on_body_entered(body: Node3D) -> void:
+	if body is RigidBody3D:
+		get_node("/root/SaveManager").save_object_checkpoint(body)
+		return
 	if not body.is_in_group("player") or not body is CharacterBody3D:
 		return
 	var spawn_point := get_node_or_null("SpawnPoint") as Marker3D

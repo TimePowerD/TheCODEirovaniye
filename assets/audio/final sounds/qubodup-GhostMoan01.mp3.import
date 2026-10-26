@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://3uvjj3fwa6vq"
+path="res://.godot/imported/qubodup-GhostMoan01.mp3-fdc62d44a39b4506ea49a5c0f378f648.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/final sounds/qubodup-GhostMoan01.mp3"
+dest_files=["res://.godot/imported/qubodup-GhostMoan01.mp3-fdc62d44a39b4506ea49a5c0f378f648.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
