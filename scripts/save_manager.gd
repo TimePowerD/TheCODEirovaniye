@@ -58,7 +58,7 @@ func restore_player(player: CharacterBody3D) -> bool:
 		return false
 	reset_world_to_initial()
 	var saved_door_states: Dictionary = config.get_value("world", "doors", {})
-	call_deferred("_apply_door_states", current_scene, saved_door_states)
+	call_deferred("_apply_saved_world_state", current_scene, saved_door_states, config.get_value("world", "objects", {}))
 	var position: Vector3 = config.get_value("checkpoint", "position", player.global_position)
 	var rotation: Vector3 = config.get_value("checkpoint", "rotation", player.rotation)
 	var camera_rotation: Vector3 = config.get_value("checkpoint", "camera_rotation", player.camera_pivot.rotation)
@@ -113,6 +113,7 @@ func save_player_checkpoint(player: CharacterBody3D, id: String, location_id: St
 	config.set_value("checkpoint", "rotation", checkpoint_transform.basis.get_euler())
 	config.set_value("checkpoint", "camera_rotation", player.camera_pivot.rotation)
 	config.set_value("world", "doors", _capture_door_states(get_tree().current_scene))
+	config.set_value("world", "objects", _capture_object_states(get_tree().current_scene))
 	var error := config.save(SAVE_PATH)
 	if error != OK:
 		push_error("Не удалось сохранить точку возрождения: %s" % error_string(error))
@@ -125,9 +126,54 @@ func save_current_world_state() -> void:
 	if config.load(SAVE_PATH) != OK:
 		return
 	config.set_value("world", "doors", _capture_door_states(get_tree().current_scene))
+	config.set_value("world", "objects", _capture_object_states(get_tree().current_scene))
 	var error := config.save(SAVE_PATH)
 	if error != OK:
 		push_error("Не удалось сохранить состояние дверей: %s" % error_string(error))
+
+func restore_world_state() -> void:
+	var config := ConfigFile.new()
+	if config.load(SAVE_PATH) != OK:
+		return
+	var scene := get_tree().current_scene
+	if scene == null or config.get_value("checkpoint", "scene", "") != scene.scene_file_path:
+		return
+	call_deferred("_apply_saved_world_state", scene, config.get_value("world", "doors", {}), config.get_value("world", "objects", {}))
+
+func _capture_object_states(scene: Node) -> Dictionary:
+	var states: Dictionary = {}
+	if scene == null:
+		return states
+	for object in get_tree().get_nodes_in_group("swappable"):
+		if not is_instance_valid(object) or not scene.is_ancestor_of(object) or not object is PhysicsBody3D:
+			continue
+		var state := {"transform": object.global_transform}
+		if object is RigidBody3D:
+			state["freeze"] = object.freeze
+			for property in object.get_property_list():
+				if property.name == "physics_enabled":
+					state["physics_enabled"] = object.get("physics_enabled")
+					break
+		states[str(scene.get_path_to(object))] = state
+	return states
+
+func _apply_saved_world_state(scene: Node, doors: Dictionary, objects: Dictionary) -> void:
+	_apply_door_states(scene, doors)
+	for object_path in objects:
+		var object := scene.get_node_or_null(NodePath(str(object_path))) as PhysicsBody3D
+		if object == null:
+			continue
+		var state: Dictionary = objects[object_path]
+		if object is RigidBody3D:
+			object.freeze = true
+		object.global_transform = state.get("transform", object.global_transform)
+		if object is RigidBody3D:
+			object.linear_velocity = Vector3.ZERO
+			object.angular_velocity = Vector3.ZERO
+			if state.get("physics_enabled") != null:
+				object.set("physics_enabled", state["physics_enabled"])
+			object.freeze = bool(state.get("freeze", false))
+		object.reset_physics_interpolation()
 
 func _capture_door_states(scene: Node) -> Dictionary:
 	var states: Dictionary = {}

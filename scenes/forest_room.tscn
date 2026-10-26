@@ -3631,7 +3631,7 @@ material = SubResource("StandardMaterial3D_iyncf")
 size = Vector3(4.8, 0.36, 0.36)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_sjdrq"]
-size = Vector3(4, 3, 2)
+size = Vector3(6, 6, 6)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_sgy6b"]
 size = Vector3(1, 4, 220)
