@@ -5,11 +5,16 @@ extends CanvasLayer
 
 const DOOR_OPEN_DISTANCE := 3.0
 const DOOR_ANIMATION_DURATION := 0.9
+const NEXT_ROOM_TASK := "Пройдите в следующую комнату."
+const FINAL_TASK := "Пройдите лабораторию."
+const FINAL_SUBTITLE_DURATION := 5.0
 const DIALOGUES := [
 	"Привет. Теперь ты зомби. Попробуй подвигаться с помощью WASD.",
+	"Теперь пройди в следующую комнату.",
 	"Хорошо! Впереди препятствия. Перепрыгни их, нажимая пробел.",
+	"Отлично! Теперь пройди в следующую комнату.",
 	"Последний урок: удерживай ПКМ, чтобы передвинуть куб на кнопку. Можешь нажать её сам.",
-	"Отлично. Дверь открыта, пока кнопка нажата.",
+	"Теперь пройди испытания.",
 ]
 const TASKS := [
 	"WASD — подвигайся, чтобы открыть первую дверь.",
@@ -23,9 +28,16 @@ const TASKS := [
 	get_node("../LabModuleLibrary/Props/TutorialDoor3") as Node3D,
 ]
 @onready var button_sensor: Area3D = get_node("../LabModuleLibrary/Props/Button/ButtonSensor") as Area3D
+@onready var second_room_checkpoint: Area3D = get_node_or_null("../LevelCheckpoints/Level1Checkpoint") as Area3D
+@onready var third_room_checkpoint: Area3D = get_node_or_null("../LevelCheckpoints/Level2Checkpoint") as Area3D
 
 var step := 0
 var line_index := 0
+var task_override := ""
+var training_finished := false
+var show_completion_task := false
+var subtitle_visible := true
+var final_subtitle_remaining := 0.0
 var door_closed_positions: Array[Vector3] = []
 var door_body_closed_positions: Array[Vector3] = []
 var door_bodies: Array[AnimatableBody3D] = []
@@ -48,6 +60,10 @@ func _ready() -> void:
 	player.gameplay_action.connect(_on_gameplay_action)
 	button_sensor.pressed.connect(_on_button_pressed)
 	button_sensor.released.connect(_on_button_released)
+	if second_room_checkpoint != null:
+		second_room_checkpoint.body_entered.connect(_on_second_room_entered)
+	if third_room_checkpoint != null:
+		third_room_checkpoint.body_entered.connect(_on_third_room_entered)
 	_update_tutorial_panel()
 	_update_subtitles()
 
@@ -55,6 +71,11 @@ func restart() -> void:
 	player.tutorial_walk_distance = 0.0
 	step = 0
 	line_index = 0
+	task_override = ""
+	training_finished = false
+	show_completion_task = false
+	subtitle_visible = true
+	final_subtitle_remaining = 0.0
 	_set_door_open(0, false)
 	_set_door_open(1, false)
 	_update_tutorial_panel()
@@ -62,40 +83,67 @@ func restart() -> void:
 
 func complete() -> void:
 	step = TASKS.size()
-	line_index = DIALOGUES.size() - 1
+	task_override = ""
+	training_finished = true
+	show_completion_task = false
+	subtitle_visible = false
+	final_subtitle_remaining = 0.0
 	_update_tutorial_panel()
-	_update_subtitles()
+	subtitle_panel.hide()
 
 func _on_gameplay_action(action: StringName) -> void:
-	if not _can_progress():
+	if not _can_progress() or training_finished:
 		return
-	if step == 0 and action == &"walk":
-		step = 1
+	if step == 0 and task_override.is_empty() and action == &"walk":
+		task_override = NEXT_ROOM_TASK
 		line_index = 1
 		_set_door_open(0, true)
 		_update_tutorial_panel()
 		_update_subtitles()
-	elif step == 1 and action == &"jump" and _player_is_in_jump_room():
-		step = 2
-		line_index = 2
+	elif step == 1 and task_override.is_empty() and action == &"jump" and _player_is_in_jump_room():
+		task_override = NEXT_ROOM_TASK
+		line_index = 3
 		_set_door_open(1, true)
 		_update_tutorial_panel()
 		_update_subtitles()
 
-func _on_button_pressed() -> void:
-	if step < 2:
+func _on_second_room_entered(body: Node3D) -> void:
+	if body != player or not _can_progress() or training_finished or step != 0 or task_override != NEXT_ROOM_TASK:
 		return
-	_set_door_open(2, true)
-	line_index = 3
+	step = 1
+	task_override = ""
+	line_index = 2
 	_update_tutorial_panel()
 	_update_subtitles()
 
+func _on_third_room_entered(body: Node3D) -> void:
+	if body != player or not _can_progress() or training_finished or step != 1 or task_override != NEXT_ROOM_TASK:
+		return
+	step = 2
+	task_override = ""
+	line_index = 4
+	_update_tutorial_panel()
+	_update_subtitles()
+
+func _on_button_pressed() -> void:
+	if step != 2 or not _can_progress() or training_finished:
+		return
+	_set_door_open(2, true)
+	_finish_training()
+
 func _on_button_released() -> void:
 	_set_door_open(2, false)
-	if line_index == 3:
-		line_index = 2
-		_update_tutorial_panel()
-		_update_subtitles()
+
+func _finish_training() -> void:
+	training_finished = true
+	show_completion_task = true
+	step = TASKS.size()
+	task_override = ""
+	line_index = DIALOGUES.size() - 1
+	subtitle_visible = true
+	final_subtitle_remaining = FINAL_SUBTITLE_DURATION
+	_update_tutorial_panel()
+	_update_subtitles()
 
 func _can_progress() -> bool:
 	return menu.game_started and not get_tree().paused \
@@ -134,12 +182,16 @@ func _save_world_door_state() -> void:
 	if save_manager != null:
 		save_manager.save_current_world_state()
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	var can_show_ui := bool(menu.get("game_started")) \
 		and not player.has_meta("developer_tools_open") \
 		and not player.has_meta("cutscene_active")
-	tutorial_panel.visible = can_show_ui and step < TASKS.size()
-	subtitle_panel.visible = can_show_ui and (step < TASKS.size() or line_index == 3)
+	if can_show_ui and final_subtitle_remaining > 0.0:
+		final_subtitle_remaining = maxf(final_subtitle_remaining - delta, 0.0)
+		if final_subtitle_remaining == 0.0:
+			subtitle_visible = false
+	tutorial_panel.visible = can_show_ui and (step < TASKS.size() or show_completion_task)
+	subtitle_panel.visible = can_show_ui and subtitle_visible
 	if tutorial_panel.visible:
 		_update_tutorial_panel()
 
@@ -175,9 +227,15 @@ func _build_tutorial_panel() -> void:
 	add_child(tutorial_panel)
 
 func _update_tutorial_panel() -> void:
-	if not is_instance_valid(tutorial_label) or step >= TASKS.size():
+	if not is_instance_valid(tutorial_label):
 		return
-	tutorial_label.text = "%d / %d\n%s" % [step + 1, TASKS.size(), TASKS[step]]
+	if show_completion_task:
+		tutorial_label.text = FINAL_TASK
+		return
+	if step >= TASKS.size():
+		return
+	var task: String = task_override if not task_override.is_empty() else TASKS[step]
+	tutorial_label.text = "%d / %d\n%s" % [step + 1, TASKS.size(), task]
 	if step == 2 and button_sensor.is_pressed:
 		tutorial_label.text = "3 / 3\nКнопка нажата — дверь открыта."
 
