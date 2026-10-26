@@ -5,6 +5,7 @@ const NORMAL_TRANSITION_SOUND: AudioStream = preload("res://assets/audio/final s
 @export var destination_location_id := "kitchen"
 @export var destination_transform := Transform3D.IDENTITY
 @export var use_visual_transition := false
+@export var show_debug_visual := true
 @export_enum("Обычный переход", "Флэшбэк") var transition_style := 0
 @export_range(0.1, 5.0, 0.05) var fade_out_duration := 1.2
 @export_range(0.0, 3.0, 0.05) var hold_duration := 0.65
@@ -32,7 +33,7 @@ func _ready() -> void:
 		transition_sound.stream = NORMAL_TRANSITION_SOUND
 		transition_sound.volume_db = -6.0
 		add_child(transition_sound)
-	if OS.is_debug_build():
+	if show_debug_visual and OS.is_debug_build():
 		_add_debug_visual()
 
 func _create_overlay() -> void:

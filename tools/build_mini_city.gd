@@ -428,32 +428,12 @@ func _merge_modules(model: Node3D) -> ArrayMesh:
 	return merged
 
 func _entrance() -> void:
-	var gate := _container(city, "ReturnGate")
-	gate.position = Vector3(0, 0, 7.2)
-	var wood := _material(Color(0.21, 0.26, 0.24))
-	for x in [-1.8, 1.8]:
-		_box(gate, "Post", Vector3(x, 1.6, 0), Vector3(0.25, 3.2, 0.25), wood, true)
-	_box(gate, "Beam", Vector3(0, 3.2, 0), Vector3(3.85, 0.28, 0.3), wood)
-	var sign := _label(gate, "ЛАБОРАТОРИЯ", Vector3(0, 3.7, -0.2), 42)
-	sign.rotation.y = PI
+	# This memory continues through the far house; there is no return portal.
 	_box(city, "EntrancePath", Vector3(0, 0.015, -5), Vector3(4, 0.02, 32), _material(Color(0.65, 0.61, 0.5)))
 	var arrival := Marker3D.new()
 	arrival.name = "Arrival"
 	arrival.position = Vector3(0, 0.92, 3)
 	_attach(city, arrival)
-	var area := Area3D.new()
-	area.name = "ReturnArea"
-	area.position = Vector3(0, 1.5, 6)
-	area.collision_layer = 0
-	area.collision_mask = 1
-	area.set_script(load("res://scripts/transition_marker.gd"))
-	area.set("transition_style", 1)
-	_attach(city, area)
-	var collision := CollisionShape3D.new()
-	var shape := BoxShape3D.new()
-	shape.size = Vector3(2.4, 3, 1)
-	collision.shape = shape
-	_attach(area, collision)
 
 func _boundary() -> void:
 	var boundary := StaticBody3D.new()

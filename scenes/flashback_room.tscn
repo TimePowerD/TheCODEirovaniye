@@ -15,7 +15,6 @@
 [ext_resource type="Texture2D" path="res://assets/models/citymodels realism/GLB format/Textures/dirt.png" id="13_hvr12"]
 [ext_resource type="Texture2D" path="res://assets/models/citymodels realism/GLB format/Textures/treeB.png" id="14_iok36"]
 [ext_resource type="Texture2D" path="res://assets/models/citymodels realism/GLB format/Textures/planks.png" id="15_2werv"]
-[ext_resource type="Script" path="res://scripts/transition_marker.gd" id="16_u2xy0"]
 [ext_resource type="Script" path="res://scripts/city_traffic_car.gd" id="17_1o7iu"]
 [ext_resource type="Texture2D" path="res://assets/models/citymodels realism/GLB format/Textures/truck.png" id="18_jidm5"]
 [ext_resource type="Texture2D" path="res://assets/models/citymodels realism/GLB format/Textures/truck_alien.png" id="19_7lcce"]
@@ -3793,34 +3792,12 @@ _surfaces = [{
 "vertex_data": PackedByteArray("zczMvwAAAAAAADDBzczMPwAAAAAAADDBzczMPwAAAAAAADBBzczMvwAAAAAAADBB/3///wAA/7//f///AAD/v/9///8AAP+//3///wAA/78=")
 }]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p4j83"]
-albedo_color = Color(0.21, 0.26, 0.24, 1)
-roughness = 0.9
-
-[sub_resource type="BoxMesh" id="BoxMesh_7uy5r"]
-size = Vector3(0.25, 3.2, 0.25)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_pf483"]
-size = Vector3(0.25, 3.2, 0.25)
-
-[sub_resource type="BoxMesh" id="BoxMesh_mywa2"]
-size = Vector3(0.25, 3.2, 0.25)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_rn3gd"]
-size = Vector3(0.25, 3.2, 0.25)
-
-[sub_resource type="BoxMesh" id="BoxMesh_67y0p"]
-size = Vector3(3.85, 0.28, 0.3)
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c5atn"]
 albedo_color = Color(0.65, 0.61, 0.5, 1)
 roughness = 0.9
 
 [sub_resource type="BoxMesh" id="BoxMesh_hlx3q"]
 size = Vector3(4, 0.02, 32)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_4lxer"]
-size = Vector3(2.4, 3, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_fujff"]
 size = Vector3(0.3, 8, 164)
@@ -8840,47 +8817,6 @@ cast_shadow = 0
 mesh = SubResource("ArrayMesh_p3pf5")
 surface_material_override/0 = SubResource("StandardMaterial3D_jfdc3")
 
-[node name="ReturnGate" type="Node3D" parent="." unique_id=858769283]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.2)
-
-[node name="Post" type="MeshInstance3D" parent="ReturnGate" unique_id=757950387]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 1.6, 0)
-layers = 2
-material_override = SubResource("StandardMaterial3D_p4j83")
-mesh = SubResource("BoxMesh_7uy5r")
-
-[node name="PostBody" type="StaticBody3D" parent="ReturnGate" unique_id=1816259004]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 1.6, 0)
-
-[node name="@CollisionShape3D@587" type="CollisionShape3D" parent="ReturnGate/PostBody" unique_id=1532546125]
-shape = SubResource("BoxShape3D_pf483")
-
-[node name="@MeshInstance3D@588" type="MeshInstance3D" parent="ReturnGate" unique_id=500193407]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 1.6, 0)
-layers = 2
-material_override = SubResource("StandardMaterial3D_p4j83")
-mesh = SubResource("BoxMesh_mywa2")
-
-[node name="@StaticBody3D@589" type="StaticBody3D" parent="ReturnGate" unique_id=1538781570]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8, 1.6, 0)
-
-[node name="@CollisionShape3D@590" type="CollisionShape3D" parent="ReturnGate/@StaticBody3D@589" unique_id=1476881320]
-shape = SubResource("BoxShape3D_rn3gd")
-
-[node name="Beam" type="MeshInstance3D" parent="ReturnGate" unique_id=1454651225]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, 0)
-layers = 2
-material_override = SubResource("StandardMaterial3D_p4j83")
-mesh = SubResource("BoxMesh_67y0p")
-
-[node name="@Label3D@591" type="Label3D" parent="ReturnGate" unique_id=1042868866]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 3.7, -0.2)
-layers = 2
-pixel_size = 0.006
-modulate = Color(1, 0.95, 0.8, 1)
-text = "КОМНАТА ПЕРЕХОДОВ"
-font_size = 42
-
 [node name="EntrancePath" type="MeshInstance3D" parent="." unique_id=784304220]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.015, -5)
 layers = 2
@@ -8889,15 +8825,6 @@ mesh = SubResource("BoxMesh_hlx3q")
 
 [node name="Arrival" type="Marker3D" parent="." unique_id=1833511724]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 3)
-
-[node name="ReturnArea" type="Area3D" parent="." unique_id=1059985966]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 6)
-collision_layer = 0
-script = ExtResource("16_u2xy0")
-transition_style = 1
-
-[node name="@CollisionShape3D@592" type="CollisionShape3D" parent="ReturnArea" unique_id=139589728]
-shape = SubResource("BoxShape3D_4lxer")
 
 [node name="Boundary" type="StaticBody3D" parent="." unique_id=1875236961]
 

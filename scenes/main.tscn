@@ -57,9 +57,15 @@
 [ext_resource type="Script" uid="uid://beqcc0uio57oj" path="res://scripts/flashback_derealization.gd" id="48_derealization"]
 [ext_resource type="PackedScene" path="res://scenes/swap_glass.tscn" id="49_swap_glass"]
 [ext_resource type="Material" uid="uid://xyf6xeuboj4p" path="res://assets/materials/lab_floor.tres" id="50_lab_floor"]
+[ext_resource type="Script" path="res://scripts/location_teleport_trigger.gd" id="51_city_entrance"]
+[ext_resource type="Script" path="res://scripts/memory_city_journey.gd" id="52_memory_journey"]
+[ext_resource type="PackedScene" path="res://scenes/memory_city_path.tscn" id="53_memory_path"]
 
 [sub_resource type="BoxShape3D" id="RoomFloorShape"]
 size = Vector3(18, 0.2, 32)
+
+[sub_resource type="BoxShape3D" id="MemoryCityEntranceShape"]
+size = Vector3(2, 2.5, 1)
 
 [sub_resource type="BoxMesh" id="LaboratoryDoorThresholdMesh"]
 material = ExtResource("50_lab_floor")
@@ -2225,13 +2231,19 @@ metadata/_godot_ai_physics_v1 = {
 "wrapped": true
 }
 
-[node name="KitchenFlashbackTrigger" parent="LabModuleLibrary/Walls" index="66" unique_id=1702849754 instance=ExtResource("44_e755i")]
+[node name="CityMemoryTrigger" type="Area3D" parent="LabModuleLibrary/Walls" index="66" unique_id=1702849754]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -141.6846, 5.825889, 169.34856)
+script = ExtResource("51_city_entrance")
+destination_location_id = "flashback"
 use_visual_transition = true
+show_debug_visual = false
 transition_style = 1
 fade_out_duration = 1.6
 hold_duration = 0.8
 fade_in_duration = 2.8
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/CityMemoryTrigger"]
+shape = SubResource("MemoryCityEntranceShape")
 
 [node name="Floors" parent="LabModuleLibrary" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 24)
@@ -3004,6 +3016,17 @@ shape = SubResource("BoxShape3D_c6pm6")
 [node name="FlashbackRoom" parent="." unique_id=1227615780 groups=["swap_room_anchor"] instance=ExtResource("11_flashback")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -319.846, 0.19960308, -319.24637)
 
+[node name="MemoryLightPath" parent="FlashbackRoom" instance=ExtResource("53_memory_path")]
+
+[node name="FinalHouseDoor" parent="FlashbackRoom" instance=ExtResource("44_e755i")]
+position = Vector3(-2, 1.5, -126.9)
+use_visual_transition = true
+show_debug_visual = false
+transition_style = 0
+fade_out_duration = 1.2
+hold_duration = 0.65
+fade_in_duration = 2.0
+
 [node name="StreetWeatherPanel" parent="FlashbackRoom" unique_id=1674759684 node_paths=PackedStringArray("controller") instance=ExtResource("42_weather_panel")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 2.8, 0, 5.3)
 controller = NodePath("../../StreetWeather")
@@ -3529,5 +3552,11 @@ shape = SubResource("BoxShape3D_ids8r")
 
 [node name="BridgeVisual" type="MeshInstance3D" parent="bridgeSwap" unique_id=1023163599]
 mesh = SubResource("BoxMesh_dnhof")
+
+[node name="MemoryCityJourney" type="Node" parent="." node_paths=PackedStringArray("player", "weather", "light_path")]
+script = ExtResource("52_memory_journey")
+player = NodePath("../Player")
+weather = NodePath("../StreetWeather")
+light_path = NodePath("../FlashbackRoom/MemoryLightPath")
 
 [editable path="LabModuleLibrary"]
