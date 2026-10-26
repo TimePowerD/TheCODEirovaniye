@@ -9638,40 +9638,7 @@ layers = 4
 multimesh = SubResource("MultiMesh_8crad")
 
 [node name="Arrival" type="Marker3D" parent="." unique_id=635187881]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 2)
-
-[node name="ReturnGate" type="Node3D" parent="." unique_id=1096638345]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 11)
-
-[node name="Post" type="MeshInstance3D" parent="ReturnGate" unique_id=2021088048]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2, 1.6, 0)
-layers = 4
-mesh = SubResource("BoxMesh_5ww76")
-
-[node name="@MeshInstance3D@2" type="MeshInstance3D" parent="ReturnGate" unique_id=350425125]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 1.6, 0)
-layers = 4
-mesh = SubResource("BoxMesh_7pnp4")
-
-[node name="TopBeam" type="MeshInstance3D" parent="ReturnGate" unique_id=1502921295]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
-layers = 4
-mesh = SubResource("BoxMesh_htqou")
-
-[node name="ReturnLabel" type="Label3D" parent="ReturnGate" unique_id=1455568794]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 3.45, -0.15)
-layers = 4
-text = "ВЕРНУТЬСЯ В КОМНАТУ ПЕРЕХОДОВ"
-font_size = 36
-
-[node name="ReturnArea" type="Area3D" parent="." unique_id=115131215]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 11)
-collision_layer = 0
-script = ExtResource("5_uxi48")
-transition_style = 1
-
-[node name="Collision" type="CollisionShape3D" parent="ReturnArea" unique_id=67789591]
-shape = SubResource("BoxShape3D_sjdrq")
+transform = Transform3D(0.90555656, 0, 0.42422566, 0, 1, 0, -0.42422566, 0, 0.90555656, -8.942031, 0.92, -30.844849)
 
 [node name="TrailEnd" type="Marker3D" parent="." unique_id=1029786226]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -171)

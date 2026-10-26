@@ -15,6 +15,7 @@ var saved_input := true
 var object_picker: OptionButton
 var location_picker: OptionButton
 var trigger_destination_picker: OptionButton
+var trigger_effect_picker: OptionButton
 var cutscene_picker: OptionButton
 var weather_picker: OptionButton
 var weather_controller: Node
@@ -101,6 +102,11 @@ func _ready() -> void:
 	trigger_destination_picker = OptionButton.new()
 	trigger_destination_picker.fit_to_longest_item = false
 	content.add_child(trigger_destination_picker)
+	_label(content, "Эффект триггера")
+	trigger_effect_picker = OptionButton.new()
+	trigger_effect_picker.add_item("Обычный переход — затемнение")
+	trigger_effect_picker.add_item("Флэшбэк — белый свет и размытие")
+	content.add_child(trigger_effect_picker)
 	_button(content, "Поставить триггер перед камерой", place_location_trigger)
 	_label(content, "Кат-сцены")
 	cutscene_picker = OptionButton.new()
@@ -386,11 +392,17 @@ func place_location_trigger() -> void:
 	var trigger := preload("res://scenes/kitchen_transition_trigger.tscn").instantiate() as Area3D
 	trigger.set("destination_location_id", str(selected_location.location_id))
 	trigger.set("destination_transform", selected_location.transform)
+	trigger.set("use_visual_transition", true)
+	trigger.set("transition_style", trigger_effect_picker.selected)
+	if trigger_effect_picker.selected == 1:
+		trigger.set("fade_out_duration", 1.6)
+		trigger.set("hold_duration", 0.8)
+		trigger.set("fade_in_duration", 2.8)
 	trigger.name = "DeveloperTrigger_%d" % (objects.size() + 1)
 	get_tree().current_scene.add_child(trigger)
 	trigger.global_transform = _get_trigger_placement_transform()
 	objects.append(trigger)
-	status.text = "Триггер создан: %s. Для удаления нажмите «Удалить созданные объекты»." % selected_location.title
+	status.text = "Триггер создан: %s (%s)." % [selected_location.title, trigger_effect_picker.get_item_text(trigger_effect_picker.selected)]
 
 func _get_trigger_placement_transform() -> Transform3D:
 	var camera := player.camera_pivot.get_node("Camera3D") as Camera3D
