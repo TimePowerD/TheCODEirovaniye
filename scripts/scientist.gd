@@ -8,6 +8,7 @@ extends Node3D
 @export var room_manager_enabled: bool = true
 @export_range(1, 32, 1) var room_count: int = 5
 @export var room_step: Vector3 = Vector3(-18.0, 0.0, 0.0)
+@export var room_offsets: PackedFloat32Array = PackedFloat32Array()
 @export_range(0, 4, 1) var active_room_radius: int = 1
 @export_range(0.1, 5.0, 0.1) var room_refresh_interval: float = 0.5
 
@@ -95,8 +96,14 @@ func _refresh_room_scientists() -> void:
 		return
 
 	var step_direction := room_step.normalized()
-	var player_progress := (player.global_position - room_anchor_transform.origin).dot(step_direction) / room_step.length()
-	var nearest_room := clampi(roundi(player_progress), 0, room_count - 1)
+	var player_progress := (player.global_position - room_anchor_transform.origin).dot(step_direction)
+	var nearest_room := 0
+	var nearest_distance := INF
+	for room_index in range(room_count):
+		var distance := absf(player_progress - _room_offset(room_index))
+		if distance < nearest_distance:
+			nearest_distance = distance
+			nearest_room = room_index
 
 	for room_index in range(room_count):
 		var should_be_active: bool = abs(room_index - nearest_room) <= active_room_radius
@@ -128,9 +135,15 @@ func _create_room_scientist(room_index: int) -> Node3D:
 	instance.set_script(get_script())
 	instance.set("room_manager_enabled", false)
 	instance.transform = room_anchor_transform
-	instance.transform.origin += room_step * room_index
+	instance.transform.origin += room_step.normalized() * _room_offset(room_index)
 	get_parent().call_deferred("add_child", instance)
 	return instance
+
+
+func _room_offset(room_index: int) -> float:
+	if room_index < room_offsets.size():
+		return room_offsets[room_index]
+	return room_step.length() * room_index
 
 
 func _set_scientist_active(active: bool) -> void:

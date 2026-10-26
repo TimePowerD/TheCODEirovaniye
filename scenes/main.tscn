@@ -129,7 +129,7 @@ height = 2.4
 radius = 0.7
 
 [sub_resource type="BoxShape3D" id="BoxShape_small"]
-size = Vector3(0.5842285, 0.5839844, 0.5776367)
+size = Vector3(1.168457, 1.167969, 1.155273)
 
 [sub_resource type="BoxShape3D" id="PuzzleExitDoorShape"]
 size = Vector3(0.55, 2.8, 2.03)
@@ -241,6 +241,24 @@ data = PackedVector3Array(1.9999, 0, -0.2958, 1.9999, 0, -8, 8, 0, -8, 1.9999, 0
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ro3en"]
 points = PackedVector3Array(-0.3736589, 2.1925697, 1.1681074, -0.3736589, 2.1925697, -1.1681074, -1.6214149, 2.1925697, 1.1681074, 0.25779295, 1.7009454, 1.1681074, -1.6214149, 2.1925697, -1.1681074, 0.25779295, 1.7009454, -1.1681074, -1.6214149, -1.4548032, 1.1681074, 0.88967776, 1.1471989, 1.1681074, -1.6214149, -1.4548032, -1.1681074, 0.88967776, 1.1471989, -1.1681074, 2.8000472, -1.4548032, 1.1681074, 2.8000472, -0.91105336, 1.1681074, 2.8000472, -1.4548032, -1.1681074, 2.8000472, -0.91105336, -1.1681074)
+
+[sub_resource type="BoxShape3D" id="LadderLandingShape"]
+size = Vector3(1.267756, 3.667373, 2.336214)
+
+[sub_resource type="BoxShape3D" id="LadderStepShape2"]
+size = Vector3(0.651452, 3.175749, 2.336214)
+
+[sub_resource type="BoxShape3D" id="LadderStepShape3"]
+size = Vector3(0.651885, 2.621, 2.336214)
+
+[sub_resource type="BoxShape3D" id="LadderStepShape4"]
+size = Vector3(0.652, 1.915, 2.336214)
+
+[sub_resource type="BoxShape3D" id="LadderStepShape5"]
+size = Vector3(0.652, 1.224, 2.336214)
+
+[sub_resource type="BoxShape3D" id="LadderStepShape6"]
+size = Vector3(0.667, 0.564, 2.336214)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fgjv2"]
 
@@ -761,6 +779,19 @@ shape = SubResource("BoxShape_small")
 script = ExtResource("28_collision_audio")
 
 [node name="Mesh" parent="SwapTestObject4" unique_id=542579153 instance=ExtResource("21_cjqg0")]
+
+[node name="SwapTestObject5" type="RigidBody3D" parent="." unique_id=1961417219 groups=["swapAble", "swappable"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.203655, 0.7045383, 173.88998)
+mass = 2.0
+script = ExtResource("9_physics_object")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SwapTestObject5" unique_id=952974948]
+shape = SubResource("BoxShape_small")
+
+[node name="CollisionSound" type="AudioStreamPlayer3D" parent="SwapTestObject5" unique_id=42846471]
+script = ExtResource("28_collision_audio")
+
+[node name="Mesh" parent="SwapTestObject5" unique_id=1431170030 instance=ExtResource("21_cjqg0")]
 
 [node name="smallSwapTestObject" type="RigidBody3D" parent="." unique_id=1194145261 groups=["swapAble", "swappable"]]
 transform = Transform3D(0.34, 0, 0, 0, 0.34, 0, 0, 0, 0.34, 90.95801, 0.37660813, 177.67589)
@@ -2017,6 +2048,9 @@ metadata/_godot_ai_physics_v1 = {
 [node name="ladderProp2" parent="LabModuleLibrary/Walls" index="63" unique_id=1361996908 instance=ExtResource("41_tm6hj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -146.01324, 0.017906785, 195.82379)
 
+[node name="ladderProp" parent="LabModuleLibrary/Walls/ladderProp2" index="0"]
+visible = false
+
 [node name="ladderPropCollider" type="RigidBody3D" parent="LabModuleLibrary/Walls/ladderProp2" unique_id=1081385344 groups=["swapAble", "swappable"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2775463, 1.436896, 0)
 script = ExtResource("9_physics_object")
@@ -2029,11 +2063,36 @@ metadata/_godot_ai_physics_v1 = {
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LabModuleLibrary/Walls/ladderProp2/ladderPropCollider" unique_id=214361662]
 shape = SubResource("ConvexPolygonShape3D_ro3en")
+disabled = true
 metadata/_godot_ai_physics_v1 = {
 "body": NodePath(".."),
 "source": NodePath("../ladderProp"),
 "version": 1
 }
+
+[node name="LadderLandingCollision" type="CollisionShape3D" parent="LabModuleLibrary/Walls/ladderProp2/ladderPropCollider" unique_id=1400392372]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.997537, 0.368883, 0)
+shape = SubResource("LadderLandingShape")
+
+[node name="LadderStepCollision2" type="CollisionShape3D" parent="LabModuleLibrary/Walls/ladderProp2/ladderPropCollider" unique_id=662332420]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.057933, 0.123071, 0)
+shape = SubResource("LadderStepShape2")
+
+[node name="LadderStepCollision3" type="CollisionShape3D" parent="LabModuleLibrary/Walls/ladderProp2/ladderPropCollider" unique_id=41881405]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.573735, -0.153802, 0)
+shape = SubResource("LadderStepShape3")
+
+[node name="LadderStepCollision4" type="CollisionShape3D" parent="LabModuleLibrary/Walls/ladderProp2/ladderPropCollider" unique_id=884777580]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2055, -0.507402, 0)
+shape = SubResource("LadderStepShape4")
+
+[node name="LadderStepCollision5" type="CollisionShape3D" parent="LabModuleLibrary/Walls/ladderProp2/ladderPropCollider" unique_id=352785880]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.837, -0.852903, 0)
+shape = SubResource("LadderStepShape5")
+
+[node name="LadderStepCollision6" type="CollisionShape3D" parent="LabModuleLibrary/Walls/ladderProp2/ladderPropCollider" unique_id=2091593896]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4765, -1.182928, 0)
+shape = SubResource("LadderStepShape6")
 
 [node name="ladderProp" type="MeshInstance3D" parent="LabModuleLibrary/Walls/ladderProp2/ladderPropCollider" unique_id=966285929]
 mesh = SubResource("ArrayMesh_y1yx0")
@@ -2066,8 +2125,12 @@ metadata/_godot_ai_physics_v1 = {
 [node name="ventObject2" parent="LabModuleLibrary/Walls" index="65" unique_id=122645983 instance=ExtResource("43_t5ykj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -142.03056, 5.600767, 171.33887)
 
-[node name="ventObjectCollider" type="RigidBody3D" parent="LabModuleLibrary/Walls/ventObject2" unique_id=14775498 groups=["swapAble", "swappable"]]
+[node name="ventObject" parent="LabModuleLibrary/Walls/ventObject2" index="0"]
+visible = false
+
+[node name="ventObjectCollider" type="RigidBody3D" parent="LabModuleLibrary/Walls/ventObject2" unique_id=14775498 groups=["activate_physics_after_swap", "swapAble", "swappable"]]
 script = ExtResource("9_physics_object")
+physics_enabled = false
 metadata/_godot_ai_physics_v1 = {
 "collision": NodePath("CollisionShape3D"),
 "source": NodePath("ventObject"),
@@ -2093,7 +2156,7 @@ metadata/_godot_ai_physics_v1 = {
 }
 
 [node name="KitchenFlashbackTrigger" parent="LabModuleLibrary/Walls" index="66" unique_id=1702849754 instance=ExtResource("44_e755i")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -142.03056, 2, 168.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -141.6846, 5.825889, 169.34856)
 use_visual_transition = true
 transition_style = 1
 fade_out_duration = 1.6
@@ -2996,6 +3059,8 @@ transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, -104.373
 [node name="scientist" parent="." unique_id=2089029073 instance=ExtResource("36_fuf3a")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 161.70422, 0.0017670757, 187.98111)
 script = ExtResource("37_pibwh")
+room_count = 8
+room_offsets = PackedFloat32Array(0, 18, 36, 54, 72, 90, 108, 140)
 
 [node name="bedSingle" parent="." unique_id=1922355786 instance=ExtResource("43_chjal")]
 transform = Transform3D(-1.2807438e-07, 0, -2.93, 0, 2.93, 0, 2.93, 0, -1.2807438e-07, 168.17847, 0, 170.58092)
@@ -3005,32 +3070,32 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 210, 0, 150)
 
 [node name="LaboratoryAreaLight" type="AreaLight3D" parent="." unique_id=278609899]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 167.60944, 4.5, 183.80627)
-light_color = Color(1, 0.9411765, 0.84705883, 1)
-light_energy = 2.0
+light_color = Color(0.92, 0.96, 1, 1)
+light_energy = 3.0
 area_range = 10.5
 area_attenuation = 1.5
 area_size = Vector2(5, 3.2234802)
 
 [node name="LaboratoryAreaLight4" type="AreaLight3D" parent="." unique_id=1302798152]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 159.40775, 4.5, 183.80627)
-light_color = Color(1, 0.9411765, 0.84705883, 1)
-light_energy = 2.0
+light_color = Color(0.92, 0.96, 1, 1)
+light_energy = 3.0
 area_range = 10.5
 area_attenuation = 1.5
 area_size = Vector2(5, 3.2234802)
 
 [node name="LaboratoryAreaLight3" type="AreaLight3D" parent="." unique_id=1330009443]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 167.60944, 4.5, 174.80386)
-light_color = Color(1, 0.9411765, 0.84705883, 1)
-light_energy = 2.0
+light_color = Color(0.92, 0.96, 1, 1)
+light_energy = 3.0
 area_range = 10.5
 area_attenuation = 1.5
 area_size = Vector2(5, 3.2234802)
 
 [node name="LaboratoryAreaLight2" type="AreaLight3D" parent="." unique_id=1788467386]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 159.27304, 4.5, 174.51706)
-light_color = Color(1, 0.9411765, 0.84705883, 1)
-light_energy = 2.0
+light_color = Color(0.92, 0.96, 1, 1)
+light_energy = 3.0
 area_range = 10.5
 area_attenuation = 1.5
 area_size = Vector2(4.822815, 3.2234802)
@@ -3219,8 +3284,32 @@ area_range = 10.5
 area_attenuation = 1.5
 area_size = Vector2(5, 3)
 
+[node name="Room6Light2" type="AreaLight3D" parent="." unique_id=2142690644]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 39.173317, 7.398009, 180)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room6Light3" type="AreaLight3D" parent="." unique_id=100307279]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 24.054836, 7.398009, 180)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
 [node name="DoctorAreaLight" type="AreaLight3D" parent="." unique_id=322545759]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 163.50743, 3.4584212, 188.22372)
+light_color = Color(1, 0.88235295, 0.7411765, 1)
+light_energy = 2.5
+area_range = 3.5
+area_attenuation = 1.2
+area_size = Vector2(0.8, 0.8)
+
+[node name="FinalLevelDoctorAreaLight" type="AreaLight3D" parent="." unique_id=385166759]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 23.50743, 3.4584212, 188.22372)
 light_color = Color(1, 0.88235295, 0.7411765, 1)
 light_energy = 2.5
 area_range = 3.5
@@ -3236,6 +3325,26 @@ shadow_enabled = true
 spot_range = 5.5
 spot_attenuation = 1.5
 spot_angle = 36.0
+
+[node name="DoctorShadowSpot2" type="SpotLight3D" parent="." unique_id=227212773]
+transform = Transform3D(1, 0, 0, 0, 0.89271873, 0.45061445, 0, -0.45061445, 0.89271873, 23.37962, 7.4669075, 176.05232)
+light_color = Color(1, 0.9411765, 0.85882354, 1)
+light_energy = 2.2
+light_size = 0.35
+shadow_enabled = true
+spot_range = 23.08264
+spot_attenuation = 1.5
+spot_angle = 34.09547
+
+[node name="DoctorShadowSpot3" type="SpotLight3D" parent="." unique_id=1683496289]
+transform = Transform3D(-0.865454, -0.22575256, 0.44724163, 0, 0.89271873, 0.45061445, -0.5009883, 0.3899861, -0.772607, 25.078918, 5.47746, 190.31606)
+light_color = Color(1, 0.9411765, 0.85882354, 1)
+light_energy = 2.2
+light_size = 0.35
+shadow_enabled = true
+spot_range = 13.17901
+spot_attenuation = 1.5
+spot_angle = 28.763924
 
 [node name="bridgeSwap" type="StaticBody3D" parent="." unique_id=232293470 groups=["swap_rotate_y_90", "swappable"]]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 38.871975, 0.23559976, 179.03825)

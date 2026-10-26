@@ -878,7 +878,8 @@ func _cycle_swap_selection() -> void:
 	for candidate in get_tree().get_nodes_in_group("swappable"):
 		if not candidate is Node3D or candidate == selected_target or not is_instance_valid(candidate):
 			continue
-		if candidate.get("physics_enabled") != true or candidate.has_meta("object_swap_locked"):
+		var activates_physics_after_swap := candidate.is_in_group("activate_physics_after_swap")
+		if (candidate.get("physics_enabled") != true and not activates_physics_after_swap) or candidate.has_meta("object_swap_locked"):
 			continue
 		if _room_anchor_for_position(candidate.global_position) != current_room:
 			continue
@@ -1016,6 +1017,9 @@ func _complete_swap(first: Node3D, second: Node3D, first_start: Vector3, second_
 			target.freeze = state.freeze
 			target.linear_velocity = Vector3.ZERO if success else state.linear_velocity
 			target.angular_velocity = Vector3.ZERO if success else state.angular_velocity
+			if success and target.is_in_group("activate_physics_after_swap") and target.get("physics_enabled") == false:
+				target.set("physics_enabled", true)
+				target.sleeping = false
 	swap_body_states.clear()
 	swap_source_transforms.clear()
 	swap_in_progress = false

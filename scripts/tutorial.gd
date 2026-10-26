@@ -14,7 +14,7 @@ const SUBTITLE_CLICK_STREAM: AudioStream = preload("res://assets/audio/audiointe
 const NEXT_ROOM_TASK := "Пройдите в следующую комнату."
 const FINAL_TASK := "Пройдите лабораторию."
 const FINAL_SUBTITLE_DURATION := 5.0
-const DOOR_OPEN_STREAM := preload("res://assets/audio/final sounds/lab_door_open.ogg")
+const DOOR_OPEN_STREAM: AudioStream = preload("res://assets/audio/final sounds/lab_door_open.ogg")
 const DIALOGUES := [
 	"Привет. Теперь ты зомби. Попробуй подвигаться с помощью WASD.",
 	"Теперь пройди в следующую комнату.",

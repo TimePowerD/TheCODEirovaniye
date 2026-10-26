@@ -162,10 +162,14 @@ func _play_visual_transition(player: CharacterBody3D, was_physics_processing: bo
 	var reveal := create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	reveal.tween_property(fade_material, "shader_parameter/darkness", 0.0, fade_in_duration)
 	await reveal.finished
-	player.set_physics_process(was_physics_processing)
-	player.set_process_unhandled_input(was_input_processing)
 	if transition_style == 1:
 		var clear_blur := create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 		clear_blur.tween_property(fade_material, "shader_parameter/blur_amount", 0.0, blur_clear_duration)
 		await clear_blur.finished
 	veil.hide()
+	await _after_visual_transition_reveal(player)
+	player.set_physics_process(was_physics_processing)
+	player.set_process_unhandled_input(was_input_processing)
+
+func _after_visual_transition_reveal(_player: CharacterBody3D) -> void:
+	await get_tree().process_frame

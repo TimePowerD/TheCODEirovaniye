@@ -20,6 +20,8 @@
 [ext_resource type="PackedScene" uid="uid://dj8calkd866uk" path="res://assets/models/obstanowkadoma/Models/GLTF format/plantSmall1.glb" id="20_plant"]
 [ext_resource type="PackedScene" uid="uid://cp4wsgua0eiat" path="res://assets/models/obstanowkadoma/Models/GLTF format/rugRectangle.glb" id="21_rug"]
 [ext_resource type="PackedScene" uid="uid://dajdvl5n8kn6h" path="res://assets/models/obstanowkadoma/Models/GLTF format/lampSquareCeiling.glb" id="22_lamp"]
+[ext_resource type="PackedScene" uid="uid://0r66qocwa8qg" path="res://assets/materials/animations/girl.glb" id="23_kate"]
+[ext_resource type="AudioStream" uid="uid://dwprfak43kley" path="res://assets/audio/freesound_community-lightning-storm-6077.mp3" id="24_storm_audio"]
 
 [sub_resource type="StandardMaterial3D" id="Mat_Floor"]
 albedo_color = Color(0.43, 0.28, 0.16, 1)
@@ -260,3 +262,15 @@ light_energy = 1.8
 area_size = Vector2(4, 3)
 area_range = 8.0
 area_attenuation = 1.5
+
+[node name="Kate" type="Node3D" parent="."]
+position = Vector3(1.1, 0, 0.65)
+rotation = Vector3(0, -0.463593, 0)
+
+[node name="GirlModel" parent="Kate" instance=ExtResource("23_kate")]
+position = Vector3(1.50824, -0.000033, -0.007681)
+scale = Vector3(0.055737, 0.055737, 0.055737)
+
+[node name="LightningStormAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("24_storm_audio")
+volume_db = -8.0
