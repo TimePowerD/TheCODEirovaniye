@@ -1,8 +1,7 @@
 extends CanvasLayer
 
 ## Temporary tools. Release exports always remove this UI.
-const WEATHER_LABELS := ["1 — Солнечно", "2 — Тёплый вечер", "3 — Пасмурно", "4 — Гроза"]
-const TIME_LABELS := ["День", "Вечер", "Ночь"]
+const WEATHER_LABELS := ["Солнечно", "Тёплый вечер", "Пасмурно", "Гроза"]
 @export var enabled: bool = true
 @export var player: CharacterBody3D
 @export var menu: CanvasLayer
@@ -13,18 +12,14 @@ var objects := []
 var opened := false
 var saved_physics := true
 var saved_input := true
-var trigger_picker: OptionButton
 var object_picker: OptionButton
-var route_picker: OptionButton
+var location_picker: OptionButton
+var trigger_destination_picker: OptionButton
 var cutscene_picker: OptionButton
 var weather_picker: OptionButton
-var time_picker: OptionButton
 var weather_controller: Node
-var markers: Array[Area3D] = []
-var routes: Array[Node] = []
-var route_destinations: Array[bool] = []
+var locations: Array[Dictionary] = []
 var cutscenes: Array[Node] = []
-var debug_meshes: Array[Node] = []
 var selected_object: Node3D
 var selection_label: Label
 var delete_button: Button
@@ -59,8 +54,7 @@ func _ready() -> void:
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.add_theme_constant_override("separation", 8)
 	scroll.add_child(content)
-	_label(content, "РАЗРАБОТКА · F1 / Esc — закрыть")
-	_label(content, "WASD / Shift / Пробел — движение\nПКМ вне панели — обзор; ЛКМ — выбор")
+	_label(content, "ПАНЕЛЬ РАЗРАБОТЧИКА")
 	_label(content, "Объекты перед камерой")
 	object_picker = OptionButton.new()
 	object_picker.fit_to_longest_item = false
@@ -85,44 +79,29 @@ func _ready() -> void:
 	delete_button = _button(content, "Удалить выбранный предмет", delete_selected)
 	delete_button.disabled = true
 	_button(content, "Удалить созданные объекты", clear_objects)
-	_label(content, "Переходы / эффекты")
-	_button(content, "Городская комната — затемнение", run_transition.bind("LocationTransition"))
-	_button(content, "Город воспоминаний — флэшбэк", run_transition.bind("FlashbackTransition"))
-	_button(content, "Густой лес — флэшбэк", run_transition.bind("ForestTransition"))
-	_button(content, "Вернуться в лабораторию", return_to_lab)
-	_label(content, "Погода на улице")
+	_label(content, "Выбор погоды")
 	weather_picker = OptionButton.new()
 	weather_picker.fit_to_longest_item = false
 	for weather_label in WEATHER_LABELS:
 		weather_picker.add_item(weather_label)
 	content.add_child(weather_picker)
-	weather_picker.item_selected.connect(_on_weather_selected)
-	_label(content, "Время суток в городе")
-	time_picker = OptionButton.new()
-	time_picker.fit_to_longest_item = false
-	for title in TIME_LABELS:
-		time_picker.add_item(title)
-	time_picker.item_selected.connect(_on_time_selected)
-	content.add_child(time_picker)
+	_button(content, "Применить погоду", apply_selected_weather)
 	weather_controller = get_tree().current_scene.find_child("StreetWeather", true, false)
 	if weather_controller != null and weather_controller.has_signal("weather_changed"):
 		weather_controller.weather_changed.connect(_sync_weather_picker)
-		weather_controller.time_of_day_changed.connect(_sync_time_picker)
 		_sync_weather_picker(int(weather_controller.get("mode")))
-		_sync_time_picker(int(weather_controller.get("time_of_day")))
 	else:
 		weather_picker.disabled = true
-		time_picker.disabled = true
-	route_picker = OptionButton.new()
-	route_picker.fit_to_longest_item = false
-	content.add_child(route_picker)
-	_button(content, "Перейти", run_selected_transition)
-	_label(content, "Проверка зон входа")
-	trigger_picker = OptionButton.new()
-	trigger_picker.fit_to_longest_item = false
-	content.add_child(trigger_picker)
-	_button(content, "Переместиться внутрь выбранной зоны", enter_trigger)
-	_button(content, "Показать / скрыть границы триггеров", toggle_markers)
+	_label(content, "Перемещение по локациям")
+	location_picker = OptionButton.new()
+	location_picker.fit_to_longest_item = false
+	content.add_child(location_picker)
+	_button(content, "Перейти", teleport_to_selected_location)
+	_label(content, "Установка триггера переноса")
+	trigger_destination_picker = OptionButton.new()
+	trigger_destination_picker.fit_to_longest_item = false
+	content.add_child(trigger_destination_picker)
+	_button(content, "Поставить триггер перед камерой", place_location_trigger)
 	_label(content, "Кат-сцены")
 	cutscene_picker = OptionButton.new()
 	cutscene_picker.fit_to_longest_item = false
@@ -132,7 +111,7 @@ func _ready() -> void:
 	_label(content, "Обучение")
 	_button(content, "Начать обучение заново", restart_tutorial)
 	_button(content, "Скрыть обучение", skip_tutorial)
-	_button(content, "Обновить список триггеров и кат-сцен", refresh)
+	_button(content, "Обновить списки локаций и кат-сцен", refresh)
 	status = _label(content, "Инструменты доступны только в debug-сборке.")
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	status.custom_minimum_size.x = 320
@@ -153,13 +132,17 @@ func _button(parent: Node, text: String, action: Callable) -> Button:
 	parent.add_child(button)
 	return button
 
-func _on_weather_selected(index: int) -> void:
+func apply_selected_weather() -> void:
 	if weather_controller == null or not is_instance_valid(weather_controller):
 		status.text = "Контроллер погоды недоступен."
 		return
-	if _busy() or get_tree().paused:
+	if player.has_meta("location_transition_active") or player.has_meta("cutscene_active") \
+		or player.swap_in_progress or get_tree().paused:
 		_sync_weather_picker(int(weather_controller.get("mode")))
 		status.text = "Нельзя менять погоду во время перехода, кат-сцены или обмена."
+		return
+	var index := weather_picker.selected
+	if index < 0 or index >= WEATHER_LABELS.size():
 		return
 	if not bool(weather_controller.call("set_weather", index)):
 		_sync_weather_picker(int(weather_controller.get("mode")))
@@ -170,20 +153,6 @@ func _on_weather_selected(index: int) -> void:
 func _sync_weather_picker(mode: int) -> void:
 	if is_instance_valid(weather_picker) and mode >= 0 and mode < weather_picker.item_count:
 		weather_picker.select(mode)
-
-func _on_time_selected(index: int) -> void:
-	if not is_instance_valid(weather_controller):
-		return
-	if _busy() or get_tree().paused:
-		_sync_time_picker(int(weather_controller.get("time_of_day")))
-		status.text = "Дождитесь завершения перехода, кат-сцены или обмена."
-		return
-	if bool(weather_controller.call("set_time_of_day", index)):
-		status.text = "Время суток: %s" % TIME_LABELS[index]
-
-func _sync_time_picker(period: int) -> void:
-	if is_instance_valid(time_picker) and period >= 0 and period < time_picker.item_count:
-		time_picker.select(period)
 
 func _process(_delta: float) -> void:
 	if selected_object != null and (not is_instance_valid(selected_object) or selected_object.is_queued_for_deletion()):
@@ -315,29 +284,7 @@ func close() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE if get_tree().paused else Input.MOUSE_MODE_CAPTURED
 
 func refresh() -> void:
-	markers.clear()
-	trigger_picker.clear()
-	route_picker.clear()
-	routes.clear()
-	route_destinations.clear()
-	for route in get_tree().current_scene.find_children("*", "Node", true, false):
-		if not _is_location_route(route):
-			continue
-		if route.in_city:
-			routes.append(route)
-			route_destinations.append(false)
-			route_picker.add_item("%s → %s" % [_location_label(route.destination_location_id), _location_label(route.source_location_id)])
-		else:
-			if get_node("/root/SaveManager").current_location_id != route.source_location_id:
-				continue
-			routes.append(route)
-			route_destinations.append(true)
-			route_picker.add_item("%s → %s" % [_location_label(route.source_location_id), _location_label(route.destination_location_id)])
-	route_picker.disabled = routes.is_empty()
-	for area in get_tree().current_scene.find_children("*", "Area3D", true, false):
-		if area.get_script() == preload("res://scripts/transition_marker.gd"):
-			markers.append(area)
-			trigger_picker.add_item(str(get_tree().current_scene.get_path_to(area)))
+	_refresh_location_list()
 	cutscenes.clear()
 	cutscene_picker.clear()
 	for scene in get_tree().get_nodes_in_group("developer_cutscenes"):
@@ -346,31 +293,115 @@ func refresh() -> void:
 			cutscene_picker.add_item(str(scene.name))
 	cutscene_picker.disabled = cutscenes.is_empty()
 
-func _location_label(location_id: String) -> String:
-	match location_id:
-		"laboratory":
-			return "лаборатория"
-		"city":
-			return "город"
-		"flashback":
-			return "город воспоминаний"
-		"forest":
-			return "густой лес"
-		_:
-			return location_id
+func _refresh_location_list() -> void:
+	locations.clear()
+	location_picker.clear()
+	trigger_destination_picker.clear()
+	var scene := get_tree().current_scene
+	var save_manager := get_node("/root/SaveManager")
+	_add_location("Лаборатория — место появления", "laboratory", save_manager.initial_player_transform)
+	var transition_arrival := scene.get_node_or_null("LocationTransition/LaboratoryArrival") as Node3D
+	_add_marker_location("Комната переходов", "transition_room", transition_arrival)
+	var checkpoint_names := [
+		["Level1Checkpoint", "Лаборатория — комната 1"],
+		["Level2Checkpoint", "Лаборатория — комната 2"],
+		["Level3Checkpoint", "Лаборатория — комната 3"],
+		["Level4Checkpoint", "Лаборатория — комната 4"],
+		["PuzzleRoomCheckpoint", "Лаборатория — комната с плитой"],
+	]
+	for checkpoint_info in checkpoint_names:
+		var checkpoint := scene.find_child(str(checkpoint_info[0]), true, false)
+		var spawn: Node3D
+		if checkpoint != null:
+			spawn = checkpoint.get_node_or_null("SpawnPoint") as Node3D
+		_add_marker_location(str(checkpoint_info[1]), "laboratory", spawn)
+	_add_room_location(scene, "CityRoom", "Город", "city")
+	_add_room_location(scene, "FlashbackRoom", "Город воспоминаний", "flashback")
+	_add_room_location(scene, "ForestRoom", "Лес", "forest")
+	_add_room_location(scene, "KitchenRoom", "Кухня", "kitchen")
+	location_picker.disabled = locations.is_empty()
+	trigger_destination_picker.disabled = locations.is_empty()
+	if not locations.is_empty():
+		location_picker.select(0)
+		trigger_destination_picker.select(0)
 
-func _is_location_route(route: Node) -> bool:
-	return route.get_script() == preload("res://scripts/location_transition.gd") or route.get_script() == preload("res://scripts/forest_transition.gd")
-
-func run_selected_transition() -> void:
-	if routes.is_empty() or route_picker.selected < 0 or route_picker.selected >= routes.size():
-		status.text = "Нет доступных переходов из текущей комнаты."
+func _add_room_location(scene: Node, room_name: String, title: String, location_id: String) -> void:
+	var room := scene.find_child(room_name, true, false)
+	if room == null:
 		return
-	var route: Node = routes[route_picker.selected]
-	var to_destination: bool = route_destinations[route_picker.selected]
-	close()
-	if not route.request_transition(to_destination):
-		status.text = "Переход занят или уже выполняется."
+	var arrival := room.find_child("Arrival", true, false) as Node3D
+	_add_marker_location(title, location_id, arrival)
+
+func _add_marker_location(title: String, location_id: String, marker: Node3D) -> void:
+	if marker != null:
+		_add_location(title, location_id, marker.global_transform)
+
+func _add_location(title: String, location_id: String, transform: Transform3D) -> void:
+	locations.append({"title": title, "location_id": location_id, "transform": transform})
+	location_picker.add_item(title)
+	trigger_destination_picker.add_item(title)
+
+func teleport_to_selected_location() -> void:
+	if _location_action_blocked():
+		status.text = "Нельзя перемещать игрока во время перехода, кат-сцены или обмена."
+		return
+	if location_picker.selected < 0 or location_picker.selected >= locations.size():
+		status.text = "Выберите локацию для перехода."
+		return
+	var target: Dictionary = locations[location_picker.selected]
+	_teleport_to_location(str(target.location_id), target.transform)
+	status.text = "Игрок перемещён: %s." % target.title
+
+func _teleport_to_location(location_id: String, destination: Transform3D) -> void:
+	player._release_object()
+	player._drop_item()
+	player.e_hold_pending = false
+	player.e_hold_elapsed = 0.0
+	player._set_placement_mode(false)
+	player.velocity = Vector3.ZERO
+	player.clear_swap_selection()
+	player.global_transform = destination
+	player.camera_pivot.rotation = Vector3.ZERO
+	player.reset_physics_interpolation()
+	var save_manager := get_node("/root/SaveManager")
+	save_manager.save_player_checkpoint(player, "developer_%s" % location_id, location_id, destination)
+	save_manager.checkpoint_restored.emit(location_id)
+
+func _location_action_blocked() -> bool:
+	return get_tree().paused or player.has_meta("location_transition_active") \
+		or player.has_meta("cutscene_active") or player.swap_in_progress
+
+func place_location_trigger() -> void:
+	if _location_action_blocked():
+		status.text = "Нельзя ставить триггер во время перехода, кат-сцены или обмена."
+		return
+	if trigger_destination_picker.selected < 0 or trigger_destination_picker.selected >= locations.size():
+		status.text = "Выберите назначение триггера."
+		return
+	objects = objects.filter(func(node): return is_instance_valid(node))
+	if objects.size() >= 50:
+		status.text = "Лимит 50 объектов и триггеров."
+		return
+	var selected_location: Dictionary = locations[trigger_destination_picker.selected]
+	var trigger := preload("res://scenes/kitchen_transition_trigger.tscn").instantiate() as Area3D
+	trigger.set("destination_location_id", str(selected_location.location_id))
+	trigger.set("destination_transform", selected_location.transform)
+	trigger.name = "DeveloperTrigger_%d" % (objects.size() + 1)
+	get_tree().current_scene.add_child(trigger)
+	trigger.global_transform = _get_trigger_placement_transform()
+	objects.append(trigger)
+	status.text = "Триггер создан: %s. Для удаления нажмите «Удалить созданные объекты»." % selected_location.title
+
+func _get_trigger_placement_transform() -> Transform3D:
+	var camera := player.camera_pivot.get_node("Camera3D") as Camera3D
+	var ray_from := camera.global_position
+	var ray_to := ray_from - camera.global_basis.z * 5.0
+	var query := PhysicsRayQueryParameters3D.create(ray_from, ray_to, 1, [player.get_rid()])
+	var hit := player.get_world_3d().direct_space_state.intersect_ray(query)
+	var position := ray_from - camera.global_basis.z * 3.0
+	if not hit.is_empty():
+		position = hit.position + hit.normal * 0.65
+	return Transform3D(Basis.IDENTITY, position)
 
 func spawn_selected_object() -> void:
 	if object_picker.selected < 0:
@@ -467,69 +498,6 @@ func clear_objects() -> void:
 	objects.clear()
 	status.text = "Созданные объекты удалены."
 
-func run_transition(route_name: String) -> void:
-	var route = get_tree().current_scene.find_child(route_name, true, false)
-	for other in get_tree().current_scene.find_children("*", "Node", true, false):
-		if _is_location_route(other) and other != route and other.in_city:
-			status.text = "Сначала вернитесь в лабораторию."
-			return
-	close()
-	if not route.request_transition(true):
-		status.text = "Переход занят или вы уже в этой комнате."
-
-func return_to_lab() -> void:
-	for route in get_tree().current_scene.find_children("*", "Node", true, false):
-		if _is_location_route(route) and route.in_city:
-			close()
-			route.request_transition(false)
-			return
-	status.text = "Вы уже в лаборатории."
-
-func enter_trigger() -> void:
-	if markers.is_empty():
-		return
-	var marker := markers[trigger_picker.selected]
-	var route = marker.get_parent() if marker.name == "LaboratoryExit" else null
-	if route != null and route.in_city:
-		status.text = "Этот вход находится в лаборатории. Сначала вернитесь."
-		return
-	# Teleport only into zones belonging to the player's current location.
-	var current_room: Node = null
-	for candidate in get_tree().current_scene.find_children("*", "Node", true, false):
-		if _is_location_route(candidate) and candidate.in_city:
-			current_room = candidate.city_room
-	if (marker.name == "ReturnArea" and marker.get_parent() != current_room) or (marker.name == "LaboratoryExit" and current_room != null):
-		status.text = "Выберите триггер текущей комнаты."
-		return
-	close()
-	player._release_object()
-	player.global_position = marker.global_position
-	player.velocity = Vector3.ZERO
-	player.reset_physics_interpolation()
-
-func toggle_markers() -> void:
-	if not debug_meshes.is_empty():
-		for mesh in debug_meshes:
-			if is_instance_valid(mesh):
-				mesh.queue_free()
-		debug_meshes.clear()
-		return
-	for marker in markers:
-		for child in marker.get_children():
-			if child is CollisionShape3D and child.shape is BoxShape3D:
-				var mesh := MeshInstance3D.new()
-				var box := BoxMesh.new()
-				box.size = child.shape.size
-				mesh.mesh = box
-				var material := StandardMaterial3D.new()
-				material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-				material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-				material.albedo_color = Color(1, 0.8, 0.2, 0.2) if marker.transition_style == 1 else Color(0.2, 0.7, 1, 0.2)
-				mesh.material_override = material
-				marker.add_child(mesh)
-				mesh.transform = child.transform
-				debug_meshes.append(mesh)
-
 func play_cutscene() -> void:
 	if cutscenes.is_empty():
 		status.text = "Нет зарегистрированных кат-сцен."
@@ -542,5 +510,9 @@ func restart_tutorial() -> void:
 	status.text = "Обучение начато заново."
 
 func skip_tutorial() -> void:
-	get_tree().current_scene.find_child("Tutorial", true, false).skip()
+	var tutorial := get_tree().current_scene.find_child("Tutorial", true, false)
+	if tutorial == null or not tutorial.has_method("complete"):
+		status.text = "Не удалось скрыть обучение."
+		return
+	tutorial.complete()
 	status.text = "Обучение скрыто."

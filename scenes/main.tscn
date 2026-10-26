@@ -44,12 +44,11 @@
 [ext_resource type="PackedScene" path="res://scenes/weather_panel.tscn" id="42_weather_panel"]
 [ext_resource type="PackedScene" uid="uid://cqf48e1e6c5hy" path="res://assets/models/obstanowkadoma/Models/GLTF format/bedSingle.glb" id="43_chjal"]
 [ext_resource type="Environment" path="res://assets/environments/laboratory.tres" id="43_laboratory_environment"]
-[ext_resource type="PackedScene" path="res://scenes/weight_puzzle_wall.tscn" id="44_weight_puzzle"]
-[ext_resource type="Script" path="res://scripts/weight_puzzle_door.gd" id="45_weight_puzzle_door"]
 [ext_resource type="PackedScene" path="res://scenes/forest_room.tscn" id="44_forest"]
-[ext_resource type="Script" path="res://scripts/forest_transition.gd" id="45_forest_transition"]
+[ext_resource type="PackedScene" path="res://scenes/weight_puzzle_wall.tscn" id="44_weight_puzzle"]
+[ext_resource type="Script" uid="uid://bpcfeopwdb1fi" path="res://scripts/forest_transition.gd" id="45_forest_transition"]
+[ext_resource type="Script" uid="uid://bueelrw6stcj8" path="res://scripts/weight_puzzle_door.gd" id="45_weight_puzzle_door"]
 [ext_resource type="Environment" path="res://assets/environments/forest.tres" id="46_forest_environment"]
-
 [ext_resource type="PackedScene" path="res://scenes/kitchen_room.tscn" id="47_kitchen"]
 
 [sub_resource type="BoxShape3D" id="RoomFloorShape"]
@@ -63,12 +62,6 @@ size = Vector3(2, 8, 7)
 
 [sub_resource type="BoxShape3D" id="DoorHeaderShape"]
 size = Vector3(2, 5.25, 2.02)
-
-[sub_resource type="BoxShape3D" id="PuzzleRoomCheckpointShape"]
-size = Vector3(18, 3, 16)
-
-[sub_resource type="BoxShape3D" id="PuzzleExitDoorShape"]
-size = Vector3(0.55, 2.8, 2.03)
 
 [sub_resource type="StandardMaterial3D" id="FlashbackDoorMaterial"]
 albedo_color = Color(0.53, 0.36, 0.17, 1)
@@ -127,6 +120,9 @@ height = 2.4
 radius = 0.7
 
 [sub_resource type="BoxShape3D" id="BoxShape_small"]
+
+[sub_resource type="BoxShape3D" id="PuzzleExitDoorShape"]
+size = Vector3(0.55, 2.8, 2.03)
 
 [sub_resource type="BoxShape3D" id="LocationExitShape"]
 size = Vector3(14, 3, 1)
@@ -311,6 +307,9 @@ size = Vector3(2, 3, 8)
 [sub_resource type="BoxShape3D" id="BoxShape3D_chjal"]
 size = Vector3(2, 3, 8)
 
+[sub_resource type="BoxShape3D" id="PuzzleRoomCheckpointShape"]
+size = Vector3(18, 3, 16)
+
 [node name="Main" type="Node3D" unique_id=417695300]
 script = ExtResource("4_room_materials")
 
@@ -420,17 +419,16 @@ font_size = 52
 transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, -7.7, 1.35, 4)
 mesh = SubResource("FlashbackDoorMesh")
 
-[node name="ForestMemoryDoor" type="MeshInstance3D" parent="Room"]
+[node name="ForestMemoryDoor" type="MeshInstance3D" parent="Room" unique_id=184657852]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.7, 1.35, 4)
 mesh = SubResource("ForestFlashbackDoorMesh")
 
-[node name="ForestMemorySign" type="Label3D" parent="Room"]
+[node name="ForestMemorySign" type="Label3D" parent="Room" unique_id=12900752]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.6, 3.1, 4)
 pixel_size = 0.006
 text = "ЛЕСНОЕ ВОСПОМИНАНИЕ"
-font_size = 32
 
-[node name="ForestMemoryDoorLight" type="OmniLight3D" parent="Room"]
+[node name="ForestMemoryDoorLight" type="OmniLight3D" parent="Room" unique_id=1147755198]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.8, 2.5, 4)
 light_color = Color(0.67, 0.9, 0.67, 1)
 light_energy = 1.3
@@ -512,6 +510,7 @@ script = ExtResource("33_wake_cutscene")
 
 [node name="SmallBox" type="RigidBody3D" parent="." unique_id=660320988 groups=["swapAble", "swappable"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 72, 0.3, 176.19165)
+mass = 1.0
 script = ExtResource("9_physics_object")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="SmallBox" unique_id=718676204]
@@ -614,18 +613,18 @@ script = ExtResource("28_collision_audio")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 164, 1.2, 180)
 
 [node name="CubeWeightPuzzle" parent="." unique_id=1513758282 instance=ExtResource("44_weight_puzzle")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 73.238266, 0, 173.4606)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 73.5, 0, 173.461)
 
-[node name="PuzzleExitDoor" type="Node3D" parent="." groups=["saveable_door"]]
+[node name="PuzzleExitDoor" type="Node3D" parent="." unique_id=2048141422 groups=["saveable_door"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64.5, 0, 179.19165)
 script = ExtResource("45_weight_puzzle_door")
 
-[node name="DoorVisual" parent="PuzzleExitDoor" instance=ExtResource("33_j8jky")]
+[node name="DoorVisual" parent="PuzzleExitDoor" unique_id=1900818372 instance=ExtResource("33_j8jky")]
 
-[node name="DoorCollisionBody" type="AnimatableBody3D" parent="PuzzleExitDoor"]
+[node name="DoorCollisionBody" type="AnimatableBody3D" parent="PuzzleExitDoor" unique_id=588192691]
 collision_mask = 0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PuzzleExitDoor/DoorCollisionBody"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PuzzleExitDoor/DoorCollisionBody" unique_id=331753941]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.38, 0)
 shape = SubResource("PuzzleExitDoorShape")
 
@@ -995,7 +994,7 @@ metadata/_godot_ai_physics_v1 = {
 }
 
 [node name="Wall1x23" parent="LabModuleLibrary/Walls" index="17" unique_id=722905215 instance=ExtResource("7_wall")]
-transform = Transform3D(1.3113416e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113416e-07, -92.054245, 0, 195.20432)
+transform = Transform3D(1.3113416e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113416e-07, -92.029076, 0, 195.20432)
 
 [node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x23" unique_id=1049009475]
 metadata/_godot_ai_physics_v1 = {
@@ -1704,7 +1703,7 @@ metadata/_godot_ai_physics_v1 = {
 }
 
 [node name="Ceiling14" parent="LabModuleLibrary/Floors" index="16" unique_id=93290645 instance=ExtResource("6_ceiling")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -92.054245, 0, 155.20432)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -91.99471, 0, 155.20432)
 
 [node name="labCeiling1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Floors/Ceiling14" unique_id=1894469869]
 metadata/_godot_ai_physics_v1 = {
@@ -1723,7 +1722,7 @@ metadata/_godot_ai_physics_v1 = {
 }
 
 [node name="Ceiling15" parent="LabModuleLibrary/Floors" index="17" unique_id=1736895165 instance=ExtResource("6_ceiling")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -92.054245, 0, 171.20432)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -91.99733, 0, 171.20432)
 
 [node name="labCeiling1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Floors/Ceiling15" unique_id=120578845]
 metadata/_godot_ai_physics_v1 = {
@@ -2000,10 +1999,10 @@ script = ExtResource("41_weather")
 street = NodePath("../FlashbackRoom")
 transition = NodePath("../FlashbackTransition")
 
-[node name="ForestRoom" parent="." instance=ExtResource("44_forest")]
+[node name="ForestRoom" parent="." unique_id=1754955951 instance=ExtResource("44_forest")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -640, 0, -320)
 
-[node name="ForestTransition" type="Node" parent="." node_paths=PackedStringArray("city_room", "player", "laboratory_light")]
+[node name="ForestTransition" type="Node" parent="." unique_id=906727770 node_paths=PackedStringArray("city_room", "player", "laboratory_light")]
 script = ExtResource("45_forest_transition")
 city_room = NodePath("../ForestRoom")
 player = NodePath("../Player")
@@ -2014,16 +2013,16 @@ fade_out_duration = 1.6
 black_hold_duration = 0.8
 fade_in_duration = 2.8
 
-[node name="LaboratoryExit" type="Area3D" parent="ForestTransition"]
+[node name="LaboratoryExit" type="Area3D" parent="ForestTransition" unique_id=670423598]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6, 1.5, 4)
 collision_layer = 0
 script = ExtResource("12_marker")
 transition_style = 1
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ForestTransition/LaboratoryExit"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ForestTransition/LaboratoryExit" unique_id=1419329526]
 shape = SubResource("ForestExitShape")
 
-[node name="LaboratoryArrival" type="Marker3D" parent="ForestTransition"]
+[node name="LaboratoryArrival" type="Marker3D" parent="ForestTransition" unique_id=1635209424]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 4.8, 0.92, 4)
 
 [node name="Room3Light" type="OmniLight3D" parent="." unique_id=1453178613]
@@ -2036,7 +2035,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 95, 4, 179)
 light_energy = 1.6
 omni_range = 16.0
 
-[node name="StartRoomAnchor" type="Marker3D" parent="." groups=["swap_room_anchor"]]
+[node name="StartRoomAnchor" type="Marker3D" parent="." unique_id=1654798821 groups=["swap_room_anchor"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 169, 0, 180)
 
 [node name="LevelCheckpoints" type="Node3D" parent="." unique_id=540498410]
@@ -2085,15 +2084,15 @@ shape = SubResource("BoxShape3D_chjal")
 [node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/Level4Checkpoint" unique_id=600734842]
 transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
 
-[node name="PuzzleRoomCheckpoint" type="Area3D" parent="LevelCheckpoints" groups=["swap_room_anchor"]]
+[node name="PuzzleRoomCheckpoint" type="Area3D" parent="LevelCheckpoints" unique_id=841229617 groups=["swap_room_anchor"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 73.5, 1.5, 179.2)
 collision_layer = 0
 script = ExtResource("35_j8jky")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/PuzzleRoomCheckpoint"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/PuzzleRoomCheckpoint" unique_id=647365340]
 shape = SubResource("PuzzleRoomCheckpointShape")
 
-[node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/PuzzleRoomCheckpoint"]
+[node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/PuzzleRoomCheckpoint" unique_id=953151784]
 transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
 
 [node name="scientist" parent="." unique_id=2089029073 instance=ExtResource("36_fuf3a")]
@@ -2103,7 +2102,7 @@ script = ExtResource("37_pibwh")
 [node name="bedSingle" parent="." unique_id=1922355786 instance=ExtResource("43_chjal")]
 transform = Transform3D(-1.2807438e-07, 0, -2.93, 0, 2.93, 0, 2.93, 0, -1.2807438e-07, 168.17847, 0, 170.58092)
 
-[node name="KitchenRoom" parent="." instance=ExtResource("47_kitchen")]
-position = Vector3(210, 0, 150)
+[node name="KitchenRoom" parent="." unique_id=842790712 instance=ExtResource("47_kitchen")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 210, 0, 150)
 
 [editable path="LabModuleLibrary"]

@@ -9661,7 +9661,7 @@ mesh = SubResource("BoxMesh_htqou")
 [node name="ReturnLabel" type="Label3D" parent="ReturnGate" unique_id=1455568794]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 3.45, -0.15)
 layers = 4
-text = "ВЕРНУТЬСЯ В ЛАБОРАТОРИЮ"
+text = "ВЕРНУТЬСЯ В КОМНАТУ ПЕРЕХОДОВ"
 font_size = 36
 
 [node name="ReturnArea" type="Area3D" parent="." unique_id=115131215]
