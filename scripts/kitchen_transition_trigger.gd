@@ -18,7 +18,6 @@ var storm_flash_tween: Tween
 var storm_rng := RandomNumberGenerator.new()
 var kitchen_warm_light: AreaLight3D
 var kitchen_warm_energy := 0.0
-var restored_cutscene_pending := false
 
 
 func _ready() -> void:
@@ -29,41 +28,6 @@ func _ready() -> void:
 	var kate := get_tree().current_scene.find_child("Kate", true, false) as Node3D
 	if kate != null:
 		kate.set_visible(false)
-	var save_manager := get_node("/root/SaveManager")
-	save_manager.checkpoint_restored.connect(_on_final_checkpoint_restored)
-	if save_manager.current_location_id == "kitchen":
-		call_deferred("_on_final_checkpoint_restored", "kitchen")
-
-
-func _on_final_checkpoint_restored(location_id: String) -> void:
-	# Normal door entry runs the scene after its fade. Loading its saved checkpoint
-	# has no such coroutine, so resume it once the main menu releases the game.
-	if location_id != "kitchen" or transitioning or kate_cutscene_played or restored_cutscene_pending:
-		return
-	restored_cutscene_pending = true
-	call_deferred("_resume_final_cutscene")
-
-
-func _resume_final_cutscene() -> void:
-	var save_manager := get_node("/root/SaveManager")
-	var menu := get_tree().current_scene.get_node("MainMenu")
-	while get_tree().paused or not bool(menu.get("game_started")):
-		await get_tree().process_frame
-		if save_manager.current_location_id != "kitchen":
-			restored_cutscene_pending = false
-			return
-	restored_cutscene_pending = false
-	if save_manager.current_location_id != "kitchen" or transitioning or kate_cutscene_played:
-		return
-	var player := get_tree().current_scene.get_node("Player") as CharacterBody3D
-	var was_physics_processing := player.is_physics_processing()
-	var was_input_processing := player.is_processing_unhandled_input()
-	player.set_physics_process(false)
-	player.set_process_unhandled_input(false)
-	player.velocity = Vector3.ZERO
-	await _after_visual_transition_reveal(player)
-	player.set_physics_process(was_physics_processing)
-	player.set_process_unhandled_input(was_input_processing)
 
 
 func _after_visual_transition_reveal(player: CharacterBody3D) -> void:

@@ -35,7 +35,6 @@
 [ext_resource type="Script" uid="uid://wxiqca4vor6c" path="res://scripts/tutorial.gd" id="32_tutorial"]
 [ext_resource type="PackedScene" uid="uid://o624yhsqsgsg" path="res://assets/models/labDoor.glb" id="33_j8jky"]
 [ext_resource type="Script" uid="uid://bo1crb0td3ch4" path="res://scripts/wake_cutscene.gd" id="33_wake_cutscene"]
-[ext_resource type="Script" uid="uid://djsilhiyv7a0x" path="res://scripts/level_checkpoint.gd" id="35_j8jky"]
 [ext_resource type="PackedScene" uid="uid://cf4gnrq2fm0mr" path="res://assets/materials/animations/scientist.glb" id="36_fuf3a"]
 [ext_resource type="Script" uid="uid://h1h8wrp8phm8" path="res://scripts/scientist.gd" id="37_pibwh"]
 [ext_resource type="PackedScene" uid="uid://21oi0om8u5ys" path="res://assets/models/slideLevelStructure.glb" id="39_0loja"]
@@ -60,6 +59,7 @@
 [ext_resource type="Script" path="res://scripts/location_teleport_trigger.gd" id="51_city_entrance"]
 [ext_resource type="Script" path="res://scripts/memory_city_journey.gd" id="52_memory_journey"]
 [ext_resource type="PackedScene" path="res://scenes/memory_city_path.tscn" id="53_memory_path"]
+[ext_resource type="Script" path="res://scripts/pit_fall_teleporter.gd" id="54_pit_teleporter"]
 
 [sub_resource type="BoxShape3D" id="RoomFloorShape"]
 size = Vector3(18, 0.2, 32)
@@ -429,11 +429,14 @@ size = Vector3(2, 3, 8)
 [sub_resource type="BoxShape3D" id="BoxShape3D_chjal"]
 size = Vector3(2, 3, 8)
 
-[sub_resource type="BoxShape3D" id="PuzzleRoomCheckpointShape"]
+[sub_resource type="BoxShape3D" id="PuzzleRoomProgressShape"]
 size = Vector3(18, 3, 16)
 
-[sub_resource type="BoxShape3D" id="Room6CheckpointShape"]
+[sub_resource type="BoxShape3D" id="Room6ProgressShape"]
 size = Vector3(2, 3, 8)
+
+[sub_resource type="BoxShape3D" id="SecondRoomPitReturnShape"]
+size = Vector3(20, 0.5, 58)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ids8r"]
 size = Vector3(13.470791, 0.37890625, 1.0517578)
@@ -3091,78 +3094,67 @@ transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 115, 0.9
 [node name="StartRoomAnchor" type="Marker3D" parent="." unique_id=2041480703 groups=["swap_room_anchor"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 169, 0, 180)
 
-[node name="LevelCheckpoints" type="Node3D" parent="." unique_id=540498410]
+[node name="RoomProgressTriggers" type="Node3D" parent="." unique_id=540498410]
 
-[node name="Level1Checkpoint" type="Area3D" parent="LevelCheckpoints" unique_id=983535690 groups=["swap_room_anchor"]]
+[node name="Room1Progress" type="Area3D" parent="RoomProgressTriggers" unique_id=983535690 groups=["swap_room_anchor"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 151, 1.5, 180)
 collision_layer = 0
 collision_mask = 3
-script = ExtResource("35_j8jky")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/Level1Checkpoint" unique_id=529709638]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RoomProgressTriggers/Room1Progress" unique_id=529709638]
 shape = SubResource("BoxShape3D_5he1u")
 
-[node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/Level1Checkpoint" unique_id=7813662]
-transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
-
-[node name="Level2Checkpoint" type="Area3D" parent="LevelCheckpoints" unique_id=1259052853 groups=["swap_room_anchor"]]
+[node name="Room2Progress" type="Area3D" parent="RoomProgressTriggers" unique_id=1259052853 groups=["swap_room_anchor"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 133, 1.5, 180)
 collision_layer = 0
 collision_mask = 3
-script = ExtResource("35_j8jky")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/Level2Checkpoint" unique_id=1838546307]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RoomProgressTriggers/Room2Progress" unique_id=1838546307]
 shape = SubResource("BoxShape3D_5poiv")
 
-[node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/Level2Checkpoint" unique_id=807021569]
-transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
-
-[node name="Level3Checkpoint" type="Area3D" parent="LevelCheckpoints" unique_id=1667449562 groups=["swap_room_anchor"]]
+[node name="Room3Progress" type="Area3D" parent="RoomProgressTriggers" unique_id=1667449562 groups=["swap_room_anchor"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 115, 1.5, 180)
 collision_layer = 0
 collision_mask = 3
-script = ExtResource("35_j8jky")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/Level3Checkpoint" unique_id=426440603]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RoomProgressTriggers/Room3Progress" unique_id=426440603]
 shape = SubResource("BoxShape3D_2cjbq")
 
-[node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/Level3Checkpoint" unique_id=925194398]
-transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
-
-[node name="Level4Checkpoint" type="Area3D" parent="LevelCheckpoints" unique_id=1626471330 groups=["swap_room_anchor"]]
+[node name="Room4Progress" type="Area3D" parent="RoomProgressTriggers" unique_id=1626471330 groups=["swap_room_anchor"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 97, 1.5, 179)
 collision_layer = 0
 collision_mask = 3
-script = ExtResource("35_j8jky")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/Level4Checkpoint" unique_id=1729734908]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RoomProgressTriggers/Room4Progress" unique_id=1729734908]
 shape = SubResource("BoxShape3D_chjal")
 
-[node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/Level4Checkpoint" unique_id=600734842]
-transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
-
-[node name="PuzzleRoomCheckpoint" type="Area3D" parent="LevelCheckpoints" unique_id=1404486789 groups=["swap_room_anchor"]]
+[node name="PuzzleRoomProgress" type="Area3D" parent="RoomProgressTriggers" unique_id=1404486789 groups=["swap_room_anchor"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 73.5, 1.5, 179.2)
 collision_layer = 0
 collision_mask = 3
-script = ExtResource("35_j8jky")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/PuzzleRoomCheckpoint" unique_id=316490265]
-shape = SubResource("PuzzleRoomCheckpointShape")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RoomProgressTriggers/PuzzleRoomProgress" unique_id=316490265]
+shape = SubResource("PuzzleRoomProgressShape")
 
-[node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/PuzzleRoomCheckpoint" unique_id=7206880]
-transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
-
-[node name="Level6Checkpoint" type="Area3D" parent="LevelCheckpoints" groups=["swap_room_anchor"]]
+[node name="Room6Progress" type="Area3D" parent="RoomProgressTriggers" groups=["swap_room_anchor"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 62, 1.5, 180)
 collision_layer = 0
-script = ExtResource("35_j8jky")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/Level6Checkpoint"]
-shape = SubResource("Room6CheckpointShape")
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RoomProgressTriggers/Room6Progress"]
+shape = SubResource("Room6ProgressShape")
 
-[node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/Level6Checkpoint"]
-transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
+[node name="PitSafePosition" type="Marker3D" parent="."]
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 151.5, 0.92, 179.19)
+
+[node name="SecondRoomPitReturn" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 144.5, -0.3, 175)
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("54_pit_teleporter")
+safe_position = NodePath("../PitSafePosition")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SecondRoomPitReturn"]
+shape = SubResource("SecondRoomPitReturnShape")
 
 [node name="scientist" parent="." unique_id=2089029073 instance=ExtResource("36_fuf3a")]
 transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 161.70422, 0.0017670757, 187.98111)

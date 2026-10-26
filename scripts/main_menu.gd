@@ -14,7 +14,6 @@ const MUSIC_AUDIO_BUS := "Music"
 const SFX_AUDIO_BUS := "SFX"
 const FOOTSTEP_AUDIO_BUS := "FootstepsFiltered"
 const JUMP_AUDIO_BUS := "JumpFiltered"
-const SETTINGS_PATH := "user://audio_settings.cfg"
 const GAME_MUSIC_VOLUME_DB := -24.0
 const FLASHBACK_MUSIC_VOLUME_DB := -22.0
 const MENU_MUSIC_VOLUME_DB := -12.0
@@ -47,7 +46,6 @@ var _game_music_old_player: AudioStreamPlayer
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	_load_audio_settings()
 	_configure_audio_buses()
 	_route_existing_audio_players(get_tree().root)
 	get_tree().node_added.connect(_route_audio_player)
@@ -132,18 +130,6 @@ func _route_audio_player(node: Node) -> void:
 		node.bus = JUMP_AUDIO_BUS
 	else:
 		node.bus = SFX_AUDIO_BUS
-
-func _load_audio_settings() -> void:
-	var settings := ConfigFile.new()
-	if settings.load(SETTINGS_PATH) == OK:
-		music_volume_percent = clampf(float(settings.get_value("audio", "music", 100.0)), 0.0, 100.0)
-		sfx_volume_percent = clampf(float(settings.get_value("audio", "sfx", 100.0)), 0.0, 100.0)
-
-func _save_audio_settings() -> void:
-	var settings := ConfigFile.new()
-	settings.set_value("audio", "music", music_volume_percent)
-	settings.set_value("audio", "sfx", sfx_volume_percent)
-	settings.save(SETTINGS_PATH)
 
 func _apply_audio_volumes() -> void:
 	var music_bus_index := AudioServer.get_bus_index(MUSIC_AUDIO_BUS)
@@ -385,10 +371,6 @@ func _show_main_menu() -> void:
 	_add_label("Похоже, этот мир снова нуждается в паре правок.", MUTED_COLOR, 15)
 	_add_spacer(12)
 	_add_button("Новая игра", _on_new_game_pressed, true)
-	var continue_button := _add_button("Продолжить", _on_continue_pressed)
-	continue_button.disabled = not get_node("/root/SaveManager").has_valid_checkpoint()
-	if continue_button.disabled:
-		continue_button.modulate = Color(0.55, 0.58, 0.55, 0.62)
 	_add_button("Настройки", _show_settings)
 	_add_button("Разработчики", _show_developers)
 	_add_button("Выйти", _on_quit_pressed)
@@ -423,12 +405,10 @@ func _show_settings() -> void:
 func _on_music_volume_changed(value: float) -> void:
 	music_volume_percent = value
 	_apply_audio_volumes()
-	_save_audio_settings()
 
 func _on_sfx_volume_changed(value: float) -> void:
 	sfx_volume_percent = value
 	_apply_audio_volumes()
-	_save_audio_settings()
 
 func _show_pause_menu() -> void:
 	var player := get_tree().current_scene.find_child("Player", true, false)
@@ -445,8 +425,6 @@ func _show_pause_menu() -> void:
 	_add_title("Игра приостановлена")
 	_add_button("Продолжить", _resume_game, true)
 	_add_button("Настройки", _show_pause_settings)
-	var checkpoint_button := _add_button("Вернуться на точку сохранения", _return_to_checkpoint)
-	checkpoint_button.disabled = player != null and (player.has_meta("location_transition_active") or player.has_meta("cutscene_active"))
 	_add_button("Выйти в главное меню", _return_to_main_menu)
 
 func _show_pause_settings() -> void:
@@ -467,16 +445,8 @@ func _resume_game() -> void:
 		if player != null:
 			player.gameplay_action.emit(&"pause_resume")
 
-func _return_to_checkpoint() -> void:
-	var player := get_tree().current_scene.find_child("Player", true, false)
-	if player != null and (player.has_meta("location_transition_active") or player.has_meta("cutscene_active")):
-		return
-	if player != null and player.has_method("return_to_checkpoint"):
-		player.return_to_checkpoint()
-	_resume_game()
-
 func _return_to_main_menu() -> void:
-	# Recreate scene state too: overlays, route state, items and checkpoints.
+	# Restart the scene and its runtime state.
 	get_tree().reload_current_scene()
 
 func _show_developers() -> void:
@@ -496,23 +466,10 @@ func _on_new_game_pressed() -> void:
 		return
 	var player := get_tree().current_scene.find_child("Player", true, false) as CharacterBody3D
 	if player != null:
-		get_node("/root/SaveManager").start_new_game(player)
 		var tutorial := get_tree().current_scene.find_child("Tutorial", true, false)
 		if tutorial != null and tutorial.has_method("restart"):
 			tutorial.restart()
 	start_with_cutscene = true
-	_begin_game_start()
-
-func _on_continue_pressed() -> void:
-	if starting_game or not get_node("/root/SaveManager").has_valid_checkpoint():
-		return
-	var player := get_tree().current_scene.find_child("Player", true, false) as CharacterBody3D
-	if player == null or not get_node("/root/SaveManager").restore_player(player):
-		return
-	var tutorial := get_tree().current_scene.find_child("Tutorial", true, false)
-	if tutorial != null and tutorial.has_method("complete"):
-		tutorial.complete()
-	start_with_cutscene = false
 	_begin_game_start()
 
 func _begin_game_start() -> void:

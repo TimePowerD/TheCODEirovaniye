@@ -84,6 +84,8 @@ func _return_to_laboratory() -> void:
 	if tutorial != null and tutorial.has_method("seal_all_tutorial_doors"):
 		tutorial.call("seal_all_tutorial_doors")
 	await super._on_exit(player, false)
+	if tutorial != null and tutorial.has_method("resume_after_forest_flashback"):
+		tutorial.call("resume_after_forest_flashback")
 	var menu := get_node_or_null("../MainMenu")
 	if menu != null and menu.has_method("end_flashback_music"):
 		menu.call("end_flashback_music")
@@ -124,7 +126,7 @@ func _enter_flashback_state() -> void:
 	player.flashback_speed_multiplier = FLASHBACK_SPEED_MULTIPLIER
 	var tutorial := get_node_or_null("../Tutorial")
 	if tutorial != null and tutorial.has_method("set_flashback_objective"):
-		tutorial.call("set_flashback_objective", "Вернуться домой")
+		tutorial.call("set_flashback_objective", "Мне нужно вернуться домой.")
 
 func _set_forest_active(active: bool) -> void:
 	city_room.visible = active

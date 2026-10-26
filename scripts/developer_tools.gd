@@ -304,24 +304,21 @@ func _refresh_location_list() -> void:
 	location_picker.clear()
 	trigger_destination_picker.clear()
 	var scene := get_tree().current_scene
-	var save_manager := get_node("/root/SaveManager")
-	_add_location("Лаборатория — место появления", "laboratory", save_manager.initial_player_transform)
+	var location_state := get_node("/root/LocationState")
+	_add_location("Лаборатория — место появления", "laboratory", location_state.initial_player_transform)
 	var transition_arrival := scene.get_node_or_null("LocationTransition/LaboratoryArrival") as Node3D
 	_add_marker_location("Комната переходов", "transition_room", transition_arrival)
-	var checkpoint_names := [
-		["Level1Checkpoint", "Лаборатория — комната 1"],
-		["Level2Checkpoint", "Лаборатория — комната 2"],
-		["Level3Checkpoint", "Лаборатория — комната 3"],
-		["Level4Checkpoint", "Лаборатория — комната 4"],
-		["PuzzleRoomCheckpoint", "Лаборатория — комната с плитой"],
-		["Level6Checkpoint", "Лаборатория — комната 6"],
+	var room_names := [
+		["Room1Progress", "Лаборатория — комната 1"],
+		["Room2Progress", "Лаборатория — комната 2"],
+		["Room3Progress", "Лаборатория — комната 3"],
+		["Room4Progress", "Лаборатория — комната 4"],
+		["PuzzleRoomProgress", "Лаборатория — комната с плитой"],
+		["Room6Progress", "Лаборатория — комната 6"],
 	]
-	for checkpoint_info in checkpoint_names:
-		var checkpoint := scene.find_child(str(checkpoint_info[0]), true, false)
-		var spawn: Node3D
-		if checkpoint != null:
-			spawn = checkpoint.get_node_or_null("SpawnPoint") as Node3D
-		_add_marker_location(str(checkpoint_info[1]), "laboratory", spawn)
+	for room_info in room_names:
+		var room_area := scene.find_child(str(room_info[0]), true, false)
+		_add_marker_location(str(room_info[1]), "laboratory", room_area as Node3D)
 	_add_room_location(scene, "CityRoom", "Город", "city")
 	_add_room_location(scene, "FlashbackRoom", "Город воспоминаний", "flashback")
 	_add_room_location(scene, "ForestRoom", "Лес", "forest")
@@ -370,9 +367,7 @@ func _teleport_to_location(location_id: String, destination: Transform3D) -> voi
 	player.global_transform = destination
 	player.camera_pivot.rotation = Vector3.ZERO
 	player.reset_physics_interpolation()
-	var save_manager := get_node("/root/SaveManager")
-	save_manager.save_player_checkpoint(player, "developer_%s" % location_id, location_id, destination)
-	save_manager.checkpoint_restored.emit(location_id)
+	get_node("/root/LocationState").set_current_location(location_id)
 
 func _location_action_blocked() -> bool:
 	return get_tree().paused or player.has_meta("location_transition_active") \
