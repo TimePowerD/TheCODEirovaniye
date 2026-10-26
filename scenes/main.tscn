@@ -48,7 +48,7 @@
 [ext_resource type="PackedScene" uid="uid://udvihqsuujdp" path="res://assets/models/labWallFinalLevel.glb" id="42_kf5aa"]
 [ext_resource type="PackedScene" path="res://scenes/weather_panel.tscn" id="42_weather_panel"]
 [ext_resource type="PackedScene" uid="uid://cqf48e1e6c5hy" path="res://assets/models/obstanowkadoma/Models/GLTF format/bedSingle.glb" id="43_chjal"]
-[ext_resource type="Environment" path="res://assets/environments/laboratory.tres" id="43_laboratory_environment"]
+[ext_resource type="Environment" uid="uid://bfaxfhrkat7ox" path="res://assets/environments/laboratory.tres" id="43_laboratory_environment"]
 [ext_resource type="PackedScene" uid="uid://rsf31uy0pkiv" path="res://assets/models/ventObject.glb" id="43_t5ykj"]
 [ext_resource type="PackedScene" path="res://scenes/kitchen_transition_trigger.tscn" id="44_e755i"]
 [ext_resource type="PackedScene" path="res://scenes/forest_room.tscn" id="44_forest"]
@@ -129,6 +129,7 @@ height = 2.4
 radius = 0.7
 
 [sub_resource type="BoxShape3D" id="BoxShape_small"]
+size = Vector3(0.5842285, 0.5839844, 0.5776367)
 
 [sub_resource type="BoxShape3D" id="PuzzleExitDoorShape"]
 size = Vector3(0.55, 2.8, 2.03)
@@ -1351,7 +1352,7 @@ metadata/_godot_ai_physics_v1 = {
 }
 
 [node name="Wall1x20" parent="LabModuleLibrary/Walls" index="27" unique_id=1374623767 instance=ExtResource("7_wall")]
-transform = Transform3D(-2.1855693e-07, 0, 1, 0, 1, 0, -1, 0, -2.1855693e-07, -2, 0, 179.19165)
+transform = Transform3D(-2.1855575e-07, -0.0032818257, 0.99999464, -7.1726575e-10, 0.99999464, 0.0032818257, -1, 0, -2.1855693e-07, -2, 0, 179.19165)
 
 [node name="labWall1x1Collider" type="StaticBody3D" parent="LabModuleLibrary/Walls/Wall1x20" unique_id=242893602]
 metadata/_godot_ai_physics_v1 = {
@@ -2103,7 +2104,7 @@ fade_in_duration = 2.8
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 24)
 
 [node name="FloorEntrance" parent="LabModuleLibrary/Floors" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 155.19165)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9992218, -0.006551981, 155.25224)
 
 [node name="labFloor2x1entrCollider" type="StaticBody3D" parent="LabModuleLibrary/Floors/FloorEntrance" index="1" unique_id=764633791]
 metadata/_godot_ai_physics_v1 = {
@@ -3003,15 +3004,63 @@ transform = Transform3D(-1.2807438e-07, 0, -2.93, 0, 2.93, 0, 2.93, 0, -1.280743
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 210, 0, 150)
 
 [node name="LaboratoryAreaLight" type="AreaLight3D" parent="." unique_id=278609899]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 163.6539, 7.693673, 180)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 167.60944, 4.5, 183.80627)
 light_color = Color(1, 0.9411765, 0.84705883, 1)
 light_energy = 2.0
 area_range = 10.5
 area_attenuation = 1.5
-area_size = Vector2(5, 3)
+area_size = Vector2(5, 3.2234802)
+
+[node name="LaboratoryAreaLight4" type="AreaLight3D" parent="." unique_id=1302798152]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 159.40775, 4.5, 183.80627)
+light_color = Color(1, 0.9411765, 0.84705883, 1)
+light_energy = 2.0
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3.2234802)
+
+[node name="LaboratoryAreaLight3" type="AreaLight3D" parent="." unique_id=1330009443]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 167.60944, 4.5, 174.80386)
+light_color = Color(1, 0.9411765, 0.84705883, 1)
+light_energy = 2.0
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3.2234802)
+
+[node name="LaboratoryAreaLight2" type="AreaLight3D" parent="." unique_id=1788467386]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 159.27304, 4.5, 174.51706)
+light_color = Color(1, 0.9411765, 0.84705883, 1)
+light_energy = 2.0
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(4.822815, 3.2234802)
 
 [node name="Room1Light" type="AreaLight3D" parent="." unique_id=1662649966]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 149, 4.5, 180)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 149, 4.5, 182.63379)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room1Light3" type="AreaLight3D" parent="." unique_id=706014715]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 141.81105, 4.5, 182.63379)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room1Light2" type="AreaLight3D" parent="." unique_id=223284747]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 149, 4.5, 175.99316)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room1Light4" type="AreaLight3D" parent="." unique_id=1077295212]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 141.98544, 4.5, 175.99316)
 light_color = Color(0.8862745, 0.91764706, 1, 1)
 light_energy = 1.8
 area_range = 10.5
@@ -3019,7 +3068,31 @@ area_attenuation = 1.5
 area_size = Vector2(5, 3)
 
 [node name="Room2Light" type="AreaLight3D" parent="." unique_id=1391160706]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 131, 4.5, 180)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 131, 4.5, 182.56853)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room2Light3" type="AreaLight3D" parent="." unique_id=1831620212]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 124.072426, 4.5, 182.56853)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room2Light4" type="AreaLight3D" parent="." unique_id=1773555947]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 124.072426, 4.5, 175.48308)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room2Light2" type="AreaLight3D" parent="." unique_id=623026345]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 131, 4.5, 175.26775)
 light_color = Color(0.8862745, 0.91764706, 1, 1)
 light_energy = 1.8
 area_range = 10.5
@@ -3027,7 +3100,31 @@ area_attenuation = 1.5
 area_size = Vector2(5, 3)
 
 [node name="Room3Light" type="AreaLight3D" parent="." unique_id=1557316883]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 113, 4.5, 180)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 113, 4.5, 182.48709)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room3Light3" type="AreaLight3D" parent="." unique_id=123962887]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 106.40162, 4.5, 182.48709)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room3Light4" type="AreaLight3D" parent="." unique_id=445824450]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 106.40162, 4.5, 176.22902)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room3Light2" type="AreaLight3D" parent="." unique_id=183685162]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 113, 4.5, 175.55988)
 light_color = Color(0.8862745, 0.91764706, 1, 1)
 light_energy = 1.8
 area_range = 10.5
@@ -3042,8 +3139,72 @@ area_range = 10.5
 area_attenuation = 1.5
 area_size = Vector2(5, 3)
 
+[node name="Room4Light2" type="AreaLight3D" parent="." unique_id=193679393]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 86.55585, 4.5, 180)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room4Light3" type="AreaLight3D" parent="." unique_id=1605925091]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 86.55585, 4.5, 158.00557)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room4Light4" type="AreaLight3D" parent="." unique_id=747579244]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 95.36992, 4.5, 158.00557)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room4Light5" type="AreaLight3D" parent="." unique_id=1371493318]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 95.36992, 4.5, 166.7551)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room4Light6" type="AreaLight3D" parent="." unique_id=1274741435]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 88.0218, 4.5, 166.7551)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
 [node name="Room5Light" type="AreaLight3D" parent="." unique_id=1207842579]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 73.5, 7.9372025, 180)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 78.30621, 6.763082, 172.47525)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room5Light4" type="AreaLight3D" parent="." unique_id=1457968615]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 66.96838, 6.763082, 172.47525)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room5Light3" type="AreaLight3D" parent="." unique_id=449672289]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 77.31441, 4.5, 184.69249)
+light_color = Color(0.8862745, 0.91764706, 1, 1)
+light_energy = 1.8
+area_range = 10.5
+area_attenuation = 1.5
+area_size = Vector2(5, 3)
+
+[node name="Room5Light2" type="AreaLight3D" parent="." unique_id=967677372]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 68.18375, 4.5, 184.68625)
 light_color = Color(0.8862745, 0.91764706, 1, 1)
 light_energy = 1.8
 area_range = 10.5

@@ -1,7 +1,4 @@
-[gd_resource type="Environment" format=3]
+[gd_resource type="Environment" format=3 uid="uid://bfaxfhrkat7ox"]
 
 [resource]
-# Keep the laboratory's unlit areas black. Source 0 follows the background
-# clear color and adds ambient fill; use the explicit disabled mode instead.
-background_mode = 0
 ambient_light_source = 1

@@ -6,6 +6,7 @@ enum Weather { SUNNY, EVENING, OVERCAST, STORM }
 enum TimeOfDay { DAY, EVENING, NIGHT }
 const PRESETS = [preload("res://shaders/presets/sunny.tres"), preload("res://shaders/presets/evening.tres"), preload("res://shaders/presets/overcast.tres"), preload("res://shaders/presets/storm.tres")]
 const NIGHT_PRESET = preload("res://shaders/presets/night.tres")
+const WEATHER_AUDIO = preload("res://scripts/weather_audio.gd")
 const BLEND_DURATION := 1.5
 @export var street: Node3D
 @export var transition: Node
@@ -203,7 +204,7 @@ func _cancel_storm() -> void:
 func _update_audio() -> void:
 	var audible := in_street and rain_strength > 0.001
 	if audible:
-		rain_sound.volume_db = linear_to_db(rain_strength * 0.35)
+		rain_sound.volume_db = linear_to_db(rain_strength * (0.35 / 3.0))
 		if not rain_sound.playing:
 			rain_sound.play()
 	else:
@@ -301,40 +302,13 @@ func _build_audio() -> void:
 	# Fixed seeds keep generated sounds reproducible and independent of weather timing.
 	rain_sound = AudioStreamPlayer.new()
 	rain_sound.name = "RainSound"
-	rain_sound.stream = _synthesize_sound(true)
+	rain_sound.stream = WEATHER_AUDIO.synthesize_sound(true)
 	add_child(rain_sound)
 	thunder_sound = AudioStreamPlayer.new()
 	thunder_sound.name = "ThunderSound"
-	thunder_sound.stream = _synthesize_sound(false)
+	thunder_sound.stream = WEATHER_AUDIO.synthesize_sound(false)
 	thunder_sound.volume_db = -7.0
 	add_child(thunder_sound)
-
-func _synthesize_sound(looped: bool) -> AudioStreamWAV:
-	var sound := AudioStreamWAV.new()
-	sound.format = AudioStreamWAV.FORMAT_16_BITS
-	sound.mix_rate = 22050
-	var count := 22050 * (4 if looped else 5)
-	var samples := PackedByteArray()
-	samples.resize(count * 2)
-	var noise := RandomNumberGenerator.new()
-	noise.seed = 9471 if looped else 29731
-	var low := 0.0
-	for i in range(count):
-		var n := noise.randf_range(-1, 1)
-		low = lerpf(low, n, 0.025)
-		var t := float(i) / 22050.0
-		var value := n * 0.3 + low * 0.65
-		if not looped:
-			value = (low * 3.0 + sin(t * 42.0) * 0.12) * minf(t * 8.0, 1.0) * exp(-t * 0.9)
-		else:
-			# A short fade on the loop seam avoids a click.
-			value *= minf(1.0, minf(t, 4.0 - t) * 40.0)
-		samples.encode_s16(i * 2, int(clampf(value, -1, 1) * 25000))
-	sound.data = samples
-	if looped:
-		sound.loop_mode = AudioStreamWAV.LOOP_FORWARD
-		sound.loop_end = count
-	return sound
 
 func _exit_tree() -> void:
 	if rain_sound != null:
