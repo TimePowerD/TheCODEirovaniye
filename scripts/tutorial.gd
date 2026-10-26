@@ -8,6 +8,7 @@ const DOOR_ANIMATION_DURATION := 0.9
 const NEXT_ROOM_TASK := "Пройдите в следующую комнату."
 const FINAL_TASK := "Пройдите лабораторию."
 const FINAL_SUBTITLE_DURATION := 5.0
+const DOOR_OPEN_STREAM := preload("res://assets/audio/final sounds/lab_door_open.ogg")
 const DIALOGUES := [
 	"Привет. Теперь ты зомби. Попробуй подвигаться с помощью WASD.",
 	"Теперь пройди в следующую комнату.",
@@ -41,6 +42,7 @@ var final_subtitle_remaining := 0.0
 var door_closed_positions: Array[Vector3] = []
 var door_body_closed_positions: Array[Vector3] = []
 var door_bodies: Array[AnimatableBody3D] = []
+var door_open_sounds: Array[AudioStreamPlayer3D] = []
 var door_tweens: Dictionary = {}
 var tutorial_panel: PanelContainer
 var tutorial_label: Label
@@ -57,6 +59,14 @@ func _ready() -> void:
 		var door_body := door.get_node("DoorCollisionBody") as AnimatableBody3D
 		door_bodies.append(door_body)
 		door_body_closed_positions.append(door_body.global_position)
+		var sound_player := AudioStreamPlayer3D.new()
+		sound_player.name = "DoorOpenSound"
+		sound_player.stream = DOOR_OPEN_STREAM
+		sound_player.volume_db = 0.0
+		sound_player.pitch_scale = 1.0
+		sound_player.max_distance = 24.0
+		door.add_child(sound_player)
+		door_open_sounds.append(sound_player)
 	player.gameplay_action.connect(_on_gameplay_action)
 	button_sensor.pressed.connect(_on_button_pressed)
 	button_sensor.released.connect(_on_button_released)
@@ -163,6 +173,8 @@ func _set_door_open(index: int, should_open: bool) -> void:
 	if index >= doors.size() or not is_instance_valid(doors[index]):
 		return
 	var door := doors[index]
+	if should_open and index < door_open_sounds.size():
+		door_open_sounds[index].play()
 	var target_position := door_closed_positions[index]
 	var target_body_position := door_body_closed_positions[index]
 	if should_open:
