@@ -3089,12 +3089,12 @@ shape = SubResource("ForestExitShape")
 transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 115, 0.92, 180)
 
 [node name="StartRoomAnchor" type="Marker3D" parent="." unique_id=2041480703 groups=["swap_room_anchor"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 169, 0, 180)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 163.692, 0, 180)
 
 [node name="LevelCheckpoints" type="Node3D" parent="." unique_id=540498410]
 
 [node name="Level1Checkpoint" type="Area3D" parent="LevelCheckpoints" unique_id=983535690 groups=["swap_room_anchor"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 151, 1.5, 180)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 145.692, 1.5, 180)
 collision_layer = 0
 collision_mask = 3
 script = ExtResource("35_j8jky")
@@ -3106,7 +3106,7 @@ shape = SubResource("BoxShape3D_5he1u")
 transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
 
 [node name="Level2Checkpoint" type="Area3D" parent="LevelCheckpoints" unique_id=1259052853 groups=["swap_room_anchor"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 133, 1.5, 180)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 127.692, 1.5, 180)
 collision_layer = 0
 collision_mask = 3
 script = ExtResource("35_j8jky")
@@ -3118,7 +3118,7 @@ shape = SubResource("BoxShape3D_5poiv")
 transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
 
 [node name="Level3Checkpoint" type="Area3D" parent="LevelCheckpoints" unique_id=1667449562 groups=["swap_room_anchor"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 115, 1.5, 180)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 109.692, 1.5, 180)
 collision_layer = 0
 collision_mask = 3
 script = ExtResource("35_j8jky")
@@ -3130,7 +3130,7 @@ shape = SubResource("BoxShape3D_2cjbq")
 transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
 
 [node name="Level4Checkpoint" type="Area3D" parent="LevelCheckpoints" unique_id=1626471330 groups=["swap_room_anchor"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 97, 1.5, 179)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 91.692, 1.5, 180)
 collision_layer = 0
 collision_mask = 3
 script = ExtResource("35_j8jky")
@@ -3142,7 +3142,7 @@ shape = SubResource("BoxShape3D_chjal")
 transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
 
 [node name="PuzzleRoomCheckpoint" type="Area3D" parent="LevelCheckpoints" unique_id=1404486789 groups=["swap_room_anchor"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 73.5, 1.5, 179.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 73.692, 1.5, 180)
 collision_layer = 0
 collision_mask = 3
 script = ExtResource("35_j8jky")
@@ -3153,7 +3153,16 @@ shape = SubResource("PuzzleRoomCheckpointShape")
 [node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/PuzzleRoomCheckpoint" unique_id=7206880]
 transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
 
-[node name="Level6Checkpoint" type="Area3D" parent="LevelCheckpoints" groups=["swap_room_anchor"]]
+[node name="FinalLabRoomAnchor" type="Marker3D" parent="." groups=["swap_room_anchor"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.675, 0, 180)
+
+[node name="PostDoorLabRoomAnchor" type="Marker3D" parent="." groups=["swap_room_anchor"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.675, 0, 180)
+
+[node name="LongLabRoomAnchor" type="Marker3D" parent="." groups=["swap_room_anchor"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 48.6835, 0, 180)
+
+[node name="Level6Checkpoint" type="Area3D" parent="LevelCheckpoints"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 62, 1.5, 180)
 collision_layer = 0
 script = ExtResource("35_j8jky")

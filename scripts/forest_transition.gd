@@ -10,6 +10,7 @@ const FOREST_AMBIENCE_STREAM: AudioStreamOggVorbis = preload("res://assets/audio
 const WEATHER_AUDIO = preload("res://scripts/weather_audio.gd")
 
 @onready var forest_sun: DirectionalLight3D = city_room.get_node("ForestSun") as DirectionalLight3D
+@onready var forest_return_area: Area3D = city_room.get_node("ReturnArea") as Area3D
 
 var flashback_started := false
 var flashback_active := false
@@ -19,6 +20,7 @@ var rain_particles: GPUParticles3D
 var heartbeat_player: AudioStreamPlayer
 var forest_ambience: AudioStreamPlayer
 var forest_rain_sound: AudioStreamPlayer
+var slowdown_tween: Tween
 
 func _ready() -> void:
 	destination_environment = _make_night_environment(destination_environment)
@@ -54,17 +56,38 @@ func _process(_delta: float) -> void:
 		rain_particles.global_position = player.global_position + Vector3(0.0, 10.0, 0.0)
 
 func _on_exit(body: Node3D, to_city: bool) -> void:
-	if body != player or not to_city or flashback_started or flashback_sequence_active \
+	if body != player:
+		return
+	if not to_city:
+		if in_city and not flashback_completed and not flashback_sequence_active:
+			await _return_to_laboratory()
+		return
+	if in_city or flashback_started or flashback_sequence_active \
 		or transitioning or player.swap_in_progress or player.has_meta("location_transition_active") \
 		or player.has_meta("cutscene_active") or player.has_meta("developer_tools_open"):
 		return
 	flashback_started = true
 	flashback_sequence_active = true
-	await _pulse_and_slow()
+	player.set_meta("location_transition_active", true)
+	_start_flashback_prelude()
+	# The base transition takes over the reservation immediately and starts the
+	# screen fade while the slowdown and flashback audio begin.
+	player.remove_meta("location_transition_active")
 	await super._on_exit(body, true)
 	flashback_sequence_active = false
 	if not is_inside_tree() or not in_city:
-		player.flashback_speed_multiplier = 1.0
+		if is_instance_valid(player):
+			_stop_slowdown()
+			player.flashback_speed_multiplier = 1.0
+			player.set_physics_process(true)
+			player.set_process_unhandled_input(true)
+			player.remove_meta("location_transition_active")
+		if is_instance_valid(fade_material):
+			fade_material.set_shader_parameter("darkness", 0.0)
+			fade_material.set_shader_parameter("blur_amount", 0.0)
+		if is_instance_valid(veil):
+			veil.hide()
+		flashback_started = false
 		return
 	_enter_flashback_state()
 	await get_tree().create_timer(FLASHBACK_DURATION).timeout
@@ -78,50 +101,75 @@ func _run_restored_flashback() -> void:
 		await _return_to_laboratory()
 
 func _return_to_laboratory() -> void:
+	if not is_inside_tree() or not is_instance_valid(player) or not in_city \
+		or flashback_completed or flashback_sequence_active or transitioning:
+		return
 	flashback_sequence_active = true
-	await _pulse_and_slow()
+	while is_inside_tree() and is_instance_valid(player) and in_city \
+		and (player.swap_in_progress or player.has_meta("location_transition_active") \
+		or player.has_meta("cutscene_active") or player.has_meta("developer_tools_open")):
+		await get_tree().create_timer(0.1, false).timeout
+	if not is_inside_tree() or not is_instance_valid(player) or not in_city:
+		flashback_sequence_active = false
+		return
+	_start_slowdown()
 	var tutorial := get_node_or_null("../Tutorial")
 	if tutorial != null and tutorial.has_method("seal_all_tutorial_doors"):
 		tutorial.call("seal_all_tutorial_doors")
 	await super._on_exit(player, false)
+	flashback_sequence_active = false
+	if not is_inside_tree() or not is_instance_valid(player):
+		return
+	if in_city:
+		# The transition was rejected; restore the flashback state so the player
+		# can retry instead of leaving the slowdown and blur stuck on screen.
+		_stop_slowdown()
+		player.flashback_speed_multiplier = FLASHBACK_SPEED_MULTIPLIER
+		player.set_physics_process(true)
+		player.set_process_unhandled_input(true)
+		player.remove_meta("location_transition_active")
+		if is_instance_valid(fade_material):
+			fade_material.set_shader_parameter("darkness", 0.0)
+			fade_material.set_shader_parameter("blur_amount", 0.0)
+		if is_instance_valid(veil):
+			veil.hide()
+		forest_return_area.set_deferred("monitoring", true)
+		return
 	var menu := get_node_or_null("../MainMenu")
 	if menu != null and menu.has_method("end_flashback_music"):
 		menu.call("end_flashback_music")
 	flashback_active = false
-	flashback_sequence_active = false
 	flashback_completed = true
+	_stop_slowdown()
 	player.flashback_speed_multiplier = 1.0
 	if tutorial != null and tutorial.has_method("set_flashback_objective"):
 		tutorial.call("set_flashback_objective", "")
 	$LaboratoryExit.set_deferred("monitoring", false)
+	forest_return_area.set_deferred("monitoring", false)
 
-func _pulse_and_slow() -> void:
-	if in_city:
-		_set_flashback_effect_enabled(false)
-	else:
-		var menu := get_node_or_null("../MainMenu")
-		if menu != null and menu.has_method("begin_flashback_music"):
-			menu.call("begin_flashback_music")
-		call_deferred("_play_first_flashback_heartbeats")
-	veil.show()
-	fade_material.set_shader_parameter("darkness", 0.0)
-	fade_material.set_shader_parameter("blur_amount", 0.0)
-	var speed_tween := create_tween()
-	speed_tween.tween_property(player, "flashback_speed_multiplier", PRELUDE_SPEED_MULTIPLIER, PRELUDE_DURATION) \
+func _start_flashback_prelude() -> void:
+	var menu := get_node_or_null("../MainMenu")
+	if menu != null and menu.has_method("begin_flashback_music"):
+		menu.call("begin_flashback_music")
+	call_deferred("_play_first_flashback_heartbeats")
+	_start_slowdown()
+
+func _start_slowdown() -> void:
+	_stop_slowdown()
+	slowdown_tween = create_tween()
+	slowdown_tween.tween_property(player, "flashback_speed_multiplier", PRELUDE_SPEED_MULTIPLIER, PRELUDE_DURATION) \
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	var blur_tween := create_tween()
-	blur_tween.tween_property(fade_material, "shader_parameter/blur_amount", 0.7, 0.7) \
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	blur_tween.tween_property(fade_material, "shader_parameter/blur_amount", 0.2, 0.65) \
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	blur_tween.tween_property(fade_material, "shader_parameter/blur_amount", 1.0, 0.65) \
-		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	await speed_tween.finished
-	await blur_tween.finished
+
+func _stop_slowdown() -> void:
+	if slowdown_tween != null and slowdown_tween.is_running():
+		slowdown_tween.kill()
+	slowdown_tween = null
 
 func _enter_flashback_state() -> void:
 	flashback_active = true
+	_stop_slowdown()
 	player.flashback_speed_multiplier = FLASHBACK_SPEED_MULTIPLIER
+	forest_return_area.set_deferred("monitoring", true)
 	var tutorial := get_node_or_null("../Tutorial")
 	if tutorial != null and tutorial.has_method("set_flashback_objective"):
 		tutorial.call("set_flashback_objective", "Вернуться домой")

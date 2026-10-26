@@ -160,12 +160,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			else:
 				_release_object()
 	elif event is InputEventKey:
-		if event.keycode == KEY_BACKSPACE and event.pressed and not event.echo and selected_target != null:
-			selected_target = null
-			swap_cycle_index = 0
-			_refresh_outlines()
-			_update_interaction_hint()
-		elif event.keycode == KEY_R:
+		if event.keycode == KEY_R:
 			if not event.echo:
 				_set_rotation_mode(event.pressed)
 		elif event.keycode == KEY_E and not event.echo:
@@ -324,6 +319,7 @@ func _release_object() -> void:
 	held_object = null
 	if was_holding:
 		gameplay_action.emit(&"release_grab")
+		get_node("/root/SaveManager").save_current_world_state()
 
 func _try_pickup_item() -> void:
 	interaction_ray.force_raycast_update()
@@ -435,6 +431,7 @@ func _release_held_item(drop_position: Vector3, drop_basis: Basis, initial_veloc
 	item.freeze = item.get("physics_enabled") != true
 	item.linear_velocity = initial_velocity
 	item.angular_velocity = Vector3.ZERO
+	get_node("/root/SaveManager").save_current_world_state()
 	held_item = null
 	held_item_parent = null
 	e_hold_pending = false
@@ -537,7 +534,7 @@ func _update_interaction_hint() -> void:
 				else:
 					hint_text = "ПКМ — перемещать\nR — вращать"
 	if selected_target != null:
-		hint_text += "\nЛКМ — обменять с объектом под прицелом · Backspace — отменить"
+		hint_text += "\nЛКМ — обменять с объектом под прицелом; повторный клик по выбранному отменяет выбор"
 	interaction_hint.text = hint_text
 	interaction_hint.visible = not hint_text.is_empty()
 
@@ -622,7 +619,9 @@ func _get_item_surface_offset(item: RigidBody3D, item_basis: Basis, surface_norm
 func return_to_checkpoint() -> void:
 	_release_object()
 	_drop_item()
-	get_node("/root/SaveManager").reset_world_to_initial()
+	var save_manager = get_node("/root/SaveManager")
+	save_manager.reset_world_to_initial()
+	save_manager.restore_world_state()
 	global_transform = checkpoint_transform
 	camera_pivot.rotation = checkpoint_camera_rotation
 	velocity = Vector3.ZERO
@@ -860,6 +859,9 @@ func _handle_swap_click() -> void:
 		selected_target = hovered_target
 		gameplay_action.emit(&"select_swap")
 		suppressed_hover_outline = null
+	elif selected_target == hovered_target:
+		selected_target = null
+		swap_cycle_index = 0
 	elif selected_target != hovered_target:
 		if _start_swap(selected_target, hovered_target):
 			selected_target = null
@@ -1046,6 +1048,8 @@ func _complete_swap(first: Node3D, second: Node3D, first_start: Vector3, second_
 	swap_body_states.clear()
 	swap_source_transforms.clear()
 	swap_in_progress = false
+	if success:
+		get_node("/root/SaveManager").save_current_world_state()
 	_refresh_outlines()
 	_update_interaction_hint()
 
