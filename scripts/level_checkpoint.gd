@@ -14,8 +14,6 @@ func _on_body_entered(body: Node3D) -> void:
 		return
 	if not body.is_in_group("player"):
 		return
-	if body.has_method("clear_swap_selection"):
-		body.clear_swap_selection()
 	if body.has_method("return_to_checkpoint"):
 		body.set("checkpoint_transform", spawn_point.global_transform)
 		get_node("/root/SaveManager").save_player_checkpoint(

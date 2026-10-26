@@ -243,15 +243,10 @@ func _player_is_in_jump_room() -> bool:
 		and player.global_position.z >= 171.0 and player.global_position.z <= 203.5
 
 func _set_door_open(index: int, should_open: bool) -> void:
-	if not is_inside_tree() or index < 0 or index >= doors.size() or index >= door_bodies.size():
+	if index >= doors.size() or not is_instance_valid(doors[index]):
 		return
 	var door := doors[index]
-	var door_body := door_bodies[index]
-	if not is_instance_valid(door) or not door.is_inside_tree() \
-		or not is_instance_valid(door_body) or not door_body.is_inside_tree():
-		return
-	if should_open and index < door_open_sounds.size() \
-		and is_instance_valid(door_open_sounds[index]) and door_open_sounds[index].is_inside_tree():
+	if should_open and index < door_open_sounds.size():
 		door_open_sounds[index].play()
 	var target_position := door_closed_positions[index]
 	var target_body_position := door_body_closed_positions[index]
@@ -266,14 +261,12 @@ func _set_door_open(index: int, should_open: bool) -> void:
 	var visual_tweener := tween.tween_property(door, "global_position", target_position, DOOR_ANIMATION_DURATION)
 	visual_tweener.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	var collision_tweener := tween.parallel().tween_property(
-		door_body, "global_position", target_body_position, DOOR_ANIMATION_DURATION
+		door_bodies[index], "global_position", target_body_position, DOOR_ANIMATION_DURATION
 	)
 	collision_tweener.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	tween.finished.connect(_save_world_door_state)
 
 func _save_world_door_state() -> void:
-	if not is_inside_tree():
-		return
 	var save_manager := get_node_or_null("/root/SaveManager")
 	if save_manager != null:
 		save_manager.save_current_world_state()
@@ -290,8 +283,7 @@ func _process(delta: float) -> void:
 		_fade_in_tutorial_ui(can_show_ui)
 	if can_show_ui and final_subtitle_remaining > 0.0:
 		final_subtitle_remaining = maxf(final_subtitle_remaining - delta, 0.0)
-	tutorial_panel.visible = _should_show_tutorial_panel(can_show_ui) \
-		and (step < TASKS.size() or show_completion_task)
+	tutorial_panel.visible = can_show_ui and (step < TASKS.size() or show_completion_task)
 	subtitle_panel.visible = not flashback_subtitles_hidden and can_show_ui and (step < TASKS.size() or final_subtitle_remaining > 0.0)
 	if not subtitle_panel.visible:
 		subtitle_typing_timer.stop()
@@ -323,8 +315,7 @@ func _fade_in_tutorial_ui(can_show_ui: bool) -> void:
 	if tutorial_ui_fade_started:
 		return
 	tutorial_ui_fade_started = true
-	tutorial_panel.visible = _should_show_tutorial_panel(can_show_ui) \
-		and (step < TASKS.size() or show_completion_task)
+	tutorial_panel.visible = can_show_ui and (step < TASKS.size() or show_completion_task)
 	subtitle_panel.visible = not flashback_subtitles_hidden and can_show_ui and (step < TASKS.size() or final_subtitle_remaining > 0.0)
 	var fade := create_tween()
 	fade.set_parallel(true)
@@ -379,12 +370,6 @@ func _update_tutorial_panel() -> void:
 	tutorial_label.text = "%d / %d\n%s" % [step + 1, TASKS.size(), task]
 	if step == 2 and button_sensor.is_pressed:
 		tutorial_label.text = "3 / 3\nКнопка нажата — дверь открыта."
-
-func _should_show_tutorial_panel(can_show_ui: bool) -> bool:
-	if not can_show_ui:
-		return false
-	var save_manager := get_node_or_null("/root/SaveManager")
-	return save_manager == null or str(save_manager.get("current_location_id")) != "kitchen"
 
 func set_flashback_objective(objective: String) -> void:
 	flashback_objective = objective
