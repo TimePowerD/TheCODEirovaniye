@@ -4,6 +4,7 @@ extends CanvasLayer
 
 const MENU_MUSIC_STREAM: AudioStream = preload("res://assets/audio/final sounds/Zombie's Lullaby.mp3")
 const GAME_MUSIC_STREAM: AudioStream = preload("res://assets/audio/final sounds/Isolated Space.mp3")
+const FLASHBACK_MUSIC_STREAM: AudioStream = preload("res://assets/audio/IlluminalRooms.mp3")
 
 const PANEL_COLOR := Color(0.055, 0.075, 0.075, 0.96)
 const ACCENT_COLOR := Color(0.72, 0.86, 0.52)
@@ -15,6 +16,7 @@ const FOOTSTEP_AUDIO_BUS := "FootstepsFiltered"
 const JUMP_AUDIO_BUS := "JumpFiltered"
 const SETTINGS_PATH := "user://audio_settings.cfg"
 const GAME_MUSIC_VOLUME_DB := -24.0
+const FLASHBACK_MUSIC_VOLUME_DB := -22.0
 const MENU_MUSIC_VOLUME_DB := -12.0
 const GAME_LOOP_CROSSFADE := 1.0
 
@@ -28,8 +30,14 @@ var start_with_cutscene := true
 var menu_music_player: AudioStreamPlayer
 var game_music_players: Array[AudioStreamPlayer] = []
 var current_game_music_player: AudioStreamPlayer
+var flashback_music_player: AudioStreamPlayer
+var flashback_music_active := false
+var flashback_music_position := 0.0
+var flashback_resume_player: AudioStreamPlayer
+var flashback_resume_position := 0.0
 var game_music_crossfade_tween: Tween
 var music_transition_tween: Tween
+var flashback_music_tween: Tween
 var music_transition_id: int = 0
 var game_music_crossfading: bool = false
 var music_volume_percent: float = 100.0
@@ -155,9 +163,11 @@ func _setup_music_players() -> void:
 	menu_music_player.stream = _duplicate_stream_with_loop(MENU_MUSIC_STREAM, true)
 	game_music_players.append(_create_music_player("GameMusicA", _duplicate_stream_with_loop(GAME_MUSIC_STREAM, false)))
 	game_music_players.append(_create_music_player("GameMusicB", _duplicate_stream_with_loop(GAME_MUSIC_STREAM, false)))
+	flashback_music_player = _create_music_player("FlashbackMusic", _duplicate_stream_with_loop(FLASHBACK_MUSIC_STREAM, true))
 	menu_music_player.volume_db = -80.0
 	for player in game_music_players:
 		player.volume_db = -80.0
+	flashback_music_player.volume_db = -80.0
 	_switch_music_mode(false)
 
 func _create_music_player(player_name: String, audio_stream: AudioStream) -> AudioStreamPlayer:
@@ -181,6 +191,8 @@ func _switch_music_mode(use_game_music: bool) -> void:
 	var transition_id := music_transition_id
 	if music_transition_tween != null and music_transition_tween.is_running():
 		music_transition_tween.kill()
+	if flashback_music_tween != null and flashback_music_tween.is_running():
+		flashback_music_tween.kill()
 	if game_music_crossfade_tween != null and game_music_crossfade_tween.is_running():
 		game_music_crossfade_tween.kill()
 	game_music_crossfading = false
@@ -190,6 +202,9 @@ func _switch_music_mode(use_game_music: bool) -> void:
 	for player in game_music_players:
 		if player.playing:
 			outgoing_players.append(player)
+	if flashback_music_player != null and flashback_music_player.playing:
+		flashback_music_position = flashback_music_player.get_playback_position()
+		outgoing_players.append(flashback_music_player)
 	if not outgoing_players.is_empty():
 		music_transition_tween = create_tween()
 		music_transition_tween.set_parallel(true)
@@ -213,11 +228,68 @@ func _switch_music_mode(use_game_music: bool) -> void:
 		music_transition_tween.tween_property(menu_music_player, "volume_db", MENU_MUSIC_VOLUME_DB, 0.7)
 
 func _start_game_music() -> void:
+	if flashback_music_active:
+		flashback_music_player.volume_db = -80.0
+		flashback_music_player.play(flashback_music_position)
+		music_transition_tween = create_tween()
+		music_transition_tween.tween_property(flashback_music_player, "volume_db", FLASHBACK_MUSIC_VOLUME_DB, 0.7)
+		return
 	current_game_music_player = game_music_players[0]
 	current_game_music_player.volume_db = -80.0
 	current_game_music_player.play()
 	var fade_in := create_tween()
 	fade_in.tween_property(current_game_music_player, "volume_db", GAME_MUSIC_VOLUME_DB, 0.7)
+
+func begin_flashback_music() -> void:
+	if flashback_music_active:
+		return
+	flashback_music_active = true
+	music_transition_id += 1
+	if music_transition_tween != null and music_transition_tween.is_running():
+		music_transition_tween.kill()
+	if game_music_crossfade_tween != null and game_music_crossfade_tween.is_running():
+		game_music_crossfade_tween.kill()
+	game_music_crossfading = false
+	flashback_resume_player = current_game_music_player
+	flashback_resume_position = 0.0
+	if is_instance_valid(flashback_resume_player) and flashback_resume_player.playing:
+		flashback_resume_position = flashback_resume_player.get_playback_position()
+	else:
+		for player in game_music_players:
+			if player.playing:
+				flashback_resume_player = player
+				flashback_resume_position = player.get_playback_position()
+				break
+	current_game_music_player = null
+	if flashback_music_tween != null and flashback_music_tween.is_running():
+		flashback_music_tween.kill()
+	flashback_music_player.volume_db = -80.0
+	flashback_music_player.play()
+	flashback_music_tween = create_tween().set_parallel(true)
+	flashback_music_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	for player in game_music_players:
+		if player.playing:
+			flashback_music_tween.tween_property(player, "volume_db", -80.0, 1.0)
+	flashback_music_tween.tween_property(flashback_music_player, "volume_db", FLASHBACK_MUSIC_VOLUME_DB, 1.0)
+
+func end_flashback_music() -> void:
+	if not flashback_music_active:
+		return
+	flashback_music_active = false
+	if flashback_music_player.playing:
+		flashback_music_position = flashback_music_player.get_playback_position()
+	if flashback_music_tween != null and flashback_music_tween.is_running():
+		flashback_music_tween.kill()
+	if not is_instance_valid(flashback_resume_player):
+		flashback_resume_player = game_music_players[0]
+	flashback_resume_player.volume_db = -80.0
+	flashback_resume_player.play(flashback_resume_position)
+	current_game_music_player = flashback_resume_player
+	flashback_music_tween = create_tween().set_parallel(true)
+	flashback_music_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	flashback_music_tween.tween_property(flashback_music_player, "volume_db", -80.0, 1.0)
+	flashback_music_tween.tween_property(flashback_resume_player, "volume_db", GAME_MUSIC_VOLUME_DB, 1.0)
+	flashback_music_tween.chain().tween_callback(flashback_music_player.stop)
 
 func _process(_delta: float) -> void:
 	if game_started and not get_tree().paused and current_game_music_player != null and not game_music_crossfading:

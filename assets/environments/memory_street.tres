@@ -18,4 +18,4 @@ ambient_light_energy = 0.7
 reflected_light_source = 2
 fog_enabled = true
 fog_light_color = Color(0.77, 0.86, 0.94, 1)
-fog_density = 0.0015
+fog_density = 0.006

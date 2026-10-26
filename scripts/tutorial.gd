@@ -5,6 +5,12 @@ extends CanvasLayer
 
 const DOOR_OPEN_DISTANCE := 3.0
 const DOOR_ANIMATION_DURATION := 0.9
+const SUBTITLE_CHARACTER_INTERVAL := 0.045
+const SUBTITLE_PERIOD_PAUSE := 0.3
+const SUBTITLE_TASK_OFFSET := 1.5
+const TUTORIAL_UI_DELAY := 2.0
+const TUTORIAL_UI_FADE_DURATION := 0.7
+const SUBTITLE_CLICK_STREAM: AudioStream = preload("res://assets/audio/audiointefsce/Audio/click3.ogg")
 const DIALOGUES := [
 	"Привет. Теперь ты зомби. Попробуй подвигаться с помощью WASD.",
 	"Хорошо! Впереди препятствия. Перепрыгни их, нажимая пробел.",
@@ -32,14 +38,46 @@ var door_bodies: Array[AnimatableBody3D] = []
 var door_tweens: Dictionary = {}
 var tutorial_panel: PanelContainer
 var tutorial_label: Label
+var tutorial_heading: Label
+var flashback_objective := ""
+var flashback_subtitles_hidden := false
 var subtitle_panel: PanelContainer
 var speaker_label: Label
 var subtitle_label: Label
+var subtitle_typing_timer: Timer
+var subtitle_transition_timer: Timer
+var tutorial_ui_delay_timer: Timer
+var subtitle_click_player: AudioStreamPlayer
+var subtitle_full_text := ""
+var subtitle_character_index := 0
+var pending_subtitle_lines: Array[int] = []
+var tutorial_ui_reveal_scheduled := false
+var tutorial_ui_ready := false
+var tutorial_ui_fade_started := false
 
 func _ready() -> void:
 	layer = 2
 	_build_tutorial_panel()
 	_build_subtitles()
+	tutorial_panel.modulate.a = 0.0
+	subtitle_panel.modulate.a = 0.0
+	tutorial_panel.hide()
+	subtitle_panel.hide()
+	subtitle_transition_timer = Timer.new()
+	subtitle_transition_timer.name = "SubtitleTransitionTimer"
+	subtitle_transition_timer.one_shot = true
+	subtitle_transition_timer.wait_time = SUBTITLE_TASK_OFFSET
+	subtitle_transition_timer.timeout.connect(_on_subtitle_transition_timeout)
+	add_child(subtitle_transition_timer)
+	tutorial_ui_delay_timer = Timer.new()
+	tutorial_ui_delay_timer.name = "TutorialUIRevealTimer"
+	tutorial_ui_delay_timer.one_shot = true
+	tutorial_ui_delay_timer.wait_time = TUTORIAL_UI_DELAY
+	tutorial_ui_delay_timer.timeout.connect(_reveal_tutorial_ui)
+	add_child(tutorial_ui_delay_timer)
+	var wake_cutscene := get_node_or_null("../WakeCutscene")
+	if wake_cutscene != null and wake_cutscene.has_signal("finished"):
+		wake_cutscene.connect("finished", _on_wake_cutscene_finished)
 	for door in doors:
 		door_closed_positions.append(door.global_position)
 		var door_body := door.get_node("DoorCollisionBody") as AnimatableBody3D
@@ -52,6 +90,8 @@ func _ready() -> void:
 	_update_subtitles()
 
 func restart() -> void:
+	subtitle_transition_timer.stop()
+	pending_subtitle_lines.clear()
 	player.tutorial_walk_distance = 0.0
 	step = 0
 	line_index = 0
@@ -71,31 +111,32 @@ func _on_gameplay_action(action: StringName) -> void:
 		return
 	if step == 0 and action == &"walk":
 		step = 1
-		line_index = 1
 		_set_door_open(0, true)
 		_update_tutorial_panel()
-		_update_subtitles()
+		_queue_subtitle_line(1)
 	elif step == 1 and action == &"jump" and _player_is_in_jump_room():
 		step = 2
-		line_index = 2
 		_set_door_open(1, true)
 		_update_tutorial_panel()
-		_update_subtitles()
+		_queue_subtitle_line(2)
 
 func _on_button_pressed() -> void:
 	if step < 2:
 		return
 	_set_door_open(2, true)
-	line_index = 3
 	_update_tutorial_panel()
-	_update_subtitles()
+	_queue_subtitle_line(3)
 
 func _on_button_released() -> void:
 	_set_door_open(2, false)
+	pending_subtitle_lines.erase(3)
+	subtitle_transition_timer.stop()
 	if line_index == 3:
 		line_index = 2
 		_update_tutorial_panel()
 		_update_subtitles()
+	else:
+		_schedule_next_subtitle_line()
 
 func _can_progress() -> bool:
 	return menu.game_started and not get_tree().paused \
@@ -135,13 +176,53 @@ func _save_world_door_state() -> void:
 		save_manager.save_current_world_state()
 
 func _process(_delta: float) -> void:
+	if not tutorial_ui_ready and not tutorial_ui_reveal_scheduled \
+		and bool(menu.get("game_started")) and not bool(menu.get("start_with_cutscene")):
+		_schedule_tutorial_ui_reveal()
+	var can_show_ui := bool(menu.get("game_started")) \
+		and not player.has_meta("developer_tools_open") \
+		and not player.has_meta("cutscene_active") \
+		and tutorial_ui_ready
+	if can_show_ui and not tutorial_ui_fade_started:
+		_fade_in_tutorial_ui(can_show_ui)
+	tutorial_panel.visible = can_show_ui and step < TASKS.size()
+	subtitle_panel.visible = not flashback_subtitles_hidden and can_show_ui and (step < TASKS.size() or line_index == 3)
+	if not subtitle_panel.visible:
+		subtitle_typing_timer.stop()
+	elif subtitle_character_index == 0 and subtitle_label.text.is_empty():
+		_start_subtitle_typing()
+	elif subtitle_character_index < subtitle_full_text.length() and subtitle_typing_timer.is_stopped():
+		subtitle_typing_timer.start()
+	if tutorial_panel.visible:
+		_update_tutorial_panel()
+
+func _on_wake_cutscene_finished() -> void:
+	_schedule_tutorial_ui_reveal()
+
+func _schedule_tutorial_ui_reveal() -> void:
+	if tutorial_ui_reveal_scheduled or tutorial_ui_ready:
+		return
+	tutorial_ui_reveal_scheduled = true
+	tutorial_ui_delay_timer.start()
+
+func _reveal_tutorial_ui() -> void:
+	tutorial_ui_ready = true
 	var can_show_ui := bool(menu.get("game_started")) \
 		and not player.has_meta("developer_tools_open") \
 		and not player.has_meta("cutscene_active")
+	if can_show_ui:
+		_fade_in_tutorial_ui(can_show_ui)
+
+func _fade_in_tutorial_ui(can_show_ui: bool) -> void:
+	if tutorial_ui_fade_started:
+		return
+	tutorial_ui_fade_started = true
 	tutorial_panel.visible = can_show_ui and step < TASKS.size()
-	subtitle_panel.visible = can_show_ui and (step < TASKS.size() or line_index == 3)
-	if tutorial_panel.visible:
-		_update_tutorial_panel()
+	subtitle_panel.visible = not flashback_subtitles_hidden and can_show_ui and (step < TASKS.size() or line_index == 3)
+	var fade := create_tween()
+	fade.set_parallel(true)
+	fade.tween_property(tutorial_panel, "modulate:a", 1.0, TUTORIAL_UI_FADE_DURATION).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	fade.tween_property(subtitle_panel, "modulate:a", 1.0, TUTORIAL_UI_FADE_DURATION).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 func _build_tutorial_panel() -> void:
 	tutorial_panel = PanelContainer.new()
@@ -160,12 +241,12 @@ func _build_tutorial_panel() -> void:
 	column.add_theme_constant_override("separation", 7)
 	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tutorial_panel.add_child(column)
-	var heading := Label.new()
-	heading.text = "ОБУЧЕНИЕ"
-	heading.add_theme_font_size_override("font_size", 13)
-	heading.add_theme_color_override("font_color", Color(0.52, 0.86, 0.82, 1.0))
-	heading.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	column.add_child(heading)
+	tutorial_heading = Label.new()
+	tutorial_heading.text = "ОБУЧЕНИЕ"
+	tutorial_heading.add_theme_font_size_override("font_size", 13)
+	tutorial_heading.add_theme_color_override("font_color", Color(0.52, 0.86, 0.82, 1.0))
+	tutorial_heading.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_child(tutorial_heading)
 	tutorial_label = Label.new()
 	tutorial_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	tutorial_label.add_theme_font_size_override("font_size", 17)
@@ -175,11 +256,36 @@ func _build_tutorial_panel() -> void:
 	add_child(tutorial_panel)
 
 func _update_tutorial_panel() -> void:
-	if not is_instance_valid(tutorial_label) or step >= TASKS.size():
+	if not is_instance_valid(tutorial_label):
+		return
+	if not flashback_objective.is_empty():
+		tutorial_heading.text = "ЦЕЛЬ"
+		tutorial_label.text = flashback_objective
+		return
+	tutorial_heading.text = "ОБУЧЕНИЕ"
+	if step >= TASKS.size():
 		return
 	tutorial_label.text = "%d / %d\n%s" % [step + 1, TASKS.size(), TASKS[step]]
 	if step == 2 and button_sensor.is_pressed:
 		tutorial_label.text = "3 / 3\nКнопка нажата — дверь открыта."
+
+func set_flashback_objective(objective: String) -> void:
+	flashback_objective = objective
+	_update_tutorial_panel()
+
+func set_flashback_subtitles_hidden(hidden: bool) -> void:
+	flashback_subtitles_hidden = hidden
+	if hidden:
+		if is_instance_valid(subtitle_panel):
+			subtitle_panel.hide()
+		if is_instance_valid(subtitle_typing_timer):
+			subtitle_typing_timer.stop()
+
+func seal_all_tutorial_doors() -> void:
+	button_sensor.set_deferred("monitoring", false)
+	for index in range(doors.size()):
+		_set_door_open(index, false)
+	_update_tutorial_panel()
 
 func _build_subtitles() -> void:
 	subtitle_panel = PanelContainer.new()
@@ -199,12 +305,23 @@ func _build_subtitles() -> void:
 	style.set_corner_radius_all(8)
 	subtitle_panel.add_theme_stylebox_override("panel", style)
 	add_child(subtitle_panel)
+	subtitle_typing_timer = Timer.new()
+	subtitle_typing_timer.name = "SubtitleTypingTimer"
+	subtitle_typing_timer.wait_time = SUBTITLE_CHARACTER_INTERVAL
+	subtitle_typing_timer.timeout.connect(_reveal_next_subtitle_character)
+	add_child(subtitle_typing_timer)
+	subtitle_click_player = AudioStreamPlayer.new()
+	subtitle_click_player.name = "SubtitleTypingSound"
+	subtitle_click_player.stream = SUBTITLE_CLICK_STREAM
+	subtitle_click_player.volume_db = -18.0
+	subtitle_click_player.max_polyphony = 3
+	add_child(subtitle_click_player)
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 6)
 	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	subtitle_panel.add_child(column)
 	speaker_label = Label.new()
-	speaker_label.text = "РАССКАЗЧИК"
+	speaker_label.text = "Доктор"
 	speaker_label.add_theme_font_size_override("font_size", 13)
 	speaker_label.add_theme_color_override("font_color", Color(0.52, 0.86, 0.82, 1.0))
 	speaker_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -222,4 +339,54 @@ func _build_subtitles() -> void:
 func _update_subtitles() -> void:
 	if not is_instance_valid(subtitle_label):
 		return
-	subtitle_label.text = DIALOGUES[line_index]
+	subtitle_typing_timer.stop()
+	subtitle_label.text = ""
+	subtitle_full_text = DIALOGUES[line_index]
+	subtitle_character_index = 0
+	subtitle_typing_timer.wait_time = SUBTITLE_CHARACTER_INTERVAL
+
+func _start_subtitle_typing() -> void:
+	if subtitle_character_index == 0 and subtitle_label.text.is_empty():
+		_reveal_next_subtitle_character()
+	if subtitle_character_index < subtitle_full_text.length() and subtitle_typing_timer.is_stopped():
+		subtitle_typing_timer.start()
+
+func _reveal_next_subtitle_character() -> void:
+	if subtitle_character_index >= subtitle_full_text.length():
+		subtitle_typing_timer.stop()
+		_schedule_next_subtitle_line()
+		return
+	var character := subtitle_full_text.substr(subtitle_character_index, 1)
+	subtitle_label.text += character
+	if not character.strip_edges().is_empty():
+		subtitle_click_player.play()
+	subtitle_character_index += 1
+	if subtitle_character_index >= subtitle_full_text.length():
+		subtitle_typing_timer.stop()
+		_schedule_next_subtitle_line()
+	else:
+		subtitle_typing_timer.wait_time = SUBTITLE_PERIOD_PAUSE if character == "." else SUBTITLE_CHARACTER_INTERVAL
+
+func _queue_subtitle_line(next_line: int) -> void:
+	if next_line == line_index or pending_subtitle_lines.has(next_line):
+		return
+	pending_subtitle_lines.append(next_line)
+	_schedule_next_subtitle_line()
+
+func _schedule_next_subtitle_line() -> void:
+	if pending_subtitle_lines.is_empty() or not is_instance_valid(subtitle_transition_timer):
+		return
+	if subtitle_character_index < subtitle_full_text.length() or not subtitle_typing_timer.is_stopped():
+		return
+	if subtitle_transition_timer.is_stopped():
+		subtitle_transition_timer.start(SUBTITLE_TASK_OFFSET)
+
+func _on_subtitle_transition_timeout() -> void:
+	if pending_subtitle_lines.is_empty():
+		return
+	var next_line: int = pending_subtitle_lines.pop_front()
+	if next_line == 3 and not button_sensor.is_pressed:
+		_schedule_next_subtitle_line()
+		return
+	line_index = next_line
+	_update_subtitles()

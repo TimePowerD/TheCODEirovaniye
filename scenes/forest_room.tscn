@@ -9,6 +9,9 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_w5wae"]
 size = Vector3(128, 0.5, 220)
 
+[sub_resource type="BoxShape3D" id="FlashbackEntryBarrierShape"]
+size = Vector3(128, 8, 0.5)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_orweu"]
 cull_mode = 2
 albedo_color = Color(0.38, 0.47, 0.32, 1)
@@ -9638,7 +9641,15 @@ layers = 4
 multimesh = SubResource("MultiMesh_8crad")
 
 [node name="Arrival" type="Marker3D" parent="." unique_id=635187881]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, 2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.92, -1.5)
+
+[node name="InvisibleEntryBarrier" type="StaticBody3D" parent="." unique_id=1061150072]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 1.5)
+collision_layer = 1
+collision_mask = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InvisibleEntryBarrier" unique_id=1061150073]
+shape = SubResource("FlashbackEntryBarrierShape")
 
 [node name="ReturnGate" type="Node3D" parent="." unique_id=1096638345]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 11)

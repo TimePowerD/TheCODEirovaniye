@@ -27,9 +27,11 @@ var laboratory_energy: float
 var laboratory_dimmed := false
 var source_environment: Environment
 var laboratory_environment: Environment
+var flashback_effect: Node
 
 func _ready() -> void:
 	transition_style = $LaboratoryExit.transition_style
+	flashback_effect = get_node_or_null("../FlashbackDerealization")
 	laboratory_environment = player.get_node("CameraPivot/Camera3D").environment
 	in_city = get_node("/root/SaveManager").current_location_id == destination_location_id
 	get_node("/root/SaveManager").checkpoint_restored.connect(_on_checkpoint_restored)
@@ -42,9 +44,11 @@ func _ready() -> void:
 			player.checkpoint_transform = player.global_transform
 			player.camera_pivot.rotation = Vector3.ZERO
 			player.checkpoint_camera_rotation = Vector3.ZERO
+	if transition_style == 1 and in_city:
+		_set_flashback_effect_enabled(true)
 	laboratory_energy = laboratory_light.light_energy
 	var layer := CanvasLayer.new()
-	layer.layer = 5 # Above the HUD, below the pause menu (layer 10).
+	layer.layer = 7 # Above the flashback effect and HUD, below the pause menu (layer 10).
 	add_child(layer)
 	veil = ColorRect.new()
 	veil.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -92,6 +96,8 @@ func _on_checkpoint_restored(location_id: String) -> void:
 	if transitioning:
 		return
 	in_city = location_id == destination_location_id
+	if transition_style == 1 and location_id in [source_location_id, destination_location_id]:
+		_set_flashback_effect_enabled(in_city)
 	var camera := player.get_node("CameraPivot/Camera3D") as Camera3D
 	if in_city and destination_environment != null:
 		camera.environment = destination_environment
@@ -120,6 +126,9 @@ func _on_exit(body: Node3D, to_city: bool) -> void:
 		return
 	var entrance: Area3D = $LaboratoryExit if to_city else city_room.get_node("ReturnArea")
 	transition_style = entrance.transition_style
+	if transition_style == 1 and not to_city:
+		# Fade the effect out while the player is still in the flashback.
+		_set_flashback_effect_enabled(false)
 	fade_material.shader = preload("res://scripts/flashback_fade.gdshader") if transition_style == 1 else preload("res://scripts/location_fade.gdshader")
 	fade_material.set_shader_parameter("darkness", 0.0)
 	if transition_style == 1:
@@ -161,6 +170,9 @@ func _on_exit(body: Node3D, to_city: bool) -> void:
 			camera.environment = laboratory_environment if laboratory_environment != null else source_environment
 	player.reset_physics_interpolation()
 	in_city = to_city
+	if transition_style == 1 and to_city:
+		# The destination is now active; the laboratory never receives this shader.
+		_set_flashback_effect_enabled(true)
 	location_changed.emit(to_city)
 	player.clear_swap_selection()
 	var next_location := destination_location_id if to_city else source_location_id
@@ -169,18 +181,19 @@ func _on_exit(body: Node3D, to_city: bool) -> void:
 		laboratory_light.light_energy = laboratory_energy
 		laboratory_dimmed = false
 	await get_tree().create_timer(black_hold_duration, false).timeout
-	var reveal := create_tween()
+	var reveal := create_tween().set_parallel(true)
 	reveal.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	reveal.tween_property(fade_material, "shader_parameter/darkness", 0.0, fade_in_duration)
+	if transition_style == 1:
+		# Clear the blur during the reveal so the white veil is always removed promptly.
+		reveal.tween_property(fade_material, "shader_parameter/blur_amount", 0.0, minf(blur_clear_duration, fade_in_duration))
 	await reveal.finished
+	fade_material.set_shader_parameter("darkness", 0.0)
+	if transition_style == 1:
+		fade_material.set_shader_parameter("blur_amount", 0.0)
+	veil.hide()
 	player.set_physics_process(true)
 	player.set_process_unhandled_input(true)
-	if transition_style == 1:
-		var clear_blur := create_tween()
-		clear_blur.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-		clear_blur.tween_property(fade_material, "shader_parameter/blur_amount", 0.0, blur_clear_duration)
-		await clear_blur.finished
-	veil.hide()
 	transitioning = false
 	player.remove_meta("location_transition_active")
 	if transition_style == 1:
@@ -193,3 +206,11 @@ func request_transition(to_city: bool) -> bool:
 		return false
 	_on_exit(player, to_city)
 	return transitioning
+
+func _set_flashback_effect_enabled(enabled: bool) -> void:
+	if not is_instance_valid(flashback_effect):
+		return
+	if enabled:
+		flashback_effect.call("start_flashback_effect")
+	else:
+		flashback_effect.call("stop_flashback_effect")

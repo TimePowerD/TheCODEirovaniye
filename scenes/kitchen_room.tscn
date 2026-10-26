@@ -1,43 +1,29 @@
-[gd_scene load_steps=39 format=3]
+[gd_scene format=3 uid="uid://b1cooquq3rtjg"]
 
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenCabinet.glb" id="1_base"]
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenCabinetCornerInner.glb" id="2_corner"]
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenCabinetUpper.glb" id="3_upper"]
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenCabinetUpperDouble.glb" id="4_upper_double"]
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenFridgeLarge.glb" id="5_fridge"]
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenSink.glb" id="6_sink"]
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenStoveElectric.glb" id="7_stove"]
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/hoodModern.glb" id="8_hood"]
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenBar.glb" id="9_bar"]
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenBarEnd.glb" id="10_bar_end"]
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/table.glb" id="11_table"]
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/chairModernFrameCushion.glb" id="12_chair"]
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/stoolBar.glb" id="13_stool"]
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/doorwayFront.glb" id="14_door"]
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenMicrowave.glb" id="15_microwave"]
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenCoffeeMachine.glb" id="16_coffee"]
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenBlender.glb" id="17_blender"]
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/toaster.glb" id="18_toaster"]
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/trashcan.glb" id="19_trash"]
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/plantSmall1.glb" id="20_plant"]
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/rugRectangle.glb" id="21_rug"]
-[ext_resource type="PackedScene" path="res://assets/models/obstanowkadoma/Models/GLTF format/lampSquareCeiling.glb" id="22_lamp"]
-
-[sub_resource type="StandardMaterial3D" id="Mat_Wall"]
-albedo_color = Color(0.91, 0.87, 0.77, 1)
-roughness = 0.9
+[ext_resource type="PackedScene" uid="uid://n4t8p6kd7giv" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenCabinet.glb" id="1_base"]
+[ext_resource type="PackedScene" uid="uid://bl0yp2ladl41f" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenCabinetCornerInner.glb" id="2_corner"]
+[ext_resource type="PackedScene" uid="uid://bdtnwew8onrud" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenCabinetUpper.glb" id="3_upper"]
+[ext_resource type="PackedScene" uid="uid://bpq8gsrkcx4ea" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenCabinetUpperDouble.glb" id="4_upper_double"]
+[ext_resource type="PackedScene" uid="uid://d1ch7xmoaj5ym" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenFridgeLarge.glb" id="5_fridge"]
+[ext_resource type="PackedScene" uid="uid://b567f53wbasxm" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenSink.glb" id="6_sink"]
+[ext_resource type="PackedScene" uid="uid://dqw3aqqf0fkn4" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenStoveElectric.glb" id="7_stove"]
+[ext_resource type="PackedScene" uid="uid://bsjcqvudio1lj" path="res://assets/models/obstanowkadoma/Models/GLTF format/hoodModern.glb" id="8_hood"]
+[ext_resource type="PackedScene" uid="uid://27uraw5lr70p" path="res://assets/models/obstanowkadoma/Models/GLTF format/table.glb" id="11_table"]
+[ext_resource type="PackedScene" uid="uid://ckfx3jpfpodvs" path="res://assets/models/obstanowkadoma/Models/GLTF format/chairModernFrameCushion.glb" id="12_chair"]
+[ext_resource type="PackedScene" uid="uid://ddqutbq034dpm" path="res://assets/models/obstanowkadoma/Models/GLTF format/stoolBar.glb" id="13_stool"]
+[ext_resource type="PackedScene" uid="uid://ck6nsnseha2g3" path="res://assets/models/obstanowkadoma/Models/GLTF format/doorwayFront.glb" id="14_door"]
+[ext_resource type="PackedScene" uid="uid://b84hdx5vak115" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenMicrowave.glb" id="15_microwave"]
+[ext_resource type="PackedScene" uid="uid://dpp8mj6j5xaq8" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenCoffeeMachine.glb" id="16_coffee"]
+[ext_resource type="PackedScene" uid="uid://dmd0r4ro3n27p" path="res://assets/models/obstanowkadoma/Models/GLTF format/kitchenBlender.glb" id="17_blender"]
+[ext_resource type="PackedScene" uid="uid://3tfybi1ql6qt" path="res://assets/models/obstanowkadoma/Models/GLTF format/toaster.glb" id="18_toaster"]
+[ext_resource type="PackedScene" uid="uid://w5cmv6x53tkg" path="res://assets/models/obstanowkadoma/Models/GLTF format/trashcan.glb" id="19_trash"]
+[ext_resource type="PackedScene" uid="uid://dj8calkd866uk" path="res://assets/models/obstanowkadoma/Models/GLTF format/plantSmall1.glb" id="20_plant"]
+[ext_resource type="PackedScene" uid="uid://cp4wsgua0eiat" path="res://assets/models/obstanowkadoma/Models/GLTF format/rugRectangle.glb" id="21_rug"]
+[ext_resource type="PackedScene" uid="uid://dajdvl5n8kn6h" path="res://assets/models/obstanowkadoma/Models/GLTF format/lampSquareCeiling.glb" id="22_lamp"]
 
 [sub_resource type="StandardMaterial3D" id="Mat_Floor"]
 albedo_color = Color(0.43, 0.28, 0.16, 1)
 roughness = 0.78
-
-[sub_resource type="StandardMaterial3D" id="Mat_Tile"]
-albedo_color = Color(0.58, 0.69, 0.61, 1)
-roughness = 0.72
-
-[sub_resource type="StandardMaterial3D" id="Mat_Ceiling"]
-albedo_color = Color(0.96, 0.94, 0.87, 1)
-roughness = 0.9
 
 [sub_resource type="BoxMesh" id="FloorMesh"]
 material = SubResource("Mat_Floor")
@@ -45,6 +31,10 @@ size = Vector3(14, 0.2, 12)
 
 [sub_resource type="BoxShape3D" id="FloorShape"]
 size = Vector3(14, 0.2, 12)
+
+[sub_resource type="StandardMaterial3D" id="Mat_Wall"]
+albedo_color = Color(0.91, 0.87, 0.77, 1)
+roughness = 0.9
 
 [sub_resource type="BoxMesh" id="WallMesh"]
 material = SubResource("Mat_Wall")
@@ -74,232 +64,193 @@ size = Vector3(1.5, 0.35, 0.2)
 [sub_resource type="BoxShape3D" id="DoorHeaderShape"]
 size = Vector3(1.5, 0.35, 0.2)
 
-[sub_resource type="BoxMesh" id="BacksplashMesh"]
-material = SubResource("Mat_Tile")
-size = Vector3(8, 0.78, 0.08)
+[sub_resource type="StandardMaterial3D" id="Mat_Ceiling"]
+albedo_color = Color(0.96, 0.94, 0.87, 1)
+roughness = 0.9
 
 [sub_resource type="BoxMesh" id="CeilingMesh"]
 material = SubResource("Mat_Ceiling")
 size = Vector3(14, 0.16, 12)
 
-[node name="KitchenRoom" type="Node3D"]
+[sub_resource type="StandardMaterial3D" id="Mat_Tile"]
+albedo_color = Color(0.58, 0.69, 0.61, 1)
+roughness = 0.72
 
-[node name="Floor" type="StaticBody3D" parent="."]
+[sub_resource type="BoxMesh" id="BacksplashMesh"]
+material = SubResource("Mat_Tile")
+size = Vector3(8, 0.78, 0.08)
 
-[node name="FloorVisual" type="MeshInstance3D" parent="Floor"]
+[node name="KitchenRoom" type="Node3D" unique_id=430127921]
+
+[node name="Floor" type="StaticBody3D" parent="." unique_id=448543692]
+
+[node name="FloorVisual" type="MeshInstance3D" parent="Floor" unique_id=1566492244]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
 mesh = SubResource("FloorMesh")
-position = Vector3(0, -0.1, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=561448983]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
 shape = SubResource("FloorShape")
-position = Vector3(0, -0.1, 0)
 
-[node name="BackWall" type="StaticBody3D" parent="."]
-position = Vector3(0, 1.5, -6)
+[node name="BackWall" type="StaticBody3D" parent="." unique_id=2043402460]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -6)
 
-[node name="Visual" type="MeshInstance3D" parent="BackWall"]
+[node name="Visual" type="MeshInstance3D" parent="BackWall" unique_id=156916709]
 mesh = SubResource("WallMesh")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="BackWall"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="BackWall" unique_id=155783072]
 shape = SubResource("LongWallShape")
 
-[node name="LeftWall" type="StaticBody3D" parent="."]
-position = Vector3(-7, 1.5, 0)
+[node name="LeftWall" type="StaticBody3D" parent="." unique_id=1905006322]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 1.5, 0)
 
-[node name="Visual" type="MeshInstance3D" parent="LeftWall"]
+[node name="Visual" type="MeshInstance3D" parent="LeftWall" unique_id=2017425765]
 mesh = SubResource("SideWallMesh")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LeftWall"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LeftWall" unique_id=1545662048]
 shape = SubResource("SideWallShape")
 
-[node name="RightWall" type="StaticBody3D" parent="."]
-position = Vector3(7, 1.5, 0)
+[node name="RightWall" type="StaticBody3D" parent="." unique_id=83895]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 1.5, 0)
 
-[node name="Visual" type="MeshInstance3D" parent="RightWall"]
+[node name="Visual" type="MeshInstance3D" parent="RightWall" unique_id=1386832351]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.37954, 0, 0)
 mesh = SubResource("SideWallMesh")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RightWall"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RightWall" unique_id=495616716]
 shape = SubResource("SideWallShape")
 
-[node name="FrontLeftWall" type="StaticBody3D" parent="."]
-position = Vector3(-3.875, 1.5, 6)
+[node name="FrontLeftWall" type="StaticBody3D" parent="." unique_id=675123747]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.875, 1.5, 6)
 
-[node name="Visual" type="MeshInstance3D" parent="FrontLeftWall"]
+[node name="Visual" type="MeshInstance3D" parent="FrontLeftWall" unique_id=1223677581]
 mesh = SubResource("DoorSideMesh")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="FrontLeftWall"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FrontLeftWall" unique_id=1722820138]
 shape = SubResource("DoorSideShape")
 
-[node name="FrontRightWall" type="StaticBody3D" parent="."]
-position = Vector3(3.875, 1.5, 6)
+[node name="FrontRightWall" type="StaticBody3D" parent="." unique_id=1046983365]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.875, 1.5, 6)
 
-[node name="Visual" type="MeshInstance3D" parent="FrontRightWall"]
+[node name="Visual" type="MeshInstance3D" parent="FrontRightWall" unique_id=983771516]
 mesh = SubResource("DoorSideMesh")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="FrontRightWall"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FrontRightWall" unique_id=189850549]
 shape = SubResource("DoorSideShape")
 
-[node name="DoorHeader" type="StaticBody3D" parent="."]
-position = Vector3(0, 2.825, 6)
+[node name="DoorHeader" type="StaticBody3D" parent="." unique_id=286176891]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.825, 6)
 
-[node name="Visual" type="MeshInstance3D" parent="DoorHeader"]
+[node name="Visual" type="MeshInstance3D" parent="DoorHeader" unique_id=92725593]
 mesh = SubResource("DoorHeaderMesh")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="DoorHeader"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DoorHeader" unique_id=1449039734]
 shape = SubResource("DoorHeaderShape")
 
-[node name="Ceiling" type="MeshInstance3D" parent="."]
+[node name="Ceiling" type="MeshInstance3D" parent="." unique_id=1224135013]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.08, 0)
 mesh = SubResource("CeilingMesh")
-position = Vector3(0, 3.08, 0)
 
-[node name="KitchenRun" type="Node3D" parent="."]
+[node name="KitchenRun" type="Node3D" parent="." unique_id=999491092]
 
-[node name="Backsplash" type="MeshInstance3D" parent="KitchenRun"]
+[node name="Backsplash" type="MeshInstance3D" parent="KitchenRun" unique_id=971618574]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 1.38, -5.9355545)
 mesh = SubResource("BacksplashMesh")
-position = Vector3(-0.1, 1.38, -5.68)
 
-[node name="Fridge" parent="KitchenRun" instance=ExtResource("5_fridge")]
-position = Vector3(-5.3, 0, -5.3)
-scale = Vector3(2, 2.15, 2)
+[node name="Fridge" parent="KitchenRun" unique_id=917213239 instance=ExtResource("5_fridge")]
+transform = Transform3D(2, 0, 0, 0, 2.15, 0, 0, 0, 2, -5.3, 0, -5.3)
 
-[node name="Cabinet1" parent="KitchenRun" instance=ExtResource("1_base")]
-position = Vector3(-4.1, 0, -5.3)
-scale = Vector3(2, 2, 2)
+[node name="Cabinet1" parent="KitchenRun" unique_id=284077906 instance=ExtResource("1_base")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -4.1, 0, -4.995838)
 
-[node name="Cabinet2" parent="KitchenRun" instance=ExtResource("1_base")]
-position = Vector3(-3.15, 0, -5.3)
-scale = Vector3(2, 2, 2)
+[node name="Cabinet2" parent="KitchenRun" unique_id=2116281758 instance=ExtResource("1_base")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -3.15, 0, -4.995838)
 
-[node name="SinkCabinet" parent="KitchenRun" instance=ExtResource("6_sink")]
-position = Vector3(-2.2, 0, -5.3)
-scale = Vector3(2, 2, 2)
+[node name="SinkCabinet" parent="KitchenRun" unique_id=400288058 instance=ExtResource("6_sink")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -2.2, 0, -4.995838)
 
-[node name="Stove" parent="KitchenRun" instance=ExtResource("7_stove")]
-position = Vector3(-1.25, 0, -5.3)
-scale = Vector3(2, 2, 2)
+[node name="Stove" parent="KitchenRun" unique_id=377668351 instance=ExtResource("7_stove")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -1.25, 0, -4.995838)
 
-[node name="Cabinet3" parent="KitchenRun" instance=ExtResource("1_base")]
-position = Vector3(-0.3, 0, -5.3)
-scale = Vector3(2, 2, 2)
+[node name="Cabinet3" parent="KitchenRun" unique_id=308462520 instance=ExtResource("1_base")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -0.3, 0, -4.995838)
 
-[node name="Cabinet4" parent="KitchenRun" instance=ExtResource("1_base")]
-position = Vector3(0.65, 0, -5.3)
-scale = Vector3(2, 2, 2)
+[node name="Cabinet4" parent="KitchenRun" unique_id=276841554 instance=ExtResource("1_base")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0.65, 0, -4.995838)
 
-[node name="CornerCabinet" parent="KitchenRun" instance=ExtResource("2_corner")]
-position = Vector3(1.65, 0, -5.3)
-scale = Vector3(2, 2, 2)
+[node name="CornerCabinet" parent="KitchenRun" unique_id=969820424 instance=ExtResource("2_corner")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 1.5323454, 0, -4.995838)
 
-[node name="UpperCabinet1" parent="KitchenRun" instance=ExtResource("4_upper_double")]
-position = Vector3(-4.15, 1.42, -5.35)
-scale = Vector3(1.8, 1.8, 1.8)
+[node name="UpperCabinet1" parent="KitchenRun" unique_id=1888968452 instance=ExtResource("4_upper_double")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, -4.15, 1.42, -5.35)
 
-[node name="UpperCabinet2" parent="KitchenRun" instance=ExtResource("3_upper")]
-position = Vector3(-2.7, 1.42, -5.35)
-scale = Vector3(1.8, 1.8, 1.8)
+[node name="UpperCabinet2" parent="KitchenRun" unique_id=2001342082 instance=ExtResource("3_upper")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, -2.7, 1.42, -5.35)
 
-[node name="UpperCabinet3" parent="KitchenRun" instance=ExtResource("4_upper_double")]
-position = Vector3(-0.4, 1.42, -5.35)
-scale = Vector3(1.8, 1.8, 1.8)
+[node name="UpperCabinet3" parent="KitchenRun" unique_id=1453921173 instance=ExtResource("4_upper_double")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, -0.4, 1.42, -5.35)
 
-[node name="RangeHood" parent="KitchenRun" instance=ExtResource("8_hood")]
-position = Vector3(-1.25, 2.05, -5.25)
-scale = Vector3(1.7, 1.7, 1.7)
+[node name="RangeHood" parent="KitchenRun" unique_id=1032906633 instance=ExtResource("8_hood")]
+transform = Transform3D(1.7, 0, 0, 0, 1.7, 0, 0, 0, 1.7, -1.25, 2.05, -5.25)
 
-[node name="Microwave" parent="KitchenRun" instance=ExtResource("15_microwave")]
-position = Vector3(-4.15, 0.95, -5.3)
-scale = Vector3(1.8, 1.8, 1.8)
+[node name="Microwave" parent="KitchenRun" unique_id=867330852 instance=ExtResource("15_microwave")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, -4.0108504, 0.8461949, -5.3)
 
-[node name="CoffeeMachine" parent="KitchenRun" instance=ExtResource("16_coffee")]
-position = Vector3(0.55, 0.95, -5.3)
-scale = Vector3(1.8, 1.8, 1.8)
+[node name="CoffeeMachine" parent="KitchenRun" unique_id=496331051 instance=ExtResource("16_coffee")]
+transform = Transform3D(1.8, 0, 0, 0, 1.8, 0, 0, 0, 1.8, 0.55, 0.8522014, -5.3)
 
-[node name="Toaster" parent="KitchenRun" instance=ExtResource("18_toaster")]
-position = Vector3(-0.2, 0.95, -5.3)
-scale = Vector3(1.6, 1.6, 1.6)
+[node name="Toaster" parent="KitchenRun" unique_id=392876993 instance=ExtResource("18_toaster")]
+transform = Transform3D(1.6, 0, 0, 0, 1.6, 0, 0, 0, 1.6, 0.031104133, 0.95, -5.3)
 
-[node name="Blender" parent="KitchenRun" instance=ExtResource("17_blender")]
-position = Vector3(-3.2, 0.95, -5.3)
-scale = Vector3(1.5, 1.5, 1.5)
+[node name="Blender" parent="KitchenRun" unique_id=987970013 instance=ExtResource("17_blender")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, -3.0897942, 0.8413425, -5.3)
 
-[node name="BarReturnCabinet1" parent="KitchenRun" instance=ExtResource("1_base")]
-position = Vector3(2.6, 0, -4.3)
-rotation = Vector3(0, -1.5708, 0)
-scale = Vector3(2, 2, 2)
+[node name="BarReturnCabinet1" parent="KitchenRun" unique_id=482079784 instance=ExtResource("1_base")]
+transform = Transform3D(-7.2399803e-06, 0, -2, 0, 2, 0, 2, 0, -7.2399803e-06, 2.6, 0, -4.3)
 
-[node name="BarReturnCabinet2" parent="KitchenRun" instance=ExtResource("1_base")]
-position = Vector3(2.6, 0, -3.35)
-rotation = Vector3(0, -1.5708, 0)
-scale = Vector3(2, 2, 2)
+[node name="BarReturnCabinet2" parent="KitchenRun" unique_id=246700816 instance=ExtResource("1_base")]
+transform = Transform3D(-7.2399803e-06, 0, -2, 0, 2, 0, 2, 0, -7.2399803e-06, 2.6, 0, -3.35)
 
-[node name="BarCounter" parent="KitchenRun" instance=ExtResource("9_bar")]
-position = Vector3(2.6, 0, -2.4)
-rotation = Vector3(0, -1.5708, 0)
-scale = Vector3(2.2, 2.2, 2.2)
+[node name="BarStool1" parent="KitchenRun" unique_id=1397232448 instance=ExtResource("13_stool")]
+transform = Transform3D(-6.1539836e-06, 0, 1.7, 0, 1.7, 0, -1.7, 0, -6.1539836e-06, 2.553752, 0, -3.7469976)
 
-[node name="BarEnd" parent="KitchenRun" instance=ExtResource("10_bar_end")]
-position = Vector3(2.6, 0, -1.9)
-rotation = Vector3(0, -1.5708, 0)
-scale = Vector3(2.2, 2.2, 2.2)
+[node name="BarStool2" parent="KitchenRun" unique_id=1230554869 instance=ExtResource("13_stool")]
+transform = Transform3D(-6.1539836e-06, 0, 1.7, 0, 1.7, 0, -1.7, 0, -6.1539836e-06, 2.4668796, 0, -2.6815755)
 
-[node name="BarStool1" parent="KitchenRun" instance=ExtResource("13_stool")]
-position = Vector3(1.25, 0, -3.45)
-rotation = Vector3(0, 1.5708, 0)
-scale = Vector3(1.7, 1.7, 1.7)
+[node name="DiningArea" type="Node3D" parent="." unique_id=696133923]
 
-[node name="BarStool2" parent="KitchenRun" instance=ExtResource("13_stool")]
-position = Vector3(1.25, 0, -2.1)
-rotation = Vector3(0, 1.5708, 0)
-scale = Vector3(1.7, 1.7, 1.7)
+[node name="DiningRug" parent="DiningArea" unique_id=2086719859 instance=ExtResource("21_rug")]
+transform = Transform3D(2.6, 0, 0, 0, 1, 0, 0, 0, 2.3, -2.1, 0.01, 0.15)
 
-[node name="DiningArea" type="Node3D" parent="."]
+[node name="DiningTable" parent="DiningArea" unique_id=1395283036 instance=ExtResource("11_table")]
+transform = Transform3D(2.1, 0, 0, 0, 2.2, 0, 0, 0, 2.1, -2.1, 0, 0.15)
 
-[node name="DiningRug" parent="DiningArea" instance=ExtResource("21_rug")]
-position = Vector3(-2.1, 0.01, 0.15)
-scale = Vector3(2.6, 1, 2.3)
+[node name="ChairNorth" parent="DiningArea" unique_id=1175455129 instance=ExtResource("12_chair")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -1.22, 0, -1.12)
 
-[node name="DiningTable" parent="DiningArea" instance=ExtResource("11_table")]
-position = Vector3(-2.1, 0, 0.15)
-scale = Vector3(2.1, 2.2, 2.1)
+[node name="ChairSouth" parent="DiningArea" unique_id=1077054418 instance=ExtResource("12_chair")]
+transform = Transform3D(-2, 0, 5.0703634e-06, 0, 2, 0, -5.0703634e-06, 0, -2, -1.22, 0, 0.48)
 
-[node name="ChairNorth" parent="DiningArea" instance=ExtResource("12_chair")]
-position = Vector3(-1.22, 0, -1.12)
-scale = Vector3(2, 2, 2)
+[node name="ChairWest" parent="DiningArea" unique_id=1612394766 instance=ExtResource("12_chair")]
+transform = Transform3D(-7.2399803e-06, 0, 2, 0, 2, 0, -2, 0, -7.2399803e-06, -2.48, 0, -0.32)
 
-[node name="ChairSouth" parent="DiningArea" instance=ExtResource("12_chair")]
-position = Vector3(-1.22, 0, 0.48)
-rotation = Vector3(0, 3.14159, 0)
-scale = Vector3(2, 2, 2)
+[node name="ChairEast" parent="DiningArea" unique_id=1391336716 instance=ExtResource("12_chair")]
+transform = Transform3D(-7.2399803e-06, 0, -2, 0, 2, 0, 2, 0, -7.2399803e-06, 0.02, 0, -0.32)
 
-[node name="ChairWest" parent="DiningArea" instance=ExtResource("12_chair")]
-position = Vector3(-2.48, 0, -0.32)
-rotation = Vector3(0, 1.5708, 0)
-scale = Vector3(2, 2, 2)
+[node name="TrashCan" parent="." unique_id=1378976243 instance=ExtResource("19_trash")]
+transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 3.025348, 0, -5.15)
 
-[node name="ChairEast" parent="DiningArea" instance=ExtResource("12_chair")]
-position = Vector3(0.02, 0, -0.32)
-rotation = Vector3(0, -1.5708, 0)
-scale = Vector3(2, 2, 2)
+[node name="Plant" parent="." unique_id=627436112 instance=ExtResource("20_plant")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 3.1442816, 0.8435737, -4.109739)
 
-[node name="TrashCan" parent="." instance=ExtResource("19_trash")]
-position = Vector3(3.7, 0, -5.15)
-scale = Vector3(1.2, 1.2, 1.2)
+[node name="EntranceDoor" parent="." unique_id=373483609 instance=ExtResource("14_door")]
+transform = Transform3D(-3.0454965, 0, 5.070362e-06, 0, 2.604653, 0, -7.720887e-06, 0, -1.9999995, 0.7500313, 0.00021970272, 5.9117355)
 
-[node name="Plant" parent="." instance=ExtResource("20_plant")]
-position = Vector3(5.9, 0, -4.9)
-scale = Vector3(2.5, 2.5, 2.5)
+[node name="CeilingLamp" parent="." unique_id=1054077451 instance=ExtResource("22_lamp")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 2.94, -0.3)
 
-[node name="EntranceDoor" parent="." instance=ExtResource("14_door")]
-position = Vector3(0.68, 0, 5.78)
-rotation = Vector3(0, 3.14159, 0)
-scale = Vector3(2.8, 2.5, 2)
-
-[node name="CeilingLamp" parent="." instance=ExtResource("22_lamp")]
-position = Vector3(0, 2.94, -0.3)
-scale = Vector3(1.5, 1.5, 1.5)
-
-[node name="WarmLight" type="OmniLight3D" parent="."]
-position = Vector3(0, 2.65, -0.3)
+[node name="WarmLight" type="OmniLight3D" parent="." unique_id=2116937028]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10068272, 2.65, -0.3)
 light_color = Color(1, 0.83, 0.62, 1)
 light_energy = 1.6
 omni_range = 12.0

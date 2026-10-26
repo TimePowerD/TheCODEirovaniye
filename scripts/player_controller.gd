@@ -4,6 +4,7 @@ signal gameplay_action(action: StringName)
 var tutorial_walk_distance := 0.0
 var tutorial_sprint_distance := 0.0
 var tutorial_look_distance := 0.0
+var flashback_speed_multiplier: float = 1.0
 var swap_error_remaining := 0.0
 var weather_press_consumed := false
 const SWAP_SPACE_ERROR := "Недостаточно свободного места для обмена"
@@ -246,7 +247,7 @@ func _physics_process(delta: float) -> void:
 
 	var move_direction := (transform.basis * Vector3(input_2d.x, 0.0, input_2d.y)).normalized()
 	var is_sprinting := Input.is_key_pressed(KEY_SHIFT)
-	var speed := walk_speed * (sprint_multiplier if is_sprinting else 1.0)
+	var speed := walk_speed * (sprint_multiplier if is_sprinting else 1.0) * flashback_speed_multiplier
 	var target_horizontal_velocity := move_direction * speed
 	var horizontal_velocity := Vector3(velocity.x, 0.0, velocity.z)
 	var momentum_time := 0.2

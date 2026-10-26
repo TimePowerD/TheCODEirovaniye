@@ -1,5 +1,7 @@
-[gd_resource type="Resource" load_steps=2 format=3]
-[ext_resource type="Script" path="res://scripts/weather_preset.gd" id="1"]
+[gd_resource type="Resource" format=3 uid="uid://bghho552mnpuc"]
+
+[ext_resource type="Script" uid="uid://dwvalfhwvplwn" path="res://scripts/weather_preset.gd" id="1"]
+
 [resource]
 script = ExtResource("1")
 title = "Гроза"

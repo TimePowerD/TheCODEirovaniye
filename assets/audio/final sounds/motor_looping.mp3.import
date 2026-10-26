@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cytbovj5kfp28"
+path="res://.godot/imported/motor_looping.mp3-de0e6a159fa4fdb92ee812206d9641ec.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/final sounds/motor_looping.mp3"
+dest_files=["res://.godot/imported/motor_looping.mp3-de0e6a159fa4fdb92ee812206d9641ec.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

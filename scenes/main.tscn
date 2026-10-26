@@ -18,7 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://blfie3cwpkog7" path="res://assets/models/labWallWindow.glb" id="14_window"]
 [ext_resource type="PackedScene" uid="uid://d3yup5qrj0m10" path="res://assets/materials/animations/zombieChar.glb" id="19_zombie"]
 [ext_resource type="AudioStream" uid="uid://c1hhm3eft7w4p" path="res://assets/audio/final sounds/menu_click.mp3" id="20_menu_click"]
-[ext_resource type="PackedScene" path="res://scenes/items/lab_box_visual.tscn" id="21_cjqg0"]
+[ext_resource type="PackedScene" uid="uid://ddndndnyt0baf" path="res://scenes/items/lab_box_visual.tscn" id="21_cjqg0"]
 [ext_resource type="AudioStream" uid="uid://c6q62f1vgpvkb" path="res://assets/audio/final sounds/footstep_concrete_1.mp3" id="21_footstep"]
 [ext_resource type="AudioStream" uid="uid://vjkxk3id7p7t" path="res://assets/audio/final sounds/jump_land.mp3" id="22_jump"]
 [ext_resource type="AudioStream" uid="uid://d2g5n0k03m0jw" path="res://assets/audio/final sounds/item_pickup.mp3" id="23_pickup"]
@@ -44,13 +44,13 @@
 [ext_resource type="PackedScene" path="res://scenes/weather_panel.tscn" id="42_weather_panel"]
 [ext_resource type="PackedScene" uid="uid://cqf48e1e6c5hy" path="res://assets/models/obstanowkadoma/Models/GLTF format/bedSingle.glb" id="43_chjal"]
 [ext_resource type="Environment" path="res://assets/environments/laboratory.tres" id="43_laboratory_environment"]
-[ext_resource type="PackedScene" path="res://scenes/weight_puzzle_wall.tscn" id="44_weight_puzzle"]
-[ext_resource type="Script" path="res://scripts/weight_puzzle_door.gd" id="45_weight_puzzle_door"]
 [ext_resource type="PackedScene" path="res://scenes/forest_room.tscn" id="44_forest"]
-[ext_resource type="Script" path="res://scripts/forest_transition.gd" id="45_forest_transition"]
-[ext_resource type="Environment" path="res://assets/environments/forest.tres" id="46_forest_environment"]
-
-[ext_resource type="PackedScene" path="res://scenes/kitchen_room.tscn" id="47_kitchen"]
+[ext_resource type="PackedScene" path="res://scenes/weight_puzzle_wall.tscn" id="44_weight_puzzle"]
+[ext_resource type="Script" uid="uid://bpcfeopwdb1fi" path="res://scripts/forest_transition.gd" id="45_forest_transition"]
+[ext_resource type="Script" uid="uid://bueelrw6stcj8" path="res://scripts/weight_puzzle_door.gd" id="45_weight_puzzle_door"]
+[ext_resource type="Environment" uid="uid://cm23c0wmum2ng" path="res://assets/environments/forest.tres" id="46_forest_environment"]
+[ext_resource type="PackedScene" uid="uid://b1cooquq3rtjg" path="res://scenes/kitchen_room.tscn" id="47_kitchen"]
+[ext_resource type="Script" uid="uid://beqcc0uio57oj" path="res://scripts/flashback_derealization.gd" id="48_derealization"]
 
 [sub_resource type="BoxShape3D" id="RoomFloorShape"]
 size = Vector3(18, 0.2, 32)
@@ -63,12 +63,6 @@ size = Vector3(2, 8, 7)
 
 [sub_resource type="BoxShape3D" id="DoorHeaderShape"]
 size = Vector3(2, 5.25, 2.02)
-
-[sub_resource type="BoxShape3D" id="PuzzleRoomCheckpointShape"]
-size = Vector3(18, 3, 16)
-
-[sub_resource type="BoxShape3D" id="PuzzleExitDoorShape"]
-size = Vector3(0.55, 2.8, 2.03)
 
 [sub_resource type="StandardMaterial3D" id="FlashbackDoorMaterial"]
 albedo_color = Color(0.53, 0.36, 0.17, 1)
@@ -93,14 +87,14 @@ height = 1.8
 [sub_resource type="BoxShape3D" id="PuzzleCubeShape"]
 size = Vector3(0.6, 0.6, 0.6)
 
+[sub_resource type="BoxShape3D" id="HeavyPuzzleCubeShape"]
+
 [sub_resource type="BoxMesh" id="PuzzleCubeMesh"]
 
 [sub_resource type="StandardMaterial3D" id="PuzzleCubeMaterial"]
 albedo_color = Color(0.72, 0.76, 0.8, 1)
 metallic = 0.18
 roughness = 0.58
-
-[sub_resource type="BoxShape3D" id="HeavyPuzzleCubeShape"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_medium"]
 radius = 0.8
@@ -127,6 +121,9 @@ height = 2.4
 radius = 0.7
 
 [sub_resource type="BoxShape3D" id="BoxShape_small"]
+
+[sub_resource type="BoxShape3D" id="PuzzleExitDoorShape"]
+size = Vector3(0.55, 2.8, 2.03)
 
 [sub_resource type="BoxShape3D" id="LocationExitShape"]
 size = Vector3(14, 3, 1)
@@ -311,6 +308,9 @@ size = Vector3(2, 3, 8)
 [sub_resource type="BoxShape3D" id="BoxShape3D_chjal"]
 size = Vector3(2, 3, 8)
 
+[sub_resource type="BoxShape3D" id="PuzzleRoomCheckpointShape"]
+size = Vector3(18, 3, 16)
+
 [node name="Main" type="Node3D" unique_id=417695300]
 script = ExtResource("4_room_materials")
 
@@ -420,17 +420,16 @@ font_size = 52
 transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, -7.7, 1.35, 4)
 mesh = SubResource("FlashbackDoorMesh")
 
-[node name="ForestMemoryDoor" type="MeshInstance3D" parent="Room"]
+[node name="ForestMemoryDoor" type="MeshInstance3D" parent="Room" unique_id=681320683]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.7, 1.35, 4)
 mesh = SubResource("ForestFlashbackDoorMesh")
 
-[node name="ForestMemorySign" type="Label3D" parent="Room"]
+[node name="ForestMemorySign" type="Label3D" parent="Room" unique_id=635863139]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.6, 3.1, 4)
 pixel_size = 0.006
 text = "ЛЕСНОЕ ВОСПОМИНАНИЕ"
-font_size = 32
 
-[node name="ForestMemoryDoorLight" type="OmniLight3D" parent="Room"]
+[node name="ForestMemoryDoorLight" type="OmniLight3D" parent="Room" unique_id=1955201526]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.8, 2.5, 4)
 light_color = Color(0.67, 0.9, 0.67, 1)
 light_energy = 1.3
@@ -520,10 +519,7 @@ shape = SubResource("PuzzleCubeShape")
 [node name="CollisionSound" type="AudioStreamPlayer3D" parent="SmallBox" unique_id=25227260]
 script = ExtResource("28_collision_audio")
 
-[node name="Mesh" type="MeshInstance3D" parent="SmallBox" unique_id=1838892602]
-transform = Transform3D(0.6, 0, 0, 0, 0.6, 0, 0, 0, 0.6, 0, 0, 0)
-mesh = SubResource("PuzzleCubeMesh")
-surface_material_override/0 = SubResource("PuzzleCubeMaterial")
+[node name="Mesh" parent="SmallBox" unique_id=1838892602 instance=ExtResource("21_cjqg0")]
 
 [node name="HeavyPuzzleCube" type="RigidBody3D" parent="." unique_id=1145380204 groups=["swapAble", "swappable"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 72.8, 0.5, 178.2)
@@ -586,6 +582,7 @@ shape = SubResource("CylinderShape_large")
 script = ExtResource("28_collision_audio")
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=935775243]
+layer = 6
 
 [node name="Crosshair" type="Control" parent="HUD" unique_id=150177091]
 layout_mode = 3
@@ -616,16 +613,16 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 164, 1.2, 180)
 [node name="CubeWeightPuzzle" parent="." unique_id=1513758282 instance=ExtResource("44_weight_puzzle")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 73.238266, 0, 173.4606)
 
-[node name="PuzzleExitDoor" type="Node3D" parent="." groups=["saveable_door"]]
+[node name="PuzzleExitDoor" type="Node3D" parent="." unique_id=1333703355 groups=["saveable_door"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64.5, 0, 179.19165)
 script = ExtResource("45_weight_puzzle_door")
 
-[node name="DoorVisual" parent="PuzzleExitDoor" instance=ExtResource("33_j8jky")]
+[node name="DoorVisual" parent="PuzzleExitDoor" unique_id=1917959488 instance=ExtResource("33_j8jky")]
 
-[node name="DoorCollisionBody" type="AnimatableBody3D" parent="PuzzleExitDoor"]
+[node name="DoorCollisionBody" type="AnimatableBody3D" parent="PuzzleExitDoor" unique_id=1100248894]
 collision_mask = 0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="PuzzleExitDoor/DoorCollisionBody"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PuzzleExitDoor/DoorCollisionBody" unique_id=375878176]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.38, 0)
 shape = SubResource("PuzzleExitDoorShape")
 
@@ -642,14 +639,20 @@ script = ExtResource("31_cutscene")
 player = NodePath("../Player")
 
 [node name="DeveloperTools" type="CanvasLayer" parent="." unique_id=1814993821 node_paths=PackedStringArray("player", "menu")]
+layer = 6
 script = ExtResource("30_developer")
 player = NodePath("../Player")
 menu = NodePath("../MainMenu")
 
 [node name="Tutorial" type="CanvasLayer" parent="." unique_id=1012047667 node_paths=PackedStringArray("player", "menu")]
+layer = 6
 script = ExtResource("32_tutorial")
 player = NodePath("../Player")
 menu = NodePath("../MainMenu")
+
+[node name="FlashbackDerealization" type="CanvasLayer" parent="." unique_id=391439030]
+layer = 4
+script = ExtResource("48_derealization")
 
 [node name="LocationTransition" type="Node" parent="." unique_id=498694772 node_paths=PackedStringArray("city_room", "player", "laboratory_light")]
 script = ExtResource("10_transition")
@@ -2000,10 +2003,10 @@ script = ExtResource("41_weather")
 street = NodePath("../FlashbackRoom")
 transition = NodePath("../FlashbackTransition")
 
-[node name="ForestRoom" parent="." instance=ExtResource("44_forest")]
+[node name="ForestRoom" parent="." unique_id=1749122085 instance=ExtResource("44_forest")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -640, 0, -320)
 
-[node name="ForestTransition" type="Node" parent="." node_paths=PackedStringArray("city_room", "player", "laboratory_light")]
+[node name="ForestTransition" type="Node" parent="." unique_id=343394407 node_paths=PackedStringArray("city_room", "player", "laboratory_light")]
 script = ExtResource("45_forest_transition")
 city_room = NodePath("../ForestRoom")
 player = NodePath("../Player")
@@ -2014,17 +2017,17 @@ fade_out_duration = 1.6
 black_hold_duration = 0.8
 fade_in_duration = 2.8
 
-[node name="LaboratoryExit" type="Area3D" parent="ForestTransition"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.6, 1.5, 4)
+[node name="LaboratoryExit" type="Area3D" parent="ForestTransition" unique_id=229477675]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 116.424126, 1.5, 179.16624)
 collision_layer = 0
 script = ExtResource("12_marker")
 transition_style = 1
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ForestTransition/LaboratoryExit"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ForestTransition/LaboratoryExit" unique_id=633696367]
 shape = SubResource("ForestExitShape")
 
-[node name="LaboratoryArrival" type="Marker3D" parent="ForestTransition"]
-transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 4.8, 0.92, 4)
+[node name="LaboratoryArrival" type="Marker3D" parent="ForestTransition" unique_id=1524431131]
+transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 115, 0.92, 180)
 
 [node name="Room3Light" type="OmniLight3D" parent="." unique_id=1453178613]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 113, 4, 180)
@@ -2036,7 +2039,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 95, 4, 179)
 light_energy = 1.6
 omni_range = 16.0
 
-[node name="StartRoomAnchor" type="Marker3D" parent="." groups=["swap_room_anchor"]]
+[node name="StartRoomAnchor" type="Marker3D" parent="." unique_id=2041480703 groups=["swap_room_anchor"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 169, 0, 180)
 
 [node name="LevelCheckpoints" type="Node3D" parent="." unique_id=540498410]
@@ -2085,15 +2088,15 @@ shape = SubResource("BoxShape3D_chjal")
 [node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/Level4Checkpoint" unique_id=600734842]
 transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
 
-[node name="PuzzleRoomCheckpoint" type="Area3D" parent="LevelCheckpoints" groups=["swap_room_anchor"]]
+[node name="PuzzleRoomCheckpoint" type="Area3D" parent="LevelCheckpoints" unique_id=1404486789 groups=["swap_room_anchor"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 73.5, 1.5, 179.2)
 collision_layer = 0
 script = ExtResource("35_j8jky")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/PuzzleRoomCheckpoint"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/PuzzleRoomCheckpoint" unique_id=316490265]
 shape = SubResource("PuzzleRoomCheckpointShape")
 
-[node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/PuzzleRoomCheckpoint"]
+[node name="SpawnPoint" type="Marker3D" parent="LevelCheckpoints/PuzzleRoomCheckpoint" unique_id=7206880]
 transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58, 0)
 
 [node name="scientist" parent="." unique_id=2089029073 instance=ExtResource("36_fuf3a")]
@@ -2103,7 +2106,7 @@ script = ExtResource("37_pibwh")
 [node name="bedSingle" parent="." unique_id=1922355786 instance=ExtResource("43_chjal")]
 transform = Transform3D(-1.2807438e-07, 0, -2.93, 0, 2.93, 0, 2.93, 0, -1.2807438e-07, 168.17847, 0, 170.58092)
 
-[node name="KitchenRoom" parent="." instance=ExtResource("47_kitchen")]
-position = Vector3(210, 0, 150)
+[node name="KitchenRoom" parent="." unique_id=993418262 instance=ExtResource("47_kitchen")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 210, 0, 150)
 
 [editable path="LabModuleLibrary"]

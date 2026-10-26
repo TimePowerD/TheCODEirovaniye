@@ -1,5 +1,7 @@
 extends CanvasLayer
 
+signal finished
+
 ## Opening first-person wake-up sequence. The scientist can be added later at the
 ## final look direction without changing the camera choreography.
 
@@ -190,3 +192,4 @@ func _finish() -> void:
 	skip_elapsed = 0.0
 	skip_panel.hide()
 	hide()
+	finished.emit()
