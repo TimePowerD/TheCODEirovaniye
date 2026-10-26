@@ -8878,7 +8878,7 @@ transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 3
 layers = 2
 pixel_size = 0.006
 modulate = Color(1, 0.95, 0.8, 1)
-text = "ЛАБОРАТОРИЯ"
+text = "КОМНАТА ПЕРЕХОДОВ"
 font_size = 42
 
 [node name="EntrancePath" type="MeshInstance3D" parent="." unique_id=784304220]
