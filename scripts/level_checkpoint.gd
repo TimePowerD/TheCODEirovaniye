@@ -9,6 +9,9 @@ func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 
 func _on_body_entered(body: Node3D) -> void:
+	if body is RigidBody3D:
+		get_node("/root/SaveManager").save_object_checkpoint(body)
+		return
 	if not body.is_in_group("player"):
 		return
 	if body.has_method("return_to_checkpoint"):

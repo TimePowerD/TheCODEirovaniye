@@ -3003,6 +3003,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 169, 0, 180)
 [node name="Level1Checkpoint" type="Area3D" parent="LevelCheckpoints" unique_id=983535690 groups=["swap_room_anchor"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 151, 1.5, 180)
 collision_layer = 0
+collision_mask = 3
 script = ExtResource("35_j8jky")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/Level1Checkpoint" unique_id=529709638]
@@ -3014,6 +3015,7 @@ transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58
 [node name="Level2Checkpoint" type="Area3D" parent="LevelCheckpoints" unique_id=1259052853 groups=["swap_room_anchor"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 133, 1.5, 180)
 collision_layer = 0
+collision_mask = 3
 script = ExtResource("35_j8jky")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/Level2Checkpoint" unique_id=1838546307]
@@ -3025,6 +3027,7 @@ transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58
 [node name="Level3Checkpoint" type="Area3D" parent="LevelCheckpoints" unique_id=1667449562 groups=["swap_room_anchor"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 115, 1.5, 180)
 collision_layer = 0
+collision_mask = 3
 script = ExtResource("35_j8jky")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/Level3Checkpoint" unique_id=426440603]
@@ -3036,6 +3039,7 @@ transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58
 [node name="Level4Checkpoint" type="Area3D" parent="LevelCheckpoints" unique_id=1626471330 groups=["swap_room_anchor"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 97, 1.5, 179)
 collision_layer = 0
+collision_mask = 3
 script = ExtResource("35_j8jky")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/Level4Checkpoint" unique_id=1729734908]
@@ -3047,6 +3051,7 @@ transform = Transform3D(7.54979e-08, 0, 1, 0, 1, 0, -1, 0, 7.54979e-08, 0, -0.58
 [node name="PuzzleRoomCheckpoint" type="Area3D" parent="LevelCheckpoints" unique_id=1404486789 groups=["swap_room_anchor"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 73.5, 1.5, 179.2)
 collision_layer = 0
+collision_mask = 3
 script = ExtResource("35_j8jky")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LevelCheckpoints/PuzzleRoomCheckpoint" unique_id=316490265]

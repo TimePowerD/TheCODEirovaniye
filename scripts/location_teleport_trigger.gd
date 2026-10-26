@@ -1,6 +1,6 @@
 extends Area3D
 
-const NORMAL_TRANSITION_SOUND: AudioStream = preload("res://assets/audio/final sounds/location_teleport.mp3")
+const NORMAL_TRANSITION_SOUND: AudioStream = preload("res://assets/audio/final sounds/qubodup-GhostMoan01.mp3")
 
 @export var destination_location_id := "kitchen"
 @export var destination_transform := Transform3D.IDENTITY

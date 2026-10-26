@@ -249,7 +249,7 @@ func _physics_process(delta: float) -> void:
 	input_2d = input_2d.normalized()
 
 	var move_direction := (transform.basis * Vector3(input_2d.x, 0.0, input_2d.y)).normalized()
-	var is_sprinting := Input.is_key_pressed(KEY_SHIFT)
+	var is_sprinting := Input.is_physical_key_pressed(KEY_SHIFT)
 	var speed := walk_speed * (sprint_multiplier if is_sprinting else 1.0) * flashback_speed_multiplier
 	var target_horizontal_velocity := move_direction * speed
 	var horizontal_velocity := Vector3(velocity.x, 0.0, velocity.z)
@@ -266,7 +266,7 @@ func _physics_process(delta: float) -> void:
 	if input_2d.length_squared() > 0.0:
 		var traveled := Vector2(global_position.x - previous_position.x, global_position.z - previous_position.z).length()
 		tutorial_walk_distance += traveled
-		if Input.is_key_pressed(KEY_SHIFT):
+		if Input.is_physical_key_pressed(KEY_SHIFT):
 			tutorial_sprint_distance += traveled
 			if tutorial_sprint_distance >= 1.0:
 				tutorial_sprint_distance = 0.0
@@ -292,7 +292,7 @@ func _update_footstep_sound(delta: float, is_moving_on_floor: bool) -> void:
 
 	footstep_timer -= delta
 	if footstep_timer <= 0.0:
-		var is_running := Input.is_key_pressed(KEY_SHIFT)
+		var is_running := Input.is_physical_key_pressed(KEY_SHIFT)
 		footstep_sound.stream = footstep_streams.pick_random()
 		footstep_sound.play()
 		footstep_timer = 0.36 if is_running else 0.5
@@ -992,6 +992,7 @@ func _complete_swap(first: Node3D, second: Node3D, first_start: Vector3, second_
 			body.global_transform = push.transform
 			body.sleeping = false
 			body.reset_physics_interpolation()
+			get_node("/root/SaveManager").save_object_checkpoint(body)
 		first.global_transform = plan.first
 		second.global_transform = plan.second
 		_spawn_swap_puff(first_start)
@@ -1020,6 +1021,8 @@ func _complete_swap(first: Node3D, second: Node3D, first_start: Vector3, second_
 			if success and target.is_in_group("activate_physics_after_swap") and target.get("physics_enabled") == false:
 				target.set("physics_enabled", true)
 				target.sleeping = false
+			if success:
+				get_node("/root/SaveManager").save_object_checkpoint(target)
 	swap_body_states.clear()
 	swap_source_transforms.clear()
 	swap_in_progress = false

@@ -3,6 +3,7 @@ extends Node
 signal checkpoint_restored(location_id: String)
 
 const SAVE_PATH := "user://savegame.cfg"
+const FALL_RESPAWN_Y := -3.0
 
 var current_location_id := "laboratory"
 var checkpoint_id := "level_start"
@@ -10,6 +11,15 @@ var initial_player_transform := Transform3D.IDENTITY
 var initial_camera_rotation := Vector3.ZERO
 var initial_object_states: Dictionary = {}
 var initial_door_states: Dictionary = {}
+
+func _physics_process(_delta: float) -> void:
+	var scene := get_tree().current_scene
+	if scene == null:
+		return
+	for node_path in initial_object_states:
+		var body := scene.get_node_or_null(node_path) as RigidBody3D
+		if body != null and body.global_position.y < FALL_RESPAWN_Y:
+			restore_object_to_initial(body)
 
 func capture_scene_start(player: CharacterBody3D) -> void:
 	initial_player_transform = player.global_transform
@@ -36,18 +46,38 @@ func reset_world_to_initial() -> void:
 		var body := get_tree().current_scene.get_node_or_null(node_path) as PhysicsBody3D
 		if body == null:
 			continue
-		var state: Dictionary = initial_object_states[node_path]
-		body.global_transform = state.transform
-		if state.physics_enabled != null:
-			body.set("physics_enabled", state.physics_enabled)
-		if body is RigidBody3D:
-			body.linear_velocity = Vector3.ZERO
-			body.angular_velocity = Vector3.ZERO
-			body.sleeping = true
-			body.reset_physics_interpolation()
-		if body.has_method("reset_state"):
-			body.call_deferred("reset_state")
+		restore_object_to_initial(body)
 	_apply_door_states(get_tree().current_scene, initial_door_states)
+
+func restore_object_to_initial(body: PhysicsBody3D) -> void:
+	var scene := get_tree().current_scene
+	if scene == null or not scene.is_ancestor_of(body):
+		return
+	var node_path := scene.get_path_to(body)
+	if not initial_object_states.has(node_path):
+		return
+	var state: Dictionary = initial_object_states[node_path]
+	body.global_transform = state.transform
+	if state.physics_enabled != null:
+		body.set("physics_enabled", state.physics_enabled)
+	if body is RigidBody3D:
+		body.linear_velocity = Vector3.ZERO
+		body.angular_velocity = Vector3.ZERO
+		body.sleeping = true
+		body.reset_physics_interpolation()
+	if body.has_method("reset_state"):
+		body.call_deferred("reset_state")
+
+func save_object_checkpoint(body: RigidBody3D) -> void:
+	var scene := get_tree().current_scene
+	if scene == null or not scene.is_ancestor_of(body):
+		return
+	var node_path := scene.get_path_to(body)
+	if not initial_object_states.has(node_path):
+		return
+	var state: Dictionary = initial_object_states[node_path]
+	state["transform"] = body.global_transform
+	initial_object_states[node_path] = state
 
 func restore_player(player: CharacterBody3D) -> bool:
 	var config := ConfigFile.new()
@@ -102,6 +132,9 @@ func save_player_checkpoint(player: CharacterBody3D, id: String, location_id: St
 	if not location_id.is_empty():
 		current_location_id = location_id
 	checkpoint_id = id
+	var held_item := player.get("held_item") as RigidBody3D
+	if held_item != null:
+		save_object_checkpoint(held_item)
 	var checkpoint_transform: Transform3D = player.global_transform if spawn_transform == null else spawn_transform
 	player.checkpoint_transform = checkpoint_transform
 	player.checkpoint_camera_rotation = player.camera_pivot.rotation

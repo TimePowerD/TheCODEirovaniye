@@ -2,7 +2,7 @@ extends Node
 
 signal location_changed(in_destination: bool)
 
-const TRANSITION_STREAM: AudioStream = preload("res://assets/audio/final sounds/location_teleport.mp3")
+const TRANSITION_STREAM: AudioStream = preload("res://assets/audio/final sounds/qubodup-GhostMoan01.mp3")
 
 ## A slow blackout links the laboratory to an apparently remembered city room.
 @export var city_room: Node3D

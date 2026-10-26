@@ -45,7 +45,7 @@ func _check() -> void:
 		assert(trigger != null and trigger.use_visual_transition)
 		assert(trigger.transition_style == style and trigger.destination_location_id == "forest")
 		assert(trigger.fade_material.shader.resource_path == ("res://scripts/flashback_fade.gdshader" if style == 1 else "res://scripts/location_fade.gdshader"))
-		assert(trigger.transition_sound.stream.resource_path == "res://assets/audio/final sounds/location_teleport.mp3")
+		assert(trigger.transition_sound.stream.resource_path == "res://assets/audio/final sounds/qubodup-GhostMoan01.mp3")
 		if style == 1:
 			assert(trigger.transition_sound.stream == game.get_node("ForestTransition").TRANSITION_STREAM)
 			assert(is_equal_approx(trigger.fade_out_duration, 1.6) and is_equal_approx(trigger.hold_duration, 0.8) and is_equal_approx(trigger.fade_in_duration, 2.8))

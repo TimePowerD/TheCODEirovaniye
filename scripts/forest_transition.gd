@@ -10,7 +10,6 @@ const FOREST_AMBIENCE_STREAM: AudioStreamOggVorbis = preload("res://assets/audio
 const WEATHER_AUDIO = preload("res://scripts/weather_audio.gd")
 
 @onready var forest_sun: DirectionalLight3D = city_room.get_node("ForestSun") as DirectionalLight3D
-@onready var forest_return_area: Area3D = city_room.get_node("ReturnArea") as Area3D
 
 var flashback_started := false
 var flashback_active := false
@@ -95,7 +94,6 @@ func _return_to_laboratory() -> void:
 	if tutorial != null and tutorial.has_method("set_flashback_objective"):
 		tutorial.call("set_flashback_objective", "")
 	$LaboratoryExit.set_deferred("monitoring", false)
-	forest_return_area.set_deferred("monitoring", false)
 
 func _pulse_and_slow() -> void:
 	if in_city:
@@ -124,7 +122,6 @@ func _pulse_and_slow() -> void:
 func _enter_flashback_state() -> void:
 	flashback_active = true
 	player.flashback_speed_multiplier = FLASHBACK_SPEED_MULTIPLIER
-	forest_return_area.set_deferred("monitoring", false)
 	var tutorial := get_node_or_null("../Tutorial")
 	if tutorial != null and tutorial.has_method("set_flashback_objective"):
 		tutorial.call("set_flashback_objective", "Вернуться домой")
