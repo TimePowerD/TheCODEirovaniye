@@ -49,7 +49,6 @@ func _set_open(should_open: bool) -> void:
 	opening_tween.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	opening_tween.tween_property(door_visual, "global_position", closed_visual_position + open_offset, OPEN_DURATION)
 	opening_tween.tween_property(door_body, "global_position", closed_body_position + open_offset, OPEN_DURATION)
-	opening_tween.finished.connect(_save_open_state)
 
 func reset_state() -> void:
 	if opening_tween != null and opening_tween.is_running():
@@ -57,8 +56,3 @@ func reset_state() -> void:
 	is_open = false
 	door_visual.global_position = closed_visual_position
 	door_body.global_position = closed_body_position
-
-func _save_open_state() -> void:
-	var save_manager := get_node_or_null("/root/SaveManager")
-	if save_manager != null:
-		save_manager.save_current_world_state()

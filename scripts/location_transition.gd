@@ -33,17 +33,8 @@ func _ready() -> void:
 	transition_style = $LaboratoryExit.transition_style
 	flashback_effect = get_node_or_null("../FlashbackDerealization")
 	laboratory_environment = player.get_node("CameraPivot/Camera3D").environment
-	in_city = get_node("/root/SaveManager").current_location_id == destination_location_id
-	get_node("/root/SaveManager").checkpoint_restored.connect(_on_checkpoint_restored)
-	# Older street checkpoints used the small scene's previous world position.
-	if in_city and city_room.has_meta("rain_bounds"):
-		var bounds: Rect2 = city_room.get_meta("rain_bounds")
-		var local_position := city_room.to_local(player.global_position)
-		if not bounds.has_point(Vector2(local_position.x, local_position.z)):
-			player.global_transform = city_room.get_node("Arrival").global_transform
-			player.checkpoint_transform = player.global_transform
-			player.camera_pivot.rotation = Vector3.ZERO
-			player.checkpoint_camera_rotation = Vector3.ZERO
+	in_city = get_node("/root/LocationState").current_location_id == destination_location_id
+	get_node("/root/LocationState").location_changed.connect(_on_location_changed)
 	if transition_style == 1 and in_city:
 		_set_flashback_effect_enabled(true)
 	laboratory_energy = laboratory_light.light_energy
@@ -94,7 +85,7 @@ func _ready() -> void:
 	player.add_child(ambience)
 	ambience.play()
 
-func _on_checkpoint_restored(location_id: String) -> void:
+func _on_location_changed(location_id: String) -> void:
 	if transitioning:
 		return
 	in_city = location_id == destination_location_id
@@ -102,8 +93,6 @@ func _on_checkpoint_restored(location_id: String) -> void:
 		_set_flashback_effect_enabled(in_city)
 	var camera := player.get_node("CameraPivot/Camera3D") as Camera3D
 	if location_id == source_location_id and laboratory_environment != null:
-		# Laboratory checkpoints must always restore the original laboratory
-		# environment, regardless of which outdoor weather was active before them.
 		camera.environment = laboratory_environment
 	elif in_city and destination_environment != null:
 		camera.environment = destination_environment
@@ -185,7 +174,7 @@ func _on_exit(body: Node3D, to_city: bool) -> void:
 	location_changed.emit(to_city)
 	player.clear_swap_selection()
 	var next_location := destination_location_id if to_city else source_location_id
-	get_node("/root/SaveManager").save_player_checkpoint(player, "%s_entrance" % next_location, next_location, arrival.global_transform)
+	get_node("/root/LocationState").set_current_location(next_location)
 	if not to_city and laboratory_dimmed:
 		laboratory_light.light_energy = laboratory_energy
 		laboratory_dimmed = false

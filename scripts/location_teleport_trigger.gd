@@ -55,7 +55,7 @@ func _create_overlay() -> void:
 func _resolve_destination_transform() -> Transform3D:
 	var scene := get_tree().current_scene
 	if destination_location_id == "laboratory":
-		return get_node("/root/SaveManager").initial_player_transform
+		return get_node("/root/LocationState").initial_player_transform
 	if destination_location_id == "transition_room":
 		var marker := scene.get_node_or_null("LocationTransition/LaboratoryArrival") as Node3D
 		return marker.global_transform if marker != null else Transform3D.IDENTITY
@@ -142,14 +142,7 @@ func _teleport_player(player: CharacterBody3D) -> void:
 	player.global_transform = destination_transform
 	player.camera_pivot.rotation = Vector3.ZERO
 	player.reset_physics_interpolation()
-	var save_manager := get_node("/root/SaveManager")
-	save_manager.save_player_checkpoint(
-		player,
-		"trigger_%s" % destination_location_id,
-		destination_location_id,
-		destination_transform
-	)
-	save_manager.checkpoint_restored.emit(destination_location_id)
+	get_node("/root/LocationState").set_current_location(destination_location_id)
 
 func _play_visual_transition(player: CharacterBody3D, was_physics_processing: bool, was_input_processing: bool) -> void:
 	veil.show()

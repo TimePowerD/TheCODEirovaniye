@@ -88,8 +88,6 @@ var interaction_hint: Label
 var e_hold_pending: bool = false
 var e_hold_elapsed: float = 0.0
 var item_use_tween: Tween
-var checkpoint_transform: Transform3D
-var checkpoint_camera_rotation := Vector3.ZERO
 var rotation_gizmo: Node3D
 var rotation_axis_materials: Array[StandardMaterial3D] = []
 var rotation_ring_points: Array[PackedVector3Array] = []
@@ -104,16 +102,11 @@ var current_player_animation: StringName = &""
 const IDLE_ANIMATION: StringName = &"idleAnim"
 const WALK_ANIMATION: StringName = &"walkAnim"
 const JUMP_ANIMATION: StringName = &"jumpAnim_001"
-const FALL_RESPAWN_Y := -3.0
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	add_to_group("player")
-	checkpoint_transform = global_transform
-	get_node("/root/SaveManager").capture_scene_start(self)
-	if not get_node("/root/SaveManager").restore_player(self):
-		checkpoint_camera_rotation = camera_pivot.rotation
-		get_node("/root/SaveManager").set_location("laboratory")
+	get_node("/root/LocationState").initialize_scene(self)
 	collision_mask = 3
 	platform_floor_layers = 1
 	platform_on_leave = CharacterBody3D.PLATFORM_ON_LEAVE_DO_NOTHING
@@ -260,9 +253,6 @@ func _physics_process(delta: float) -> void:
 	velocity.z = horizontal_velocity.z
 	var previous_position := global_position
 	move_and_slide()
-	if global_position.y < FALL_RESPAWN_Y:
-		return_to_checkpoint()
-		return
 	if input_2d.length_squared() > 0.0:
 		var traveled := Vector2(global_position.x - previous_position.x, global_position.z - previous_position.z).length()
 		tutorial_walk_distance += traveled
@@ -619,17 +609,6 @@ func _get_item_surface_offset(item: RigidBody3D, item_basis: Basis, surface_norm
 			offset = maxf(offset, extent - surface_normal.dot(shape_transform.origin))
 	return offset
 
-func return_to_checkpoint() -> void:
-	_release_object()
-	_drop_item()
-	get_node("/root/SaveManager").reset_world_to_initial()
-	global_transform = checkpoint_transform
-	camera_pivot.rotation = checkpoint_camera_rotation
-	velocity = Vector3.ZERO
-	reset_interaction_modes()
-	reset_physics_interpolation()
-	gameplay_action.emit(&"checkpoint")
-
 func _update_held_object() -> void:
 	if not is_instance_valid(held_object):
 		held_object = null
@@ -906,7 +885,7 @@ func _cycle_swap_selection() -> void:
 	_update_interaction_hint()
 
 func _room_anchor_for_position(position: Vector3) -> Node3D:
-	# Checkpoint centers are not always room centers.  In particular, a checkpoint
+	# Room anchors are not always room centers.  In particular, an anchor
 	# near a doorway can be closer to an object in the previous room and split a
 	# valid swap pair in two.  Prefer an explicit box volume when the position is
 	# inside one, then retain the nearest-anchor fallback for older rooms.
@@ -1012,7 +991,6 @@ func _complete_swap(first: Node3D, second: Node3D, first_start: Vector3, second_
 			body.global_transform = push.transform
 			body.sleeping = false
 			body.reset_physics_interpolation()
-			get_node("/root/SaveManager").save_object_checkpoint(body)
 		first.global_transform = plan.first
 		second.global_transform = plan.second
 		_spawn_swap_puff(first_start)
@@ -1041,8 +1019,6 @@ func _complete_swap(first: Node3D, second: Node3D, first_start: Vector3, second_
 			if success and target.is_in_group("activate_physics_after_swap") and target.get("physics_enabled") == false:
 				target.set("physics_enabled", true)
 				target.sleeping = false
-			if success:
-				get_node("/root/SaveManager").save_object_checkpoint(target)
 	swap_body_states.clear()
 	swap_source_transforms.clear()
 	swap_in_progress = false
